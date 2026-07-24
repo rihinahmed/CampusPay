@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CampusPay | Recharge Request</title>
+
+    <!-- Tailwind CSS & Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bec8c8",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eeeef0",
+                        "inverse-on-surface": "#f0f0f3",
+                        "tertiary": "#5b3e00",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#86d4d3",
+                        "on-secondary-fixed": "#141d1e",
+                        "tertiary-container": "#795400",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1e",
+                        "surface-tint": "#096969",
+                        "on-primary-fixed": "#002020",
+                        "on-tertiary-container": "#ffcb72",
+                        "primary": "#004c4c",
+                        "surface-variant": "#e2e2e5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#93e1e0",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#dae4e4",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#5f4100",
+                        "primary-fixed-dim": "#86d4d3",
+                        "on-secondary-fixed-variant": "#3f4949",
+                        "background": "#f9f9fc",
+                        "secondary-container": "#d8e2e2",
+                        "on-surface-variant": "#3f4948",
+                        "on-background": "#1a1c1e",
+                        "surface-container-high": "#e8e8ea",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "surface-container-highest": "#e2e2e5",
+                        "surface-container-low": "#f3f3f6",
+                        "surface-dim": "#dadadc",
+                        "tertiary-fixed-dim": "#ffba31",
+                        "primary-container": "#006666",
+                        "surface": "#f9f9fc",
+                        "inverse-surface": "#2f3133",
+                        "on-secondary-container": "#5b6465",
+                        "secondary": "#566060",
+                        "outline-variant": "#bec9c8",
+                        "tertiary-fixed": "#ffdeab",
+                        "surface-bright": "#f9f9fc",
+                        "primary-fixed": "#a2f0ef",
+                        "on-tertiary-fixed": "#271900",
+                        "outline": "#6f7979",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "stack-md": "12px",
+                        "stack-sm": "4px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <script>
+        if (localStorage.getItem('campuspay-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <!-- External Custom Rules Stylesheet -->
+    <link rel="stylesheet" href="../css/recharge.css?v=2" />
+
+    <!-- External Custom Controller Logic Script -->
+    <script src="../js/recharge.js?v=2" defer></script>
+</head>
+
+<body class="bg-background dark:bg-[#121212] text-on-background dark:text-gray-100 font-body-md min-h-screen flex">
+
+    <!-- SideNavBar -->
+    <aside
+        class="fixed left-0 top-0 h-full hidden md:flex flex-col border-r border-outline-variant dark:border-[#2d3135] bg-surface-container-low dark:bg-[#1a1c1e] w-64 z-40 shadow-sm transition-all duration-200 ease-in-out">
+        <div class="p-container-margin">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+                    <span class="material-symbols-outlined">school</span>
+                </div>
+                <div>
+                    <h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed">
+                        CampusPay</h1>
+                    <p class="text-label-md font-label-md text-on-surface-variant dark:text-secondary-fixed-dim">MIST
+                        Canteen</p>
+                </div>
+            </div>
+            <nav class="space-y-1">
+                <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg transition-all duration-200"
+                    href="./student.html">
+                    <span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+                    <span class="font-label-md text-label-md">Food Menu</span>
+                </a>
+                <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg transition-all duration-200"
+                    href="./student.html?openOrders=true">
+                    <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+                    <span class="font-label-md text-label-md">Orders</span>
+                </a>
+                <a class="bg-secondary-container dark:bg-[#004f4f]/30 text-on-secondary-container dark:text-[#86d4d3] rounded-lg px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200"
+                    href="./recharge.html">
+                    <span class="material-symbols-outlined" data-icon="add_card">add_card</span>
+                    <span class="font-label-md text-label-md">Recharge</span>
+                </a>
+            </nav>
+        </div>
+        <div class="mt-auto p-container-margin border-t border-outline-variant dark:border-[#2d3135]">
+            <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg transition-all duration-200"
+                href="./settings.html?role=student">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+                <span class="font-label-md text-label-md">Settings</span>
+            </a>
+            <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg transition-all duration-200"
+                href="./login.html">
+                <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                <span class="font-label-md text-label-md">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Drawer Sidebar overlay backdrop -->
+    <div id="mobile-nav" class="fixed inset-0 z-50 overflow-hidden pointer-events-none drawer-closed hidden">
+        <div id="mobile-nav-overlay"
+            class="drawer-overlay absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-opacity duration-300 pointer-events-auto">
+        </div>
+        <div
+            class="drawer-content absolute top-0 left-0 max-w-xs w-full h-full bg-white dark:bg-[#1a1c1e] border-r border-outline-variant dark:border-[#2d3135] shadow-2xl flex flex-col -translate-x-full pointer-events-auto transition-transform duration-300">
+            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+                        <span class="material-symbols-outlined text-[20px]">school</span>
+                    </div>
+                    <span
+                        class="font-headline-sm text-title-lg font-black text-primary dark:text-[#86d4d3]">CampusPay</span>
+                </div>
+                <button id="mobile-menu-close-btn"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors text-on-surface-variant">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <nav class="flex-1 mt-4 space-y-1">
+                <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-colors hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md"
+                    href="./student.html">
+                    <span class="material-symbols-outlined">restaurant</span>
+                    Food Menu
+                </a>
+                <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-colors hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md"
+                    href="./student.html?openOrders=true">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    Orders
+                </a>
+                <a class="bg-secondary-container dark:bg-[#004f4f]/30 text-on-secondary-container dark:text-[#86d4d3] rounded-lg px-4 py-3 mx-2 flex items-center gap-3 font-label-md text-label-md"
+                    href="./recharge.html">
+                    <span class="material-symbols-outlined">add_card</span>
+                    Recharge
+                </a>
+            </nav>
+            <div class="p-6 border-t border-outline-variant dark:border-[#2d3135] space-y-4">
+                <button id="theme-toggle-mobile"
+                    class="w-full flex items-center justify-between p-3 bg-surface-container-low dark:bg-[#242628] border border-outline-variant dark:border-[#2d3135] rounded-xl font-label-md text-on-surface-variant dark:text-[#bec9c8] text-label-md">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                        Dark Theme Mode
+                    </span>
+                    <span
+                        class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-outline dark:bg-[#096969] cursor-pointer">
+                        <span
+                            class="inline-block w-4 h-4 transform rounded-full bg-white transition-transform translate-x-1 dark:translate-x-6"></span>
+                    </span>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-outline-variant overflow-hidden border border-outline-variant">
+                        <img class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1PZ_TiFcClFJiFucUyUv5BuEktsF8pY_JmCdO4hCRQWMGZ9b6HX9TRXO2Tor-UTHAqORWL92Y5qLSn6NPb3Zo2Q76Q_003eTpWTGcO2bDszYmY-7DR0QOWdnv4ng8x3eGhLxRpI-l7bWlfKAGQUDkJufRzWLFlBNI0TStS2PJ8pPNkjOhRdo4JeKNr0lyNh3IwavFt6peQbqCOhTocNea4EODdsIYecKPUvyq8XUH5pL3cJupWfQtyTAiqsll9l92SbTPSyvUez6i"
+                            alt="Student Profile" />
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold font-title-lg text-body-lg text-on-surface dark:text-white line-clamp-1">
+                            Mashiat S. MIST</h4>
+                        <p class="text-on-surface-variant dark:text-[#bec9c8] text-[11px]">ID: 202614002</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-1 md:ml-64 min-h-screen flex flex-col">
+        <!-- TopNavBar -->
+        <header
+            class="fixed top-0 left-0 md:left-64 right-0 z-30 bg-surface dark:bg-[#1a1c1e] border-b border-outline-variant dark:border-[#2d3135] h-16 flex justify-between items-center px-container-margin transition-colors duration-200">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn"
+                    class="md:hidden p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h2 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Recharge Request</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle"
+                    class="p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                    title="Toggle Light/Dark Theme">
+                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+                </button>
+
+                <button
+                    class="p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                </button>
+                <!-- Balance badge -->
+                <div
+                    class="flex items-center gap-2 px-4 py-1.5 bg-surface-container-high dark:bg-[#2d3135] rounded-full cursor-default border border-transparent shadow-sm">
+                    <span class="material-symbols-outlined text-primary dark:text-[#86d4d3]"
+                        data-icon="account_balance_wallet">account_balance_wallet</span>
+                    <span id="header-balance-badge"
+                        class="font-label-md text-label-md text-on-surface dark:text-white font-black balance-badge">1240.00
+                        ৳</span>
+                </div>
+                <div
+                    class="w-8 h-8 rounded-full overflow-hidden bg-outline-variant border border-outline dark:border-[#2d3135] hidden sm:block">
+                    <img class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_AD0xDn-QWM4-bKy61OAW6SdP4HxlF6X5PTKN076miKxLdLSx4c6oue2Za29iEvMWz-CpgJEwbkfcKngR_a8wbmczJz18Z9pubktVxJRvryA2ftctDivASxQTcXep6YycmYFZExttPpbXCoDm7jXxQo4HYTE4WSBjj5zpaDIXaQ3cBUFwsyYVMyTWwIFYRAT6iDarnyt4tISmXE-n0rvHHP7Y7EXGq7IfN-tgvndKEVuipC1IUKdTAfXeJVlPqsrnkzpUtZQXnl5l"
+                        alt="Profile" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div
+            class="mt-20 p-container-margin flex flex-col gap-gutter lg:grid lg:grid-cols-12 lg:items-start max-w-7xl mx-auto w-full flex-1">
+            <!-- Left Column: Form & Instructions -->
+            <div class="lg:col-span-7 flex flex-col gap-gutter">
+                <!-- Instruction Card -->
+                <div
+                    class="bg-primary-container dark:bg-[#004f4f]/30 text-on-primary-container dark:text-[#86d4d3] p-stack-lg rounded-xl shadow-sm border border-primary/20 relative overflow-hidden">
+                    <div class="relative z-10 flex gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-on-primary-container/20 dark:bg-[#86d4d3]/20 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-3xl text-primary dark:text-[#86d4d3]"
+                                style="font-variation-settings: 'FILL' 1;">info</span>
+                        </div>
+                        <div>
+                            <h3 class="font-title-lg text-title-lg mb-2 font-bold select-none">Payment Instructions</h3>
+                            <p class="font-body-md text-body-md opacity-90 leading-relaxed">
+                                Please pay the desired amount to <span
+                                    class="font-bold underline text-primary dark:text-white">01799-MISTPAY</span> via
+                                <span class="font-bold">bKash</span> or <span class="font-bold">Nagad</span> personal
+                                account.
+                                Once successful, enter the transaction details below to request a balance top-up.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Subtle pattern background -->
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none translate-x-10 -translate-y-10 dark:text-[#86d4d3]">
+                        <span class="material-symbols-outlined text-9xl">payments</span>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div
+                    class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] p-stack-lg rounded-xl shadow-sm">
+                    <h3 class="font-headline-md text-headline-md mb-6 text-on-surface dark:text-white font-bold">New
+                        Recharge Request</h3>
+                    <form id="recharge-request-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-label-md font-label-md text-on-surface-variant dark:text-secondary-fixed-dim block ml-1 select-none">Payment
+                                    Method</label>
+                                <div class="relative">
+                                    <select id="recharge-method" required
+                                        class="w-full h-12 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-white rounded-lg px-4 appearance-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-body-md">
+                                        <option disabled selected value="">Select Method</option>
+                                        <option value="bKash">bKash</option>
+                                        <option value="Nagad">Nagad</option>
+                                    </select>
+                                    <span
+                                        class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-on-surface-variant dark:text-[#bec9c8]">expand_more</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-label-md font-label-md text-on-surface-variant dark:text-secondary-fixed-dim block ml-1 select-none">Recharge
+                                    Amount (৳)</label>
+                                <div class="relative">
+                                    <input id="recharge-amount" required min="10" max="5000"
+                                        class="w-full h-12 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-white rounded-lg px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-body-md"
+                                        placeholder="e.g. 500" type="number" />
+                                    <span
+                                        class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant dark:text-[#bec9c8]">payments</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-label-md font-label-md text-on-surface-variant dark:text-secondary-fixed-dim block ml-1 select-none">Transaction
+                                ID (from SMS)</label>
+                            <div class="relative">
+                                <input id="recharge-txid" required minlength="8"
+                                    class="w-full h-12 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-white rounded-lg px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-body-md placeholder-gray-400 dark:placeholder-gray-600"
+                                    placeholder="e.g. AH87B9JK2" type="text" />
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant dark:text-[#bec9c8]">receipt_long</span>
+                            </div>
+                            <p
+                                class="text-[11px] text-on-surface-variant dark:text-secondary-fixed-dim opacity-70 ml-1 italic select-none">
+                                Enter the exact Transaction ID received in your SMS.</p>
+                        </div>
+                        <button id="recharge-submit-btn"
+                            class="w-full bg-primary text-on-primary py-4 rounded-lg font-title-lg text-title-lg font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group hover:bg-primary-container active:scale-[0.98]"
+                            type="submit">
+                            <span>Submit Request</span>
+                            <span id="recharge-submit-icon"
+                                class="material-symbols-outlined group-hover:translate-x-1 transition-transform">send</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Status History -->
+            <div class="lg:col-span-5 flex flex-col gap-gutter self-stretch">
+                <div
+                    class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] rounded-xl shadow-sm flex flex-col h-full min-h-[400px]">
+                    <div
+                        class="p-stack-lg border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center select-none">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface dark:text-white font-bold">Recent
+                            Requests</h3>
+                        <button
+                            class="text-primary dark:text-[#86d4d3] hover:bg-primary/5 dark:hover:bg-[#86d4d3]/5 px-3 py-1 rounded-md transition-colors text-label-md font-label-md">View
+                            All</button>
+                    </div>
+                    <div id="requests-history-list"
+                        class="flex-1 custom-scrollbar overflow-y-auto p-4 space-y-4 max-h-[520px]">
+                        <!-- Hydrated dynamically by recharge.js -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer
+            class="mt-auto w-full py-stack-lg px-container-margin flex flex-col md:flex-row justify-between items-center gap-stack-md bg-inverse-surface dark:bg-[#151617] text-white border-t border-outline dark:border-[#2d3135]">
+            <div class="flex flex-col items-center md:items-start select-none">
+                <span
+                    class="font-title-lg text-title-lg text-primary-fixed dark:text-[#86d4d3] font-bold">CampusPay</span>
+                <p class="font-body-md text-body-md opacity-60">MIST and CampusPay rights reserved © 2024</p>
+            </div>
+            <div class="flex gap-gutter">
+                <a class="font-body-md text-body-md text-secondary-fixed-dim hover:text-primary-fixed-dim transition-colors duration-200"
+                    href="#">Privacy Policy</a>
+                <a class="font-body-md text-body-md text-secondary-fixed-dim hover:text-primary-fixed-dim transition-colors duration-200"
+                    href="#">Terms of Service</a>
+                <a class="font-body-md text-body-md text-secondary-fixed-dim hover:text-primary-fixed-dim transition-colors duration-200"
+                    href="#">University Guidelines</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Unified Toasts Shell -->
+    <div id="toast-wrapper" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+        <!-- Spawned dynamically -->
+    </div>
+
+</body>
+
+</html>

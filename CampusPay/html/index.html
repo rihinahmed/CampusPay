@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CampusPay | Welcome & Role Selection</title>
+
+    <!-- Tailwind CSS & Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <script>
+        if (localStorage.getItem('campuspay-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Outfit", "sans-serif"]
+                        },
+                        colors: {
+                            "primary": "#047857",     /* Emerald 700 */
+                            "primary-dark": "#065f46" /* Emerald 800 */
+                        }
+                    }
+                }
+            }
+        } catch (_e) { }
+    </script>
+
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dark .glass-card {
+            background: rgba(26, 28, 30, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(4, 120, 87, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(4, 120, 87, 0.15);
+        }
+
+        .dark .glass-card:hover {
+            border-color: rgba(134, 212, 211, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .floating-blob {
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(30px) scale(1.1) rotate(45deg);
+            }
+
+            100% {
+                transform: translateY(-30px) scale(0.9) rotate(-45deg);
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-[#f0f4f8] dark:bg-[#0c0e12] text-slate-800 dark:text-[#e2e2e5] min-h-screen flex flex-col justify-between transition-colors duration-300 antialiased overflow-x-hidden relative font-sans">
+
+    <!-- Glowing Background blobs (Mesh) -->
+    <div class="absolute inset-0 pointer-events-none opacity-40 select-none overflow-hidden z-0">
+        <div
+            class="floating-blob absolute top-10 left-10 w-96 h-96 bg-emerald-400 dark:bg-emerald-800/40 rounded-full filter blur-3xl">
+        </div>
+        <div class="floating-blob absolute bottom-10 right-10 w-[450px] h-[450px] bg-cyan-400 dark:bg-[#096969]/30 rounded-full filter blur-3xl"
+            style="animation-delay: -5s;"></div>
+    </div>
+
+    <!-- Header Frame -->
+    <header
+        class="w-full h-20 flex justify-between items-center px-6 md:px-12 z-10 select-none border-b border-white/20 dark:border-white/5 backdrop-blur-sm bg-white/10 dark:bg-[#0c0e12]/15">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-emerald-600 flex items-center justify-center text-white shadow-md">
+                <span class="material-symbols-outlined text-[20px]"
+                    style="font-variation-settings: 'FILL' 1;">wallet</span>
+            </div>
+            <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Campus<span
+                    class="text-emerald-600 dark:text-emerald-400">Pay</span></span>
+        </div>
+
+        <button id="theme-toggle"
+            class="p-2.5 text-slate-600 dark:text-[#bec8c8] hover:bg-slate-200/50 dark:hover:bg-[#2d3135] bg-white/70 dark:bg-[#1a1c1e]/70 border border-slate-200 dark:border-[#2d3135] rounded-full shadow-sm transition-all hover:scale-105 active:scale-95"
+            title="Toggle Light/Dark Theme">
+            <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+        </button>
+    </header>
+
+    <!-- Main Entry Layout -->
+    <main class="flex-grow flex items-center justify-center py-16 px-6 z-10 relative">
+        <div class="w-full max-w-5xl text-center space-y-12">
+
+            <!-- Branding Header -->
+            <div class="space-y-4 max-w-2xl mx-auto select-none animate-in fade-in slide-in-from-top-6 duration-700">
+                <div
+                    class="inline-flex px-3.5 py-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mx-auto border border-emerald-500/20">
+                    MIST Canteen Payments
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-slate-950 dark:text-white leading-tight">
+                    Smart Canteen Commerce
+                </h1>
+                <p class="text-base sm:text-lg text-slate-600 dark:text-gray-400 leading-relaxed font-normal">
+                    Enter the MIST unified portal to recharge accounts, manage orders, and access administrative
+                    statistics. Select your role below.
+                </p>
+            </div>
+
+            <!-- Role Cards Grid -->
+            <div
+                class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+
+                <!-- Role Card: Student -->
+                <a href="./login.html"
+                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
+                    <div class="space-y-6">
+                        <div
+                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
+                            <span class="material-symbols-outlined text-[24px]">school</span>
+                        </div>
+                        <h2
+                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
+                            Student Portal
+                        </h2>
+                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                            Log in to view canteen food menus, order details, tray dispatches, and request secure
+                            account recharges.
+                        </p>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
+                        <span>Access Student View</span>
+                        <span
+                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
+                    </div>
+                </a>
+
+                <!-- Role Card: Staff -->
+                <a href="./stafflogin.html"
+                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
+                    <div class="space-y-6">
+                        <div
+                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
+                            <span class="material-symbols-outlined text-[24px]">restaurant</span>
+                        </div>
+                        <h2
+                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
+                            Canteen Staff
+                        </h2>
+                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                            Fulfill meals, verify order statuses, manage kitchen inventories, and log recharges directly
+                            from the counter.
+                        </p>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
+                        <span>Access Staff View</span>
+                        <span
+                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
+                    </div>
+                </a>
+
+                <!-- Role Card: Admin -->
+                <a href="./adminlogin.html"
+                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
+                    <div class="space-y-6">
+                        <div
+                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
+                            <span class="material-symbols-outlined text-[24px]">admin_panel_settings</span>
+                        </div>
+                        <h2
+                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
+                            Administrator
+                        </h2>
+                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
+                            Enter the secure command center to audit canteen sales ledgers, track logs, and verify user
+                            credentials.
+                        </p>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
+                        <span>Access Central Logic</span>
+                        <span
+                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Frame -->
+    <footer
+        class="w-full py-6 text-center text-xs text-slate-500 dark:text-gray-500 border-t border-white/20 dark:border-white/5 backdrop-blur-sm bg-white/10 dark:bg-[#0c0e12]/15 select-none z-10">
+        <p>CampusPay System &copy; 2026. Military Institute of Science and Technology. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Theme Control Script -->
+    <script>
+        const themeBtn = document.getElementById('theme-toggle');
+
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('campuspay-theme', 'light');
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('campuspay-theme', 'dark');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CampusPay Admin Dashboard</title>
+
+    <!-- Tailwind CSS & Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#ffcb72",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed-variant": "#5f4100",
+                        "surface-container": "#eeeef0",
+                        "surface-bright": "#f9f9fc",
+                        "outline-variant": "#bec9c8",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdeab",
+                        "surface": "#f9f9fc",
+                        "surface-tint": "#096969",
+                        "surface-container-highest": "#e2e2e5",
+                        "on-secondary-fixed-variant": "#3f4949",
+                        "on-background": "#1a1c1e",
+                        "inverse-primary": "#86d4d3",
+                        "on-tertiary-fixed": "#271900",
+                        "background": "#f9f9fc",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#bec8c8",
+                        "primary-fixed-dim": "#86d4d3",
+                        "on-primary-container": "#93e1e0",
+                        "on-error": "#ffffff",
+                        "primary": "#004c4c",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#a2f0ef",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#141d1e",
+                        "tertiary-fixed-dim": "#ffba31",
+                        "secondary": "#566060",
+                        "tertiary-container": "#795400",
+                        "on-surface": "#1a1c1e",
+                        "surface-variant": "#e2e2e5",
+                        "secondary-container": "#d8e2e2",
+                        "on-secondary-container": "#5b6465",
+                        "on-surface-variant": "#3f4948",
+                        "surface-dim": "#dadadc",
+                        "secondary-fixed": "#dae4e4",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "on-primary-fixed": "#002020",
+                        "tertiary": "#5b3e00",
+                        "primary-container": "#006666",
+                        "outline": "#6f7979",
+                        "inverse-surface": "#2f3133",
+                        "surface-container-high": "#e8e8ea",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f0f0f3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "gutter": "16px",
+                        "container-margin": "24px",
+                        "base": "8px",
+                        "stack-sm": "4px",
+                        "stack-md": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"],
+                        "title-lg": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <script>
+        if (localStorage.getItem('campuspay-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <link rel="stylesheet" href="../css/admin.css" />
+    <script src="../js/admin.js" defer></script>
+</head>
+
+<body
+    class="bg-surface dark:bg-[#121314] text-on-background dark:text-[#e2e2e5] font-body-md min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- SideNavBar -->
+    <aside id="admin-sidebar"
+        class="bg-surface-container-lowest dark:bg-[#151617] h-screen w-64 fixed left-0 top-0 overflow-y-auto border-r border-outline-variant dark:border-[#2d3135] flex flex-col py-stack-lg px-gutter z-50 transition-all duration-300">
+        <div class="mb-10 select-none">
+            <h1 class="font-headline-md text-headline-md font-black text-primary dark:text-[#86d4d3]">CampusPay Admin
+            </h1>
+            <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">University
+                Oversight</p>
+        </div>
+
+        <nav class="flex-1 space-y-2" id="sidebar-nav">
+            <!-- Sidebar Tabs Buttons (handled in js/admin.js) -->
+            <button data-tab="dashboard"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-all duration-200 text-primary dark:text-[#86d4d3] border-r-4 border-primary dark:border-[#86d4d3] bg-secondary-container/30 dark:bg-[#004f4f]/20">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-md text-label-md">Dashboard</span>
+            </button>
+            <button data-tab="verifications"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">verified_user</span>
+                <span class="font-label-md text-label-md">Verifications</span>
+            </button>
+            <button data-tab="recharges"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="font-label-md text-label-md">Recharges</span>
+            </button>
+            <button data-tab="users"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">group</span>
+                <span class="font-label-md text-label-md">User Management</span>
+            </button>
+            <button data-tab="logs"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">settings_ethernet</span>
+                <span class="font-label-md text-label-md">System Logs</span>
+            </button>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-outline-variant dark:border-[#2d3135] space-y-2">
+            <button id="btn-generate-report"
+                class="w-full bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] font-label-md text-label-md py-3 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-md">
+                Generate Report
+            </button>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-colors"
+                href="./settings.html?role=admin">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-label-md text-label-md">Settings</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-colors"
+                href="./adminlogin.html">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-label-md text-label-md">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Navigation Drawer Backdrop overlay -->
+    <div id="mobile-nav-backdrop"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 md:hidden">
+    </div>
+
+    <!-- TopAppBar -->
+    <header
+        class="bg-surface dark:bg-[#1a1c1e] top-0 sticky z-40 flex justify-between items-center ml-0 md:ml-64 px-container-margin h-16 w-full md:w-[calc(100%-16rem)] border-b border-outline-variant dark:border-[#2d3135] transition-all duration-300">
+        <div class="flex items-center gap-4 flex-1 max-w-md">
+            <button id="admin-menu-toggle-btn"
+                class="md:hidden p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors mr-2">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="relative w-full">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-secondary-fixed-dim">search</span>
+                <input id="admin-global-search"
+                    class="w-full pl-10 pr-4 py-2 bg-surface-container-low dark:bg-[#2c2d30] border-none rounded-full text-body-md focus:ring-2 focus:ring-primary/20 dark:text-white dark:placeholder-gray-500"
+                    placeholder="Search user ID, names, transaction details..." type="text" />
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle"
+                    class="p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                    title="Toggle Theme mode">
+                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+                </button>
+                <button
+                    class="material-symbols-outlined text-on-surface-variant dark:text-[#bec8c8] hover:text-primary transition-colors">notifications</button>
+                <button
+                    class="material-symbols-outlined text-on-surface-variant dark:text-[#bec8c8] hover:text-primary transition-colors">help_outline</button>
+            </div>
+            <div class="h-8 w-[1px] bg-outline-variant dark:bg-[#2d3135]"></div>
+            <div class="flex items-center gap-3 select-none">
+                <div class="text-right hidden sm:block">
+                    <p class="font-label-md text-label-md font-bold dark:text-white">Admin Panel</p>
+                    <p
+                        class="text-[10px] text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-widest">
+                        Super Admin</p>
+                </div>
+                <div
+                    class="w-10 h-10 rounded-full border-2 border-primary-container dark:border-[#2d3135] overflow-hidden">
+                    <img class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGBkTo_9LG76wMWPkjTqX5t__JWnhUKVqINIAgjzmve2TGxkW9FLiD0qn0CMyhbajyT91rMBhOnhm0qKb4R5T5Cu7oPTc2DQ58ULsbytbka8WzZELOTg9-45rQr0hn9FXBFPMEh_Ufm2LHVVCO2aQvB0Vsmtf-T2dng4Xgznl2AoqFpG5e3M53uqooWPdPWfwyDCw_-XXLFYyhBfQWvllvZC4ubcpVM3uGKAChkIib5hHZfQPlo_QG8rbcKEBrA2Xtgui128-1C71N"
+                        alt="Admin Profile" />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main
+        class="ml-0 md:ml-64 p-container-margin min-h-[calc(100vh-4rem)] flex flex-col flex-1 transition-all duration-300">
+
+        <!-- TAB: DASHBOARD -->
+        <div id="tab-content-dashboard" class="tab-content-pane space-y-6">
+            <!-- System Health Metric Cards -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter select-none">
+                <div
+                    class="bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl border border-outline-variant dark:border-[#2d3135] shadow-sm card-shadow flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="bg-primary-container/20 dark:bg-[#004f4f]/30 p-2 rounded-lg text-primary dark:text-[#86d4d3]">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                        <span
+                            class="text-xs font-black text-primary dark:text-[#86d4d3] bg-primary-container/30 dark:bg-[#004f4f]/50 px-2 py-0.5 rounded-full">+12%</span>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-on-surface-variant dark:text-secondary-fixed-dim font-label-md text-label-md mb-1 font-semibold uppercase tracking-wider">
+                            Total Active Users</h3>
+                        <p class="font-headline-md text-headline-md font-black text-on-surface dark:text-white">12,482
+                        </p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl border border-outline-variant dark:border-[#2d3135] shadow-sm card-shadow flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="bg-tertiary-fixed/20 dark:bg-[#795400]/20 p-2 rounded-lg text-tertiary dark:text-[#ffdeab]">
+                            <span class="material-symbols-outlined">pending_actions</span>
+                        </div>
+                        <span
+                            class="text-[10px] font-black text-tertiary dark:text-[#ffdeab] bg-tertiary-fixed/40 dark:bg-[#ffdeab]/20 px-2 py-0.5 rounded-full uppercase">Action
+                            Ready</span>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-on-surface-variant dark:text-secondary-fixed-dim font-label-md text-label-md mb-1 font-semibold uppercase tracking-wider">
+                            Pending Verifications</h3>
+                        <p id="dashboard-pending-verifications-count"
+                            class="font-headline-md text-headline-md font-black text-on-surface dark:text-white">3</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl border border-outline-variant dark:border-[#2d3135] shadow-sm card-shadow flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="bg-secondary-container/50 dark:bg-[#566060]/30 p-2 rounded-lg text-primary dark:text-[#86d4d3]">
+                            <span class="material-symbols-outlined">payments</span>
+                        </div>
+                        <span
+                            class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full uppercase">Active</span>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-on-surface-variant dark:text-secondary-fixed-dim font-label-md text-label-md mb-1 font-semibold uppercase tracking-wider">
+                            Daily Recharge Volume</h3>
+                        <p id="dashboard-recharge-volume"
+                            class="font-headline-md text-headline-md font-black text-on-surface dark:text-white">৳
+                            452,800</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl border border-[#2d3135] shadow-sm card-shadow flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="bg-emerald-100 dark:bg-[#2e7d32]/20 p-2 rounded-lg text-emerald-800 dark:text-[#81c784]">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </div>
+                        <span
+                            class="text-xs font-black text-emerald-700 dark:text-[#81c784] bg-emerald-250 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">Optimal</span>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-on-surface-variant dark:text-secondary-fixed-dim font-label-md text-label-md mb-1 font-semibold uppercase tracking-wider">
+                            System Security Status</h3>
+                        <p
+                            class="font-headline-md text-headline-md font-black text-green-700 dark:text-[#81c784] flex items-center gap-1">
+                            99.9% <span class="text-xs font-normal text-on-surface-variant dark:text-gray-400">Up</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bento Grid for Tables and Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+                <!-- User Verification Queue (Left Column) -->
+                <div
+                    class="lg:col-span-2 bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow flex flex-col">
+                    <div
+                        class="p-gutter border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center select-none">
+                        <h2 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">User
+                            Verification Queue</h2>
+                        <button data-tab-btn="verifications"
+                            class="text-primary dark:text-[#86d4d3] hover:underline font-label-md text-label-md font-bold">View
+                            All</button>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-primary/5 dark:bg-[#004f4f]/10 select-none">
+                                <tr>
+                                    <th
+                                        class="px-gutter py-3 font-label-md text-[11px] text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                        Name / ID</th>
+                                    <th
+                                        class="px-gutter py-3 font-label-md text-[11px] text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                        Role</th>
+                                    <th
+                                        class="px-gutter py-3 font-label-md text-[11px] text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                        Submitted Date</th>
+                                    <th
+                                        class="px-gutter py-3 font-label-md text-[11px] text-primary dark:text-[#86d4d3] uppercase tracking-wider text-right">
+                                        Quick Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-verifications"
+                                class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                                <!-- Hydrated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Panel (Right Column) -->
+                <div class="flex flex-col gap-gutter">
+                    <div
+                        class="bg-white dark:bg-[#1e2022] p-gutter rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow">
+                        <h2
+                            class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] mb-gutter font-bold select-none">
+                            Quick Administrative Action</h2>
+                        <div class="space-y-3">
+                            <button id="btn-quick-audit"
+                                class="w-full flex items-center justify-between p-4 bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] rounded-xl font-semibold select-none hover:brightness-105 active:scale-98 transition-all shadow-sm">
+                                <span class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined">description</span>
+                                    Generate Audit Report
+                                </span>
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                            <button id="btn-announce"
+                                class="w-full flex items-center justify-between p-4 bg-surface-container dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-gray-200 rounded-xl font-semibold select-none hover:bg-surface-container-high dark:hover:bg-[#34363a] active:scale-98 transition-all">
+                                <span class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined">campaign</span>
+                                    Broadcast Announcement
+                                </span>
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                            <button id="btn-user-search-focus"
+                                class="w-full flex items-center justify-between p-4 bg-surface-container dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-gray-200 rounded-xl font-semibold select-none hover:bg-surface-container-high dark:hover:bg-[#34363a] active:scale-98 transition-all">
+                                <span class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined">person_search</span>
+                                    User Search / Lookup
+                                </span>
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-primary dark:bg-[#004f4f]/35 p-gutter rounded-xl text-on-primary dark:text-[#86d4d3] relative overflow-hidden border border-primary-container/20 shadow-sm select-none">
+                        <div class="relative z-10">
+                            <p class="font-label-md text-label-md opacity-80 mb-1">Upcoming Maintenance</p>
+                            <h4 class="font-title-lg text-title-lg mb-4 font-bold text-white dark:text-[#86d4d3]">Server
+                                Sync Scheduled</h4>
+                            <div class="flex items-center gap-2 text-white/90">
+                                <span class="material-symbols-outlined text-sm">schedule</span>
+                                <span class="text-xs">Sunday, 02:00 AM - 04:00 AM</span>
+                            </div>
+                        </div>
+                        <span
+                            class="material-symbols-outlined absolute -bottom-6 -right-6 text-9xl opacity-10 text-white dark:text-[#86d4d3]">settings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recharge Approval Panel -->
+            <div
+                class="bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow flex flex-col overflow-hidden">
+                <div
+                    class="p-gutter border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center sm:flex-row flex-col gap-2 select-none">
+                    <h2 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Pending Recharge
+                        Approvals</h2>
+                    <div class="flex gap-2">
+                        <span
+                            class="px-3 py-1 bg-tertiary-fixed/30 dark:bg-[#795400]/20 text-tertiary dark:text-[#ffdeab] text-[10px] font-extrabold rounded-full uppercase tracking-wider">Manual
+                            Review Queue</span>
+                        <button data-tab-btn="recharges"
+                            class="text-primary dark:text-[#86d4d3] hover:underline font-label-md text-label-md font-bold">View
+                            History</button>
+                    </div>
+                </div>
+                <div class="p-gutter">
+                    <div id="recharges-queue-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Hydrated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: VERIFICATIONS -->
+        <div id="tab-content-verifications" class="tab-content-pane space-y-6 hidden">
+            <div
+                class="bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow p-gutter">
+                <div class="flex sm:flex-row flex-col justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="font-title-lg text-headline-sm text-primary dark:text-[#86d4d3] font-bold">User
+                            Access Verifications</h2>
+                        <p class="text-body-md text-on-surface-variant dark:text-gray-400 mt-1">Review university
+                            credential registration requests</p>
+                    </div>
+                    <!-- Verification Filters -->
+                    <div class="flex gap-2 bg-surface-container-low dark:bg-[#242628] p-1 rounded-xl">
+                        <button id="filter-verif-all"
+                            class="px-4 py-2 text-xs font-bold rounded-lg bg-white dark:bg-[#1e2022] text-primary dark:text-white shadow-sm transition-colors">All</button>
+                        <button id="filter-verif-pending"
+                            class="px-4 py-2 text-xs font-bold rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-white/50 dark:hover:bg-white/5 transition-colors">Pending</button>
+                        <button id="filter-verif-approved"
+                            class="px-4 py-2 text-xs font-bold rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-white/50 dark:hover:bg-white/5 transition-colors">Approved</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead class="bg-primary/5 dark:bg-[#004f4f]/10">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Credential User</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    MIST Roll ID</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Assigned Role</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Status Badge</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider text-right">
+                                    Administrative Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-table-verifications"
+                            class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                            <!-- Hydrated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: RECHARGES -->
+        <div id="tab-content-recharges" class="tab-content-pane space-y-6 hidden">
+            <div
+                class="bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow p-gutter">
+                <div class="flex sm:flex-row flex-col justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="font-title-lg text-headline-sm text-primary dark:text-[#86d4d3] font-bold">
+                            Transaction Recharge Ledger</h2>
+                        <p class="text-body-md text-on-surface-variant dark:text-gray-400 mt-1">Audit wallet recharges
+                            and verify SMS TxIDs</p>
+                    </div>
+                    <!-- Status filter tags -->
+                    <div class="flex flex-wrap gap-2 select-none">
+                        <button id="filter-recharge-all"
+                            class="px-4 py-2 text-xs font-bold rounded-lg bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] shadow-sm hover:opacity-90">All
+                            Ledger</button>
+                        <button id="filter-recharge-pending"
+                            class="px-4 py-2 text-xs font-bold rounded-lg bg-surface-container dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-gray-200 hover:bg-surface-container-high dark:hover:bg-[#34363a]">Pending</button>
+                        <button id="filter-recharge-approved"
+                            class="px-4 py-2 text-xs font-bold rounded-lg bg-surface-container dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-gray-200 hover:bg-surface-container-high dark:hover:bg-[#34363a]">Approved</button>
+                        <button id="filter-recharge-declined"
+                            class="px-4 py-2 text-xs font-bold rounded-lg bg-surface-container dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-on-surface dark:text-gray-200 hover:bg-surface-container-high dark:hover:bg-[#34363a]">Declined</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead class="bg-primary/5 dark:bg-[#004f4f]/10">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Account holder</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Method</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Transaction ID</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Amount (৳)</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Date Files</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider text-right">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-table-recharges" class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                            <!-- Hydrated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: USER MANAGEMENT -->
+        <div id="tab-content-users" class="tab-content-pane space-y-6 hidden">
+            <div
+                class="bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow p-gutter">
+                <div class="flex sm:flex-row flex-col justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="font-title-lg text-headline-sm text-primary dark:text-[#86d4d3] font-bold">University
+                            Accounts Ledger</h2>
+                        <p class="text-body-md text-on-surface-variant dark:text-gray-400 mt-1">Manage balances,
+                            configure account limits, or toggle access locks</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead class="bg-primary/5 dark:bg-[#004f4f]/10">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Name / Avatar</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    MIST Roll ID</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Access Scope</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Current Balance (৳)</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider">
+                                    Operational Status</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider text-right">
+                                    Modify Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-table-users" class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                            <!-- Hydrated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: SYSTEM LOGS -->
+        <div id="tab-content-logs" class="tab-content-pane space-y-6 hidden">
+            <div
+                class="bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] card-shadow p-gutter">
+                <div
+                    class="flex justify-between items-center border-b border-outline-variant dark:border-[#2d3135] pb-4 mb-4">
+                    <div>
+                        <h2 class="font-title-lg text-headline-sm text-primary dark:text-[#86d4d3] font-bold">Hardware &
+                            Security Logs</h2>
+                        <p class="text-body-md text-on-surface-variant dark:text-gray-400 mt-1">Real-time oversight of
+                            administrative changes and payments API interactions</p>
+                    </div>
+                    <button id="btn-clear-logs"
+                        class="text-error font-label-md text-label-md font-bold hover:bg-error-container/20 px-3 py-1.5 rounded-lg transition-colors">Clear
+                        Console</button>
+                </div>
+                <!-- Shell logs output window -->
+                <div id="terminal-console-logs"
+                    class="bg-[#1e1e1e] text-[#1cd186] font-mono text-xs p-6 rounded-xl min-h-[400px] max-h-[600px] overflow-y-auto space-y-2 card-shadow leading-relaxed select-all">
+                    <!-- Hydrated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer
+            class="mt-auto w-full py-6 flex flex-col md:flex-row justify-between items-center gap-4 dark:text-gray-400 border-t border-outline-variant dark:border-[#2d3135]">
+            <div class="flex flex-col items-center md:items-start select-none">
+                <span class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-black">CampusPay Info
+                    Panel</span>
+                <p class="font-body-md text-body-md opacity-60">MIST and CampusPay rights reserved © 2024</p>
+            </div>
+            <div class="flex gap-gutter">
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">Security Policy</a>
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">System Status</a>
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">API Documentation</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Unified Modals & Overlays Stack -->
+
+    <!-- Modal: Edit Balance -->
+    <div id="modal-edit-balance"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 rounded-2xl shadow-xl flex flex-col translate-y-4 transition-transform duration-300">
+            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center">
+                <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Modify User Balance
+                </h3>
+                <button id="modal-edit-close"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </div>
+            <form id="form-edit-balance" class="p-6 space-y-4">
+                <input type="hidden" id="edit-user-id" />
+                <div class="space-y-1">
+                    <p class="text-xs text-on-surface-variant dark:text-gray-400">Target Holder: <span
+                            id="edit-user-name" class="font-bold text-on-surface dark:text-white">Abdullah Safwan</span>
+                    </p>
+                    <p class="text-xs text-on-surface-variant dark:text-gray-400">Current Balance: <span
+                            id="edit-user-current-bal" class="font-bold text-on-surface dark:text-white">500.00 ৳</span>
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant block select-none">New Balance Target
+                        (৳)</label>
+                    <input type="number" id="edit-user-new-val" min="0" max="99999" required
+                        class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none dark:text-white"
+                        placeholder="e.g. 1500" />
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all">Submit
+                    Balance Override</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Generate Audit Report Spinner -->
+    <div id="modal-report-spinner"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 p-6 rounded-2xl shadow-xl flex flex-col items-center text-center gap-4">
+            <div
+                class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary dark:text-[#86d4d3]">
+                <span class="material-symbols-outlined text-3xl animate-spin">progress_activity</span>
+            </div>
+            <div>
+                <h3 class="font-title-lg text-title-lg font-bold text-on-surface dark:text-white">Analyzing Audit Logs
+                </h3>
+                <p class="text-body-md text-on-surface-variant dark:text-secondary-fixed-dim mt-2">Reading ledger
+                    records, checking transaction signatures, and preparing PDF summary reports...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Toast Notifications wrapper -->
+    <div id="toast-wrapper" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+        <!-- Spawned dynamically -->
+    </div>
+
+</body>
+
+</html>

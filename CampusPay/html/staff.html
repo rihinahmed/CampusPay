@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CampusPay | Canteen Staff Dashboard</title>
+
+    <!-- Tailwind CSS & Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1a1c1e",
+                        "outline-variant": "#bec9c8",
+                        "surface-bright": "#f9f9fc",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffba31",
+                        "on-tertiary-fixed-variant": "#5f4100",
+                        "tertiary-fixed": "#ffdeab",
+                        "surface-container-high": "#e8e8ea",
+                        "inverse-on-surface": "#f0f0f3",
+                        "primary-fixed": "#a2f0ef",
+                        "tertiary": "#5b3e00",
+                        "surface-container": "#eeeef0",
+                        "inverse-primary": "#86d4d3",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#d8e2e2",
+                        "primary-fixed-dim": "#86d4d3",
+                        "surface-tint": "#096969",
+                        "on-secondary-fixed-variant": "#3f4949",
+                        "surface": "#f9f9fc",
+                        "inverse-surface": "#2f3133",
+                        "on-tertiary-fixed": "#271900",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#566060",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9fc",
+                        "on-background": "#1a1c1e",
+                        "secondary-fixed-dim": "#bec8c8",
+                        "on-surface-variant": "#3f4948",
+                        "tertiary-container": "#795400",
+                        "surface-container-low": "#f3f3f6",
+                        "surface-variant": "#e2e2e5",
+                        "secondary-fixed": "#dae4e4",
+                        "on-primary-fixed": "#002020",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004c4c",
+                        "on-secondary-container": "#5b6465",
+                        "on-primary-container": "#93e1e0",
+                        "surface-dim": "#dadadc",
+                        "outline": "#6f7979",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#141d1e",
+                        "primary-container": "#006666",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffcb72",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "stack-md": "12px",
+                        "container-margin": "24px",
+                        "base": "8px",
+                        "stack-sm": "4px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Inter", "sans-serif"],
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <script>
+        if (localStorage.getItem('campuspay-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <link rel="stylesheet" href="../css/staff.css" />
+    <script src="../js/staff.js" defer></script>
+</head>
+
+<body
+    class="bg-surface dark:bg-[#121314] text-on-surface dark:text-[#e2e2e5] font-body-md min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+
+    <!-- Mobile Sidebar Backdrop overlay -->
+    <div id="mobile-nav-backdrop"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 md:hidden">
+    </div>
+
+    <!-- SIDE NAVIGATION SHELL -->
+    <aside id="staff-sidebar"
+        class="bg-surface-container-lowest dark:bg-[#151617] h-screen w-64 fixed left-0 top-0 overflow-y-auto border-r border-outline-variant dark:border-[#2d3135] flex flex-col py-stack-lg px-gutter z-50 transition-all duration-300">
+        <div class="mb-10 select-none">
+            <h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-[#86d4d3]">CampusPay Staff
+            </h1>
+            <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">MIST Canteen
+                Management</p>
+        </div>
+
+        <nav class="flex-1 space-y-2" id="sidebar-nav">
+            <!-- Sidebar Tabs Buttons -->
+            <button data-tab="dashboard"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-md text-label-md">Dashboard</span>
+            </button>
+            <button data-tab="menu"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">restaurant</span>
+                <span class="font-label-md text-label-md">Food Menu</span>
+            </button>
+            <button data-tab="orders"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span class="font-label-md text-label-md">Orders</span>
+            </button>
+            <button data-tab="recharge"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
+                <span class="material-symbols-outlined">add_card</span>
+                <span class="font-label-md text-label-md">Recharge</span>
+            </button>
+            <!-- ACTIVE TAB: Inventory (Default) -->
+            <button data-tab="inventory"
+                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-all duration-200 text-primary dark:text-[#86d4d3] border-r-4 border-primary dark:border-[#86d4d3] bg-secondary-container/30 dark:bg-[#004f4f]/20">
+                <span class="material-symbols-outlined">inventory_2</span>
+                <span class="font-label-md text-label-md">Inventory</span>
+            </button>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-outline-variant dark:border-[#2d3135] space-y-2">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-colors"
+                href="./settings.html?role=staff">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-label-md text-label-md">Settings</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-colors"
+                href="./index.html">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-label-md text-label-md">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT CANVAS -->
+    <main class="ml-0 md:ml-64 flex flex-col flex-1 min-h-screen transition-all duration-300">
+        <!-- TOP APP BAR -->
+        <header
+            class="h-16 flex items-center justify-between px-container-margin bg-surface dark:bg-[#1a1c1e] border-b border-outline-variant dark:border-[#2d3135] sticky top-0 z-40 transition-colors duration-250">
+            <div class="flex items-center gap-stack-md">
+                <button id="staff-menu-toggle-btn"
+                    class="md:hidden p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors mr-1">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h2 id="view-header-title"
+                    class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Inventory Overview
+                </h2>
+            </div>
+            <div class="flex items-center gap-container-margin">
+                <!-- Search engine bar inputs -->
+                <div class="relative hidden sm:block">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-secondary-fixed-dim text-sm">search</span>
+                    <input id="staff-global-search"
+                        class="bg-surface-container-low dark:bg-[#2c2d30] border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary w-64 dark:text-white dark:placeholder-gray-500"
+                        placeholder="Search..." type="text" />
+                </div>
+                <div class="flex items-center gap-stack-md">
+                    <!-- Theme toggle button -->
+                    <button id="theme-toggle"
+                        class="p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                        title="Toggle Mode theme">
+                        <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                        <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+                    </button>
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant dark:text-[#bec8c8] cursor-pointer p-2 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full">notifications</span>
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-container dark:bg-[#004f4f] flex items-center justify-center text-on-primary-container dark:text-[#86d4d3] font-bold select-none">
+                        S
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD BODY -->
+        <section class="p-container-margin flex flex-col gap-stack-lg flex-1">
+
+            <!-- QUICK STATS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter select-none">
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
+                    <div
+                        class="w-12 h-12 rounded-full bg-primary-container dark:bg-[#004f4f]/30 flex items-center justify-center text-primary dark:text-[#86d4d3]">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
+                            Today's Sales</p>
+                        <h3 id="stat-sales"
+                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">৳
+                            42,850</h3>
+                    </div>
+                </div>
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
+                    <div
+                        class="w-12 h-12 rounded-full bg-secondary-container dark:bg-[#566060]/30 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
+                        <span class="material-symbols-outlined">fastfood</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
+                            Items Sold</p>
+                        <h3 id="stat-items-sold"
+                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">312
+                        </h3>
+                    </div>
+                </div>
+                <div
+                    class="glass-card bg-[#fffbfa] dark:bg-[#2c1a1a] p-stack-lg rounded-xl border-2 border-error-container dark:border-red-900/40 flex items-center gap-stack-lg shadow-sm">
+                    <div
+                        class="w-12 h-12 rounded-full bg-error-container dark:bg-[#852222] flex items-center justify-center text-error dark:text-red-200">
+                        <span class="material-symbols-outlined">warning</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-error dark:text-red-400 font-bold">Low Stock Alerts
+                        </p>
+                        <h3 id="stat-low-stock"
+                            class="font-headline-md text-headline-md text-on-error-container dark:text-red-200 font-black">
+                            02</h3>
+                    </div>
+                </div>
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
+                    <div
+                        class="w-12 h-12 rounded-full bg-tertiary-fixed dark:bg-[#795400]/25 flex items-center justify-center text-tertiary dark:text-tertiary-fixed-dim">
+                        <span class="material-symbols-outlined">hourglass_empty</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
+                            Pending Orders</p>
+                        <h3 id="stat-orders"
+                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">03</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: INVENTORY (Active Default) -->
+            <div id="tab-content-inventory" class="tab-content-pane space-y-6">
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] overflow-hidden flex flex-col shadow-md">
+                    <div
+                        class="p-container-margin border-b border-outline-variant dark:border-[#2d3135] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-stack-md bg-surface-bright dark:bg-[#1a1b1d]">
+                        <div>
+                            <h4 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Manage
+                                Stock Logs</h4>
+                            <p class="font-label-md text-label-md text-on-surface-variant dark:text-gray-400">Update
+                                item availability and quantities for the live student portal</p>
+                        </div>
+                        <button id="btn-add-item-modal"
+                            class="bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] px-container-margin py-2.5 rounded-full font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
+                            <span class="material-symbols-outlined text-sm font-bold">add</span>
+                            Add New Item
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full border-collapse text-left">
+                            <thead>
+                                <tr
+                                    class="bg-secondary-container/30 dark:bg-[#34363a]/30 border-b border-outline-variant dark:border-[#2d3135]">
+                                    <th
+                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Item Name</th>
+                                    <th
+                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Price</th>
+                                    <th
+                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Stock Volume</th>
+                                    <th
+                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Status</th>
+                                    <th
+                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-inventory"
+                                class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                                <!-- Hydrated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: DASHBOARD SUMMARY -->
+            <div id="tab-content-dashboard" class="tab-content-pane hidden space-y-6">
+                <!-- ASYMMETRIC BENTO GRID -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
+
+                    <!-- LIVE FEED (1/3 Width) -->
+                    <div
+                        class="lg:col-span-1 glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] flex flex-col h-[520px] shadow-md">
+                        <div
+                            class="p-container-margin border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center bg-surface-bright dark:bg-[#1a1b1d] rounded-t-xl select-none">
+                            <h4
+                                class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 bg-error rounded-full animate-ping"></span>
+                                Live Feed Logs
+                            </h4>
+                            <button onclick="refreshLiveFeed()"
+                                class="material-symbols-outlined text-on-surface-variant dark:text-gray-400 hover:text-primary transition-colors">refresh</button>
+                        </div>
+                        <div id="live-feed-container"
+                            class="flex-1 overflow-y-auto p-gutter custom-scrollbar space-y-3">
+                            <!-- Activity Feed Hydrated -->
+                        </div>
+                    </div>
+
+                    <!-- TOP SELLING FOODS (2/3 Width) -->
+                    <div
+                        class="lg:col-span-2 glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] p-gutter h-[520px] flex flex-col shadow-md">
+                        <h4
+                            class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold mb-4 select-none">
+                            Canteen Operations Summary</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                            <div
+                                class="border border-outline-variant dark:border-[#2d3135] p-4 rounded-xl flex flex-col justify-between">
+                                <div>
+                                    <p
+                                        class="text-xs text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-wider font-semibold">
+                                        Bestseller Item</p>
+                                    <h3
+                                        class="font-headline-md text-headline-sm text-on-surface dark:text-white font-bold mt-1">
+                                        Beef Biryani</h3>
+                                </div>
+                                <div
+                                    class="flex items-center gap-2 text-primary dark:text-[#86d4d3] font-bold text-xs select-none">
+                                    <span class="material-symbols-outlined">trending_up</span>
+                                    <span>142 units sold this week</span>
+                                </div>
+                            </div>
+                            <div
+                                class="border border-outline-variant dark:border-[#2d3135] p-4 rounded-xl flex flex-col justify-between">
+                                <div>
+                                    <p
+                                        class="text-xs text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-wider font-semibold">
+                                        Active Counter Status</p>
+                                    <h3
+                                        class="font-headline-md text-headline-sm text-[#008f51] dark:text-[#81c784] font-bold mt-1">
+                                        Online</h3>
+                                </div>
+                                <div class="text-xs text-on-surface-variant dark:text-gray-400 select-none">
+                                    <span>Serving counter registers active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="mt-4 p-4 border border-outline-variant dark:border-[#2d3135] rounded-xl bg-surface-container-low dark:bg-[#202123] select-none">
+                            <p class="text-xs text-on-surface dark:text-[#86d4d3] font-bold mb-1">Quick Note</p>
+                            <p class="text-xs text-on-surface-variant dark:text-gray-400">Updates to Food items stock
+                                values are synchronized to students immediately via local storage variables.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: FOOD MENU -->
+            <div id="tab-content-menu" class="tab-content-pane hidden space-y-6">
+                <div id="food-cards-grid"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+                    <!-- Hydrated dynamically -->
+                </div>
+            </div>
+
+            <!-- TAB: ORDERS PANEL -->
+            <div id="tab-content-orders" class="tab-content-pane hidden space-y-6">
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] shadow-md p-gutter">
+                    <div class="flex justify-between items-center mb-6 select-none">
+                        <div>
+                            <h4 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Client
+                                Order Tickets</h4>
+                            <p class="font-label-md text-label-md text-on-surface-variant dark:text-gray-400">Advance
+                                food items tickets from preparing to successfully served</p>
+                        </div>
+                        <span id="orders-badge-count"
+                            class="px-3 py-1 bg-primary text-on-primary dark:bg-primary-container dark:text-[#86d4d3] font-bold rounded-full text-xs">3
+                            Active</span>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full border-collapse text-left min-w-[700px]">
+                            <thead>
+                                <tr
+                                    class="bg-secondary-container/30 dark:bg-[#34363a]/30 border-b border-outline-variant dark:border-[#2d3135]">
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Order ID</th>
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Student ID</th>
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Ordered Foods</th>
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Total Cost</th>
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
+                                        Ticket Status</th>
+                                    <th
+                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-orders" class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                                <!-- Hydrated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: RECHARGE desk -->
+            <div id="tab-content-recharge" class="tab-content-pane hidden space-y-6">
+                <div
+                    class="max-w-md mx-auto glass-card bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] p-stack-lg rounded-xl shadow-lg">
+                    <div class="text-center mb-6 select-none">
+                        <div
+                            class="w-12 h-12 bg-primary-container dark:bg-[#004f4f]/30 rounded-full flex items-center justify-center text-primary dark:text-[#86d4d3] mx-auto mb-2">
+                            <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+                        </div>
+                        <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Counter Cash
+                            Top-up</h3>
+                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Instantly credit a student's card
+                            wallet balance with cash cash transactions</p>
+                    </div>
+
+                    <form id="form-counter-recharge" class="space-y-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-on-surface-variant block select-none">Recipient Student
+                                Roll ID</label>
+                            <input type="text" id="recharge-student-id" required
+                                class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white"
+                                placeholder="e.g. 202114042" />
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-on-surface-variant block select-none">Amount Credit
+                                (৳)</label>
+                            <input type="number" id="recharge-cash-val" min="10" max="10000" required
+                                class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white"
+                                placeholder="e.g. 500" />
+                        </div>
+                        <button type="submit"
+                            class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 select-none">
+                            <span class="material-symbols-outlined text-sm">payments</span>
+                            Dispatch Cash Recharge
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer
+            class="mt-auto w-full py-6 px-container-margin flex flex-col md:flex-row justify-between items-center gap-stack-md bg-inverse-surface dark:bg-[#151617] text-surface-container-lowest dark:text-[#bebebe] border-t border-outline-variant dark:border-[#2d3135]">
+            <div class="flex flex-col md:flex-row gap-gutter items-center select-none">
+                <span
+                    class="font-title-lg text-title-lg text-primary-fixed dark:text-[#86d4d3] font-bold">CampusPay</span>
+                <span class="hidden md:block w-px h-6 bg-outline"></span>
+                <p class="font-body-md text-body-md text-secondary-fixed-dim">MIST and CampusPay rights reserved © 2026
+                </p>
+            </div>
+            <div class="flex gap-gutter">
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">Privacy Policy</a>
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">Terms of Service</a>
+                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
+                    href="#">University Guidelines</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- FLOATING ACTION BUTTON (Contextual: Add Inventory) -->
+    <button id="fab-add-item"
+        class="fixed bottom-container-margin right-container-margin w-14 h-14 bg-primary text-on-primary dark:bg-primary-container dark:text-[#86d4d3] rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform md:hidden z-50">
+        <span class="material-symbols-outlined">add</span>
+    </button>
+
+    <!-- UNIFIED MODALS -->
+
+    <!-- Modal: Add Item -->
+    <div id="modal-add-item"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 rounded-2xl shadow-xl flex flex-col translate-y-4 transition-transform duration-300">
+            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center">
+                <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Add New Food Item
+                </h3>
+                <button id="modal-add-close"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </div>
+            <form id="form-add-item" class="p-6 space-y-4 text-left">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant block">Item Name</label>
+                    <input type="text" id="add-item-name" required
+                        class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant block">Price (৳)</label>
+                        <input type="number" id="add-item-price" min="0" required
+                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant block">Stock Quantity</label>
+                        <input type="number" id="add-item-stock" min="0" required
+                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant block">Image Preset Cover</label>
+                    <select id="add-item-img"
+                        class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-body-md rounded-lg px-3 outline-none dark:text-white">
+                        <option value="beef">Beef Biryani</option>
+                        <option value="sandwich">Egg Sandwich</option>
+                        <option value="tea">Lemon Iced Tea</option>
+                        <option value="fruit">Fruit Platter</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all">Submit
+                    Menu Addition</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Item -->
+    <div id="modal-edit-item"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 rounded-2xl shadow-xl flex flex-col translate-y-4 transition-transform duration-300">
+            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center">
+                <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Edit Stock Parameters
+                </h3>
+                <button id="modal-edit-close"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </div>
+            <form id="form-edit-item" class="p-6 space-y-4 text-left">
+                <input type="hidden" id="edit-item-index" />
+                <div class="space-y-1">
+                    <p class="text-xs text-on-surface-variant dark:text-gray-400">Editing: <span
+                            id="edit-item-title-name" class="font-bold text-on-surface dark:text-white">Beef
+                            Biryani</span></p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant block">Price (৳)</label>
+                        <input type="number" id="edit-item-price" min="0" required
+                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant block">Stock Quantity</label>
+                        <input type="number" id="edit-item-stock" min="0" required
+                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                    </div>
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all">Submit
+                    Stock Updates</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toasts elements -->
+    <div id="toast-wrapper" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+        <!-- Spawned dynamically -->
+    </div>
+
+</body>
+
+</html>

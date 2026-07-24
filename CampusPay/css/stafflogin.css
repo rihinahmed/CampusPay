@@ -1,0 +1,79 @@
+/* CampusPay Secure Login Portal Specific Stylesheet */
+
+/* Premium Teal Mesh Background style */
+.mesh-bg {
+    background-color: #fafbfc;
+    background-image:
+        radial-gradient(at 10% 20%, rgba(9, 105, 105, 0.05) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(134, 212, 211, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(9, 105, 105, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+.dark .mesh-bg {
+    background-color: #121314;
+    background-image:
+        radial-gradient(at 10% 20%, rgba(134, 212, 211, 0.02) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(9, 105, 105, 0.02) 0px, transparent 50%);
+}
+
+/* Modals overlays */
+.modal-open {
+    display: flex !important;
+    animation: fadeIn 0.25s forwards ease-out;
+}
+
+.modal-open>div {
+    animation: slideUp 0.3s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Toast animations */
+.toast-item {
+    animation: toastEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: all 0.3s ease;
+}
+
+.toast-item.removing {
+    animation: toastExit 0.3s ease-in forwards;
+}
+
+@keyframes toastEnter {
+    from {
+        transform: translateY(100%) scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes toastExit {
+    to {
+        transform: translateY(-20px) scale(0.9);
+        opacity: 0;
+    }
+}

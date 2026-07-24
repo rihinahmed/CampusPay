@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CampusPay | Student Food Dashboard</title>
+    <!-- Tailwind CSS with Forms and Container Queries -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bec8c8",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eeeef0",
+                        "inverse-on-surface": "#f0f0f3",
+                        "tertiary": "#5b3e00",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#86d4d3",
+                        "on-secondary-fixed": "#141d1e",
+                        "tertiary-container": "#795400",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1e",
+                        "surface-tint": "#096969",
+                        "on-primary-fixed": "#002020",
+                        "on-tertiary-container": "#ffcb72",
+                        "primary": "#004c4c",
+                        "surface-variant": "#e2e2e5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#93e1e0",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#dae4e4",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#5f4100",
+                        "primary-fixed-dim": "#86d4d3",
+                        "on-secondary-fixed-variant": "#3f4949",
+                        "background": "#f9f9fc",
+                        "secondary-container": "#d8e2e2",
+                        "on-surface-variant": "#3f4948",
+                        "on-background": "#1a1c1e",
+                        "surface-container-high": "#e8e8ea",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "surface-container-highest": "#e2e2e5",
+                        "surface-container-low": "#f3f3f6",
+                        "surface-dim": "#dadadc",
+                        "tertiary-fixed-dim": "#ffba31",
+                        "primary-container": "#006666",
+                        "surface": "#f9f9fc",
+                        "inverse-surface": "#2f3133",
+                        "on-secondary-container": "#5b6465",
+                        "secondary": "#566060",
+                        "outline-variant": "#bec9c8",
+                        "tertiary-fixed": "#ffdeab",
+                        "surface-bright": "#f9f9fc",
+                        "primary-fixed": "#a2f0ef",
+                        "on-tertiary-fixed": "#271900",
+                        "outline": "#6f7979",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "24px",
+                        "stack-md": "12px",
+                        "stack-sm": "4px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- External Custom Rules Stylesheet -->
+    <link rel="stylesheet" href="../css/style.css?v=2" />
+
+    <!-- Link App logic -->
+    <script src="../js/index.js?v=2" defer></script>
+</head>
+
+<body class="bg-background text-on-background min-h-screen dark:bg-[#121314] dark:text-[#e2e2e5]">
+
+    <!-- SideNavBar Shell (Desktop Only) -->
+    <aside
+        class="fixed left-0 top-0 h-full hidden md:flex flex-col border-r border-outline-variant bg-surface-container-low dark:bg-[#151617] w-64 z-30">
+        <div class="p-6 flex flex-col gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+                    <span class="material-symbols-outlined">school</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-sm text-headline-sm font-black text-primary dark:text-[#86d4d3]">CampusPay
+                    </h2>
+                    <p
+                        class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold dark:text-secondary-fixed-dim">
+                        MIST Canteen</p>
+                </div>
+            </div>
+        </div>
+        <nav class="flex-1 mt-4 space-y-1">
+            <a class="bg-secondary-container dark:bg-[#004f4f]/30 text-on-secondary-container dark:text-[#86d4d3] rounded-lg px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out font-label-md text-label-md cursor-default"
+                href="./student.html">
+                <span class="material-symbols-outlined">restaurant</span>
+                Food Menu
+            </a>
+            <button id="orders-sidebar-btn"
+                class="w-[calc(100%-16px)] text-left txt-btn text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                Orders
+            </button>
+            <button
+                class="w-[calc(100%-16px)] text-left txt-btn recharge-open-trigger text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md">
+                <span class="material-symbols-outlined">add_card</span>
+                Recharge
+            </button>
+        </nav>
+        <div class="p-4 border-t border-outline-variant dark:border-none">
+            <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md"
+                href="./settings.html?role=student">
+                <span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+            <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md"
+                href="./login.html">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="md:ml-64 flex flex-col min-h-screen">
+
+        <!-- TopNavBar Shell -->
+        <header
+            class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-surface dark:bg-[#1a1c1e] z-20 flex justify-between items-center px-container-margin border-b border-outline-variant">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-btn"
+                    class="md:hidden p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1 class="font-title-lg text-title-lg text-on-surface dark:text-white font-bold select-none">Food Menu
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-gutter">
+                <!-- Balance Badge -->
+                <div
+                    class="recharge-open-trigger bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm transition-transform hover:scale-105 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                    <span class="font-label-md text-label-md balance-badge">500.00 ৳</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle"
+                        class="p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                        title="Toggle Light/Dark Theme">
+                        <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                        <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+                    </button>
+
+                    <!-- Desktop Cart Button -->
+                    <button
+                        class="cart-open-btn relative p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                        title="Open tray">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span
+                            class="cart-count-badge hidden absolute -top-1 -right-1 bg-error text-on-error w-5 h-5 rounded-full text-[9px] flex items-center justify-center font-black">0</span>
+                    </button>
+
+                    <button
+                        class="p-2 text-on-surface-variant dark:text-[#bec9c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="w-px h-8 bg-outline-variant mx-1 hidden sm:block"></div>
+
+                    <div
+                        class="w-8 h-8 rounded-full bg-outline-variant overflow-hidden border border-outline-variant hidden sm:block">
+                        <img class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1PZ_TiFcClFJiFucUyUv5BuEktsF8pY_JmCdO4hCRQWMGZ9b6HX9TRXO2Tor-UTHAqORWL92Y5qLSn6NPb3Zo2Q76Q_003eTpWTGcO2bDszYmY-7DR0QOWdnv4ng8x3eGhLxRpI-l7bWlfKAGQUDkJufRzWLFlBNI0TStS2PJ8pPNkjOhRdo4JeKNr0lyNh3IwavFt6peQbqCOhTocNea4EODdsIYecKPUvyq8XUH5pL3cJupWfQtyTAiqsll9l92SbTPSyvUez6i"
+                            alt="Student Profile" />
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Canvas -->
+        <div class="pt-20 px-container-margin pb-stack-lg flex-1">
+
+            <!-- Filters & Search Bento Row -->
+            <section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-stack-lg animate-fade-in">
+                <div class="md:col-span-8 relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-outline">search</span>
+                    <input id="search-input"
+                        class="w-full pl-12 pr-4 py-3 bg-white dark:bg-[#1a1c1e] text-on-surface dark:text-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md text-body-md shadow-sm dark:placeholder-outline"
+                        placeholder="Search for beef biryani, salad, crispy chicken..." type="text" />
+                </div>
+                <div class="md:col-span-4 flex gap-2">
+                    <button
+                        class="flex-1 bg-surface-container-high dark:bg-[#202225] text-on-surface px-4 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 border border-transparent hover:border-primary transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">tune</span>
+                        Filters
+                    </button>
+                    <button
+                        class="quick-reorder-btn flex-1 bg-primary text-on-primary px-4 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">history</span>
+                        Quick Reorder
+                    </button>
+                </div>
+            </section>
+
+            <!-- Category Tabs -->
+            <section id="category-tabs" class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar mb-stack-lg">
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-primary text-on-primary rounded-full font-label-md text-label-md shadow-md">All
+                    Items</button>
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-white text-on-surface-variant border border-outline-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">Breakfast</button>
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-white text-on-surface-variant border border-outline-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">Lunch</button>
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-white text-on-surface-variant border border-outline-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">Snacks</button>
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-white text-on-surface-variant border border-outline-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">Beverages</button>
+                <button
+                    class="whitespace-nowrap px-6 py-2 bg-white text-on-surface-variant border border-outline-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">Desserts</button>
+            </section>
+
+            <!-- Food Grid dynamically rendered -->
+            <section id="food-grid"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter min-h-[400px]">
+                <!-- Hydrated by index.js -->
+            </section>
+
+        </div>
+
+        <!-- Footer Shell -->
+        <footer
+            class="w-full py-stack-lg px-container-margin flex flex-col md:flex-row justify-between items-center gap-stack-md bg-inverse-surface dark:bg-[#1a1c1e] border-t border-outline dark:border-[#2d3135]">
+            <div class="flex flex-col items-center md:items-start gap-2">
+                <span
+                    class="font-title-lg text-title-lg text-primary-fixed dark:text-[#86d4d3] font-bold">CampusPay</span>
+                <p class="font-body-md text-body-md text-secondary-fixed-dim">Integrated Canteen Management System</p>
+            </div>
+            <div class="flex gap-gutter">
+                <a class="text-secondary-fixed-dim hover:text-[#a2f0ef] transition-colors duration-200 font-body-md text-body-md"
+                    href="#">Privacy Policy</a>
+                <a class="text-secondary-fixed-dim hover:text-[#a2f0ef] transition-colors duration-200 font-body-md text-body-md"
+                    href="#">Terms of Service</a>
+                <a class="text-secondary-fixed-dim hover:text-[#a2f0ef] transition-colors duration-200 font-body-md text-body-md"
+                    href="#">University Guidelines</a>
+            </div>
+            <div class="text-secondary-fixed-dim font-body-md text-body-md text-center md:text-right">
+                MIST and CampusPay rights reserved © 2024
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Shopping Cart Side Drawer Shell -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none drawer-closed hidden">
+        <!-- Backdrop Overlay -->
+        <div id="cart-overlay"
+            class="drawer-overlay absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-opacity duration-300 pointer-events-auto">
+        </div>
+
+        <!-- Drawer Panel sliding from right -->
+        <div
+            class="drawer-content absolute top-0 right-0 max-w-md w-full h-full bg-white dark:bg-[#1e2022] border-l border-outline-variant shadow-2xl flex flex-col translate-x-full pointer-events-auto">
+            <!-- Header -->
+            <div class="p-6 border-b border-outline-variant flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary dark:text-[#86d4d3]">shopping_basket</span>
+                    <h3 class="font-headline-sm text-title-lg font-bold text-on-surface">Your Food Tray</h3>
+                </div>
+                <button id="cart-close-btn"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors text-on-surface-variant">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Cart Contents scroll area -->
+            <div id="cart-drawer-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                <!-- Hydrated by index.js -->
+            </div>
+
+            <!-- Empty State in Cart -->
+            <div id="cart-drawer-empty"
+                class="flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
+                <span class="material-symbols-outlined text-outline text-6xl mb-4">shopping_cart_off</span>
+                <h4 class="font-title-lg text-body-lg font-bold text-on-surface mb-1">Your tray is empty</h4>
+                <p class="text-on-surface-variant font-body-md text-body-md max-w-xs">Scan the canteen catalogue above
+                    and add delicious food items to configure your meal tray.</p>
+            </div>
+
+            <!-- Bottom Checkout panel -->
+            <div id="cart-drawer-summary"
+                class="hidden p-6 border-t border-outline-variant bg-surface-container-low dark:bg-[#17181a] space-y-4">
+                <div class="flex items-center justify-between font-body-lg text-on-surface">
+                    <span>Subtotal Price</span>
+                    <span id="cart-subtotal" class="font-bold text-lg">0.00 ৳</span>
+                </div>
+                <div
+                    class="flex items-center justify-between text-label-md font-semibold text-on-surface-variant border-b border-outline-variant pb-3">
+                    <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+                        Wallet Balance
+                    </span>
+                    <span class="balance-badge">500.00 ৳</span>
+                </div>
+                <button id="checkout-btn"
+                    class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary-container transition-all shadow-md active:scale-95">
+                    <div id="checkout-spinner"
+                        class="hidden w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <span id="checkout-btn-text">Confirm Tray Order</span>
+                    <span class="mx-1">•</span>
+                    <span id="checkout-total-value" class="font-black text-primary-fixed">0.00 ৳</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Side Drawer Shell -->
+    <div id="orders-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none drawer-closed hidden">
+        <!-- Backdrop Overlay -->
+        <div id="orders-overlay"
+            class="drawer-overlay absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-opacity duration-300 pointer-events-auto">
+        </div>
+
+        <!-- Drawer Panel sliding from right -->
+        <div
+            class="drawer-content absolute top-0 right-0 max-w-md w-full h-full bg-white dark:bg-[#1e2022] border-l border-outline-variant shadow-2xl flex flex-col translate-x-full pointer-events-auto">
+            <!-- Header -->
+            <div class="p-6 border-b border-outline-variant flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary dark:text-[#86d4d3]">shopping_bag</span>
+                    <h3 class="font-headline-sm text-title-lg font-bold text-on-surface">Your Meal Orders</h3>
+                </div>
+                <button id="orders-close-btn"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors text-on-surface-variant">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Orders scroll area -->
+            <div id="orders-drawer-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                <!-- Hydrated by index.js -->
+            </div>
+
+            <!-- Empty State in Orders -->
+            <div id="orders-drawer-empty"
+                class="flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
+                <span class="material-symbols-outlined text-outline text-6xl mb-4">shopping_bag</span>
+                <h4 class="font-title-lg text-body-lg font-bold text-on-surface mb-1">No orders yet</h4>
+                <p class="text-on-surface-variant font-body-md text-body-md max-w-xs">You haven't ordered anything
+                    from the menu items today.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Side Menu Overlayer Panel -->
+    <div id="mobile-nav" class="fixed inset-0 z-50 overflow-hidden pointer-events-none drawer-closed hidden">
+        <!-- Overlay backdrop -->
+        <div id="mobile-nav-overlay"
+            class="drawer-overlay absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-opacity duration-300 pointer-events-auto">
+        </div>
+
+        <!-- Left Drawer sliding panel -->
+        <div
+            class="drawer-content absolute top-0 left-0 max-w-xs w-full h-full bg-white dark:bg-[#1a1c1e] border-r border-outline-variant shadow-2xl flex flex-col -translate-x-full pointer-events-auto">
+            <div class="p-6 border-b border-outline-variant flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+                        <span class="material-symbols-outlined text-[20px]">school</span>
+                    </div>
+                    <span
+                        class="font-headline-sm text-title-lg font-black text-primary dark:text-[#86d4d3]">CampusPay</span>
+                </div>
+                <button id="mobile-menu-close-btn"
+                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors text-on-surface-variant">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <a class="bg-secondary-container dark:bg-[#004f4f]/30 text-on-secondary-container dark:text-[#86d4d3] rounded-lg px-4 py-3 mx-2 flex items-center gap-3 font-label-md text-label-md cursor-default"
+                href="./student.html">
+                <span class="material-symbols-outlined">restaurant</span>
+                Food Menu
+            </a>
+            <button id="mobile-orders-sidebar-btn"
+                class="w-[calc(100%-16px)] text-left txt-btn text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-colors hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg font-label-md text-label-md">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                Orders
+            </button>
+            <button
+                class="w-[calc(100%-16px)] text-left recharge-open-trigger text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-colors hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg font-label-md text-label-md">
+                <span class="material-symbols-outlined">add_card</span>
+                Recharge
+            </button>
+
+            <div class="p-6 border-t border-outline-variant space-y-4">
+                <button id="theme-toggle-mobile"
+                    class="w-full flex items-center justify-between p-3 bg-surface-container-low dark:bg-[#242628] border border-outline-variant rounded-xl font-label-md text-on-surface-variant text-label-md">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                        Dark Theme Mode
+                    </span>
+                    <span
+                        class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-outline dark:bg-[#096969] cursor-pointer">
+                        <span
+                            class="inline-block w-4 h-4 transform rounded-full bg-white transition-transform translate-x-1 dark:translate-x-6"></span>
+                    </span>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-outline-variant overflow-hidden border border-outline-variant">
+                        <img class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1PZ_TiFcClFJiFucUyUv5BuEktsF8pY_JmCdO4hCRQWMGZ9b6HX9TRXO2Tor-UTHAqORWL92Y5qLSn6NPb3Zo2Q76Q_003eTpWTGcO2bDszYmY-7DR0QOWdnv4ng8x3eGhLxRpI-l7bWlfKAGQUDkJufRzWLFlBNI0TStS2PJ8pPNkjOhRdo4JeKNr0lyNh3IwavFt6peQbqCOhTocNea4EODdsIYecKPUvyq8XUH5pL3cJupWfQtyTAiqsll9l92SbTPSyvUez6i"
+                            alt="Student Profile" />
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold font-title-lg text-body-lg text-on-surface line-clamp-1">Mashiat S.
+                            MIST
+                        </h4>
+                        <p class="text-on-surface-variant text-[11px]">ID: 202614002</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recharge Wallet Dialog Popup -->
+    <div id="recharge-modal"
+        class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center pointer-events-none modal-closed hidden">
+        <!-- Backdrop Overlay -->
+        <div id="recharge-overlay"
+            class="modal-overlay absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-opacity duration-300 pointer-events-auto">
+        </div>
+
+        <!-- Card Dialog -->
+        <div
+            class="modal-content relative max-w-md w-full mx-container-margin bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#3a3d40] rounded-2xl shadow-2xl p-6 opacity-0 scale-95 pointer-events-auto z-10 transition-all duration-300">
+            <!-- Close trigger -->
+            <button id="recharge-close-btn"
+                class="absolute top-4 right-4 p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full text-on-surface-variant transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-[#86d4d3]/10 flex items-center justify-center text-primary dark:text-[#86d4d3]">
+                    <span class="material-symbols-outlined">add_card</span>
+                </div>
+                <div>
+                    <h3 class="font-headline-sm text-title-lg font-bold text-on-surface">Recharge Campus Wallet</h3>
+                    <p class="text-on-surface-variant text-[11px] leading-tight mt-0.5">Top-up instantly via BKash,
+                        Nagad or bank cards.</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Current balance visual -->
+                <div
+                    class="bg-surface-container-low dark:bg-[#151617] p-3 rounded-xl flex items-center justify-between border border-outline-variant">
+                    <span class="font-body-md text-on-surface-variant font-medium">Currently Available:</span>
+                    <span
+                        class="font-headline-md text-title-lg text-primary dark:text-[#86d4d3] font-extrabold balance-badge">500.00
+                        ৳</span>
+                </div>
+
+                <!-- Value Presets row -->
+                <div>
+                    <label
+                        class="font-label-md text-label-md text-on-surface-variant block mb-2 font-bold uppercase tracking-wider">Fast
+                        Presets</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button data-amount="100"
+                            class="recharge-preset bg-surface-container-high dark:bg-[#2d3135] hover:bg-primary dark:hover:bg-primary-container hover:text-on-primary dark:hover:text-on-primary-container px-2 py-2 rounded-xl text-center font-label-md text-label-md text-on-surface border border-transparent transition-all">
+                            +100 ৳
+                        </button>
+                        <button data-amount="200"
+                            class="recharge-preset bg-surface-container-high dark:bg-[#2d3135] hover:bg-primary dark:hover:bg-primary-container hover:text-on-primary dark:hover:text-on-primary-container px-2 py-2 rounded-xl text-center font-label-md text-label-md text-on-surface border border-transparent transition-all">
+                            +200 ৳
+                        </button>
+                        <button data-amount="500"
+                            class="recharge-preset bg-surface-container-high dark:bg-[#2d3135] hover:bg-primary dark:hover:bg-primary-container hover:text-on-primary dark:hover:text-on-primary-container px-2 py-2 rounded-xl text-center font-label-md text-label-md text-on-surface border border-transparent transition-all">
+                            +500 ৳
+                        </button>
+                        <button data-amount="1000"
+                            class="recharge-preset bg-surface-container-high dark:bg-[#2d3135] hover:bg-primary dark:hover:bg-primary-container hover:text-on-primary dark:hover:text-on-primary-container px-2 py-2 rounded-xl text-center font-label-md text-label-md text-on-surface border border-transparent transition-all">
+                            +1K ৳
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Input field -->
+                <div>
+                    <label for="recharge-custom-amount"
+                        class="font-label-md text-label-md text-on-surface-variant block mb-2 font-bold uppercase tracking-wider">Custom
+                        Load Amount (৳)</label>
+                    <div class="relative">
+                        <input id="recharge-custom-amount" type="number" min="10" max="10000"
+                            class="w-full pl-6 pr-12 py-3 bg-white dark:bg-[#1a1c1e] text-on-surface dark:text-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-headline-md font-bold"
+                            placeholder="50.00" />
+                        <span
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold">BDT</span>
+                    </div>
+                </div>
+
+                <!-- Submit trigger -->
+                <button id="recharge-submit-btn"
+                    class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary-container transition-colors shadow-md mt-2">
+                    <div id="recharge-spinner"
+                        class="hidden w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin">
+                    </div>
+                    <span id="recharge-btn-text">Secure Recharge Now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Checkout Success Dialog Animation Overlay -->
+    <div id="success-overlay"
+        class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden items-center justify-center p-6">
+        <div
+            class="bg-white dark:bg-[#1e2022] rounded-3xl max-w-md w-full p-8 border border-outline-variant/30 shadow-2xl flex flex-col items-center text-center select-none bubble-animation">
+            <!-- Animated visual target -->
+            <div
+                class="w-20 h-20 rounded-full bg-[#d1fae5] dark:bg-[#064e3b] flex items-center justify-center text-[#059669] dark:text-[#34d399] mb-6 shadow-inner">
+                <span class="material-symbols-outlined text-5xl"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 600;">check_circle</span>
+            </div>
+
+            <h3 class="font-headline-md text-headline-md text-on-surface font-extrabold mb-2 dark:text-white">Order
+                Confirmed!</h3>
+            <p id="success-details" class="text-on-surface-variant font-body-md text-body-md max-w-sm mb-8">
+                Successfully placed order for 0.00 ৳. Collect it from MIST Canteen counters.
+            </p>
+
+            <button id="success-close-btn"
+                class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold hover:bg-primary-container transition-colors shadow-md">
+                Done, Back to Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Action Button for Mobile Cart -->
+    <div class="md:hidden fixed bottom-6 right-6 z-40 select-none">
+        <button
+            class="cart-open-btn w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95 hover:scale-105"
+            title="View food tray">
+            <div class="relative">
+                <span class="material-symbols-outlined text-3xl">shopping_cart</span>
+                <span
+                    class="cart-count-badge hidden absolute -top-2 -right-2 bg-error text-on-error w-6 h-6 rounded-full text-[10px] flex items-center justify-center border-2 border-white dark:border-[#1a1c1e] font-black">0</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Notification Container Stack anchor -->
+    <div id="toast-container"
+        class="fixed bottom-4 right-4 z-50 flex flex-col gap-3 pointer-events-none w-full max-w-xs md:max-w-sm px-4">
+        <!-- Toasts injected dynamically -->
+    </div>
+
+</body>
+
+</html>
