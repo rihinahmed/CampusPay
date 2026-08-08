@@ -7,26 +7,30 @@ const state = {
     searchQuery: '',
     verifFilter: 'all',
     rechargeFilter: 'all',
+    userSearchQuery: '',
+    userRoleFilter: 'all',
+    userStatusFilter: 'all',
 
     // Verifications Queue local storage state
     verifications: JSON.parse(localStorage.getItem('campuspay-admin-verifications')) || [
-        { id: "v1", name: "Abdullah Safwan", roll: "202114042", role: "Student", submitted: "2h ago", status: "Pending" },
-        { id: "v2", name: "Dr. Khulna Habib", roll: "T-77291", role: "Teacher", submitted: "4h ago", status: "Pending" },
-        { id: "v3", name: "Raisa Mahfuz", roll: "202214109", role: "Student", submitted: "5h ago", status: "Pending" },
-        { id: "v4", name: "Mashiat Rahman", roll: "202314115", role: "Student", submitted: "1d ago", status: "Approved" }
+        { id: "v1", name: "Ajmain", roll: "202314033", role: "Student", submitted: "10m ago", status: "Pending" },
+        { id: "v2", name: "Abdullah Safwan", roll: "202114042", role: "Student", submitted: "2h ago", status: "Pending" },
+        { id: "v3", name: "Dr. Khulna Habib", roll: "FAC-0000", role: "Teacher", submitted: "4h ago", status: "Approved" },
+        { id: "v4", name: "Counter Staff #1", roll: "ST-0000", role: "Staff", submitted: "1d ago", status: "Approved" }
     ],
 
     // User Base state
     users: JSON.parse(localStorage.getItem('campuspay-admin-users')) || [
-        { id: "202114042", name: "Abdullah Safwan", role: "Student", balance: parseFloat(localStorage.getItem('campuspay-balance')) || 500.00, status: "Active", avatar: "AS" },
-        { id: "T-77291", name: "Dr. Khulna Habib", role: "Teacher", balance: 2450.00, status: "Active", avatar: "KH" },
+        { id: "202314033", name: "Ajmain (Student)", role: "Student", balance: parseFloat(localStorage.getItem('campuspay-balance')) || 500.00, status: "Active", avatar: "AJ" },
+        { id: "202114042", name: "Abdullah Safwan", role: "Student", balance: 500.00, status: "Active", avatar: "AS" },
+        { id: "FAC-0000", name: "Dr. Khulna Habib", role: "Teacher", balance: 2450.00, status: "Active", avatar: "KH" },
+        { id: "ST-0000", name: "Counter Staff #1", role: "Staff", balance: 0.00, status: "Active", avatar: "CS" },
+        { id: "ADM-0000", name: "System Administrator", role: "Admin", balance: 9999.00, status: "Active", avatar: "SA" },
         { id: "202214109", name: "Raisa Mahfuz", role: "Student", balance: 350.00, status: "Active", avatar: "RM" },
-        { id: "202114001", name: "Tanvir Rahman", role: "Student", balance: 670.00, status: "Active", avatar: "TR" },
-        { id: "202314055", name: "Sumaiya Akhter", role: "Student", balance: 140.00, status: "Active", avatar: "SA" },
-        { id: "T-99812", name: "Zubair Karim", role: "Teacher", balance: 4120.00, status: "Active", avatar: "ZK" }
+        { id: "202114001", name: "Tanvir Rahman", role: "Student", balance: 670.00, status: "Suspended", avatar: "TR" }
     ],
 
-    // Recharges state - check if student requests exist in localStorage, prepend/append them!
+    // Recharges state
     recharges: []
 };
 
@@ -54,11 +58,11 @@ function initRechargesState() {
     }
 
     const defaultRecharges = [
-        { id: "rec1", name: "Tanvir Rahman", studentId: "202114001", method: "bKash", amount: 500, txid: "9X3M2K8P9W", date: "Oct 14, 2026", status: "Pending" },
-        { id: "rec2", name: "Sumaiya Akhter", studentId: "202314055", method: "Nagad", amount: 1200, txid: "NAGAD8841Z", date: "Oct 14, 2026", status: "Pending" },
-        { id: "rec3", name: "Zubair Karim", studentId: "T-99812", method: "bKash", amount: 2500, txid: "BK772L1X0Y", date: "Oct 13, 2026", status: "Pending" },
-        { id: "rec4", name: "Abdullah Safwan", studentId: "202114042", method: "bKash", amount: 1000, txid: "99M8N2XQ1", date: "Oct 10, 2026", status: "Approved" },
-        { id: "rec5", name: "Rashidul Bari", studentId: "202014022", method: "Nagad", amount: 200, txid: "NG34L9X11", date: "Oct 05, 2026", status: "Declined" }
+        { id: "rec1", name: "Tanvir Rahman", studentId: "202114001", method: "bKash", amount: 500, txid: "9X3M2K8P9W", date: "Aug 5, 2026, 04:15 PM", status: "Pending" },
+        { id: "rec2", name: "Sumaiya Akhter", studentId: "202314055", method: "Nagad", amount: 1200, txid: "NAGAD8841Z", date: "Aug 5, 2026, 03:40 PM", status: "Pending" },
+        { id: "rec3", name: "Dr. Khulna Habib", studentId: "FAC-0000", method: "bKash", amount: 2500, txid: "BK772L1X0Y", date: "Aug 5, 2026, 02:10 PM", status: "Pending" },
+        { id: "rec4", name: "Ajmain (Student)", studentId: "202314033", method: "bKash", amount: 1000, txid: "99M8N2XQ1", date: "Aug 4, 2026, 01:25 PM", status: "Approved" },
+        { id: "rec5", name: "Rashidul Bari", studentId: "202014022", method: "Nagad", amount: 200, txid: "NG34L9X11", date: "Aug 3, 2026, 11:05 AM", status: "Declined" }
     ];
 
     // Filter out studentReqs that have same txid as defaultRecharges to avoid duplicates
@@ -67,7 +71,7 @@ function initRechargesState() {
 
     // Sync student balance from localstorage into users array entry
     const studentBal = parseFloat(localStorage.getItem('campuspay-balance')) || 500.00;
-    const safwan = state.users.find(u => u.id === "202114042");
+    const safwan = state.users.find(u => u.id === "202314033");
     if (safwan) {
         safwan.balance = studentBal;
         saveState();
@@ -354,9 +358,12 @@ function renderDashboardTab() {
                             <span>TXID: ${rec.txid}</span>
                             <button onclick="navigator.clipboard.writeText('${rec.txid}'); showToast('TxID Copied!', 'info');" class="material-symbols-outlined text-xs hover:text-primary dark:hover:text-[#86d4d3]">content_copy</button>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 select-none">
-                            <button onclick="processDeposit('${rec.id}', 'Approved')" class="py-2 bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] rounded-lg font-bold text-[10px] uppercase tracking-wider hover:brightness-105 active:scale-95 transition-all">Approve</button>
-                            <button onclick="processDeposit('${rec.id}', 'Declined')" class="py-2 border border-error text-error hover:bg-error/5 dark:hover:bg-error/10 rounded-lg font-bold text-[10px] uppercase tracking-wider active:scale-95 transition-all">Reject</button>
+                        <div class="flex items-center justify-between gap-2 select-none pt-1">
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="processDeposit('${rec.id}', 'Approved')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="Approve"><span class="material-symbols-outlined text-sm">check</span> Approve</button>
+                                <button onclick="processDeposit('${rec.id}', 'Declined')" class="px-2.5 py-1.5 border border-error text-error hover:bg-error/5 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="Reject"><span class="material-symbols-outlined text-sm">close</span> Reject</button>
+                            </div>
+                            <button onclick="openEditBalanceModal('${rec.studentId}')" class="px-2.5 py-1.5 text-primary dark:text-[#86d4d3] border border-outline-variant dark:border-[#2d3135] hover:bg-primary/5 rounded-lg text-xs font-bold transition-all flex items-center gap-1"><span class="material-symbols-outlined text-xs">edit</span>Edit Bal</button>
                         </div>
                     </div>
                 `;
@@ -475,35 +482,51 @@ function renderRechargesTab() {
         let tagColor = rec.method.toLowerCase() === "bkash" ? "bg-pink-100 text-pink-700 dark:bg-pink-900/35 dark:text-pink-300" : "bg-orange-100 text-orange-700 dark:bg-orange-900/35 dark:text-orange-300";
 
         let statusBadge = "";
-        let actionsButtons = "";
+        let reviewIcons = "";
+        let editBalPen = `<button onclick="openEditBalanceModal('${rec.studentId}')" class="p-1.5 hover:bg-primary/10 text-primary dark:text-[#86d4d3] border border-outline-variant dark:border-[#2d3135] rounded-lg transition-all" title="Edit User Balance"><span class="material-symbols-outlined text-base">edit</span></button>`;
 
         if (rec.status === "Pending") {
-            statusBadge = `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/35 dark:text-amber-300">Pending</span>`;
-            actionsButtons = `
-                <div class="flex justify-end gap-1.5">
-                    <button onclick="approveDeposit('${rec.id}', 'Approved')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all">Approve</button>
-                    <button onclick="approveDeposit('${rec.id}', 'Declined')" class="px-3 py-1 border border-error text-error hover:bg-error/5 rounded-lg text-xs font-bold transition-all">Reject</button>
+            statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/35 dark:text-amber-300">Pending</span>`;
+            reviewIcons = `
+                <div class="flex justify-center items-center gap-1.5 select-none">
+                    <button onclick="approveDeposit('${rec.id}', 'Approved')" class="p-1.5 bg-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all" title="Approve (Tick)"><span class="material-symbols-outlined text-base">check</span></button>
+                    <button onclick="approveDeposit('${rec.id}', 'Declined')" class="p-1.5 bg-rose-100 hover:bg-rose-600 hover:text-white text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white rounded-lg transition-all" title="Reject (Cross)"><span class="material-symbols-outlined text-base">close</span></button>
                 </div>
             `;
         } else if (rec.status === "Approved") {
-            statusBadge = `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-[#1a4a2a] dark:text-[#81c784]">Approved</span>`;
-            actionsButtons = `<span class="text-xs text-on-surface-variant dark:text-gray-500 font-medium">Reconciled</span>`;
+            statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-[#1a4a2a] dark:text-[#81c784]">Approved</span>`;
+            reviewIcons = `<div class="flex justify-center select-none"><span class="material-symbols-outlined text-emerald-500 text-lg" title="Approved">check_circle</span></div>`;
         } else {
-            statusBadge = `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-800 dark:bg-[#681d24] dark:text-[#ffb4ab]">Declined</span>`;
-            actionsButtons = `<span class="text-xs text-on-surface-variant dark:text-gray-500 font-medium">Invalid TxID</span>`;
+            statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-800 dark:bg-[#681d24] dark:text-[#ffb4ab]">Declined</span>`;
+            reviewIcons = `<div class="flex justify-center select-none"><span class="material-symbols-outlined text-rose-500 text-lg" title="Declined">cancel</span></div>`;
         }
+
+        let dateParts = rec.date.split(",");
+        let dateStr = dateParts[0].trim();
+        if (dateParts.length > 1 && !isNaN(dateParts[1].trim())) {
+            dateStr += `, ${dateParts[1].trim()}`;
+        }
+        let timeStr = dateParts.length > 2 ? dateParts.slice(2).join(",").trim() : (dateParts.length === 2 && isNaN(dateParts[1].trim()) ? dateParts[1].trim() : "");
+
+        let timestampHtml = timeStr ? `
+            <div class="leading-tight select-none text-center">
+                <div class="font-semibold text-xs text-on-surface dark:text-gray-200 tracking-tight whitespace-nowrap">${dateStr}</div>
+                <div class="text-[10px] text-on-surface-variant dark:text-gray-400 font-mono tracking-tight whitespace-nowrap mt-0.5">${timeStr}</div>
+            </div>
+        ` : `<div class="font-mono text-xs text-on-surface dark:text-gray-200 tracking-tight whitespace-nowrap text-center">${rec.date}</div>`;
 
         return `
             <tr class="hover:bg-surface-container-low dark:hover:bg-[#25272a] transition-all">
-                <td class="px-6 py-4 font-semibold text-on-surface dark:text-white text-sm">${rec.name}</td>
-                <td class="px-6 py-4 select-none">
+                <td class="px-4 py-3 font-semibold text-on-surface dark:text-white text-sm whitespace-nowrap">${rec.name}</td>
+                <td class="px-4 py-3 select-none whitespace-nowrap">
                     <span class="px-2 py-0.5 rounded text-[9px] font-extrabold uppercase ${tagColor}">${rec.method}</span>
                 </td>
-                <td class="px-6 py-4 font-mono text-xs text-on-surface-variant dark:text-[#bec8c8] select-all">${rec.txid}</td>
-                <td class="px-6 py-4 font-extrabold text-sm text-on-surface dark:text-white">৳ ${rec.amount.toFixed(2)}</td>
-                <td class="px-6 py-4 select-none">${statusBadge}</td>
-                <td class="px-6 py-4 font-body-md text-xs text-on-surface-variant dark:text-[#bec8c8]">${rec.date}</td>
-                <td class="px-6 py-4 text-right">${actionsButtons}</td>
+                <td class="px-4 py-3 font-mono text-xs text-on-surface-variant dark:text-[#bec8c8] select-all whitespace-nowrap">${rec.txid}</td>
+                <td class="px-4 py-3 font-extrabold text-sm text-on-surface dark:text-white whitespace-nowrap">৳ ${rec.amount.toFixed(2)}</td>
+                <td class="px-4 py-3 select-none whitespace-nowrap text-center">${timestampHtml}</td>
+                <td class="px-4 py-3 select-none whitespace-nowrap">${statusBadge}</td>
+                <td class="px-4 py-3 text-center whitespace-nowrap">${reviewIcons}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">${editBalPen}</td>
             </tr>
         `;
     }).join("");
@@ -517,17 +540,40 @@ function renderUsersTab() {
     if (!listQueue) return;
 
     let filtered = state.users;
-    // Filter by global search query
-    if (state.searchQuery.trim() !== "") {
-        const query = state.searchQuery.trim().toLowerCase();
+
+    // Filter by search query (user search bar or header search bar)
+    const query = (state.userSearchQuery || state.searchQuery).trim().toLowerCase();
+    if (query !== "") {
         filtered = filtered.filter(u => u.name.toLowerCase().includes(query) || u.id.toLowerCase().includes(query) || u.role.toLowerCase().includes(query));
     }
 
+    // Filter by role
+    if (state.userRoleFilter && state.userRoleFilter !== "all") {
+        filtered = filtered.filter(u => u.role.toLowerCase() === state.userRoleFilter.toLowerCase());
+    }
+
+    // Filter by status
+    if (state.userStatusFilter && state.userStatusFilter !== "all") {
+        filtered = filtered.filter(u => u.status.toLowerCase() === state.userStatusFilter.toLowerCase());
+    }
+
+    if (filtered.length === 0) {
+        listQueue.innerHTML = `
+            <tr>
+                <td colspan="6" class="px-6 py-12 text-center text-gray-400 dark:text-gray-500 font-medium select-none">
+                    <span class="material-symbols-outlined text-4xl block mb-2 text-gray-300 dark:text-gray-600">person_off</span>
+                    No user accounts match the selected filters. Try adjusting your search query or dropdown criteria.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     listQueue.innerHTML = filtered.map(user => {
-        let roleColor = user.role === "Student" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/35 dark:text-[#a5d6a7]" : "bg-purple-100 text-purple-800 dark:bg-purple-900/35 dark:text-purple-300";
+        let roleColor = user.role === "Student" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/35 dark:text-[#a5d6a7]" : (user.role === "Teacher" || user.role === "Faculty" ? "bg-purple-100 text-purple-800 dark:bg-purple-900/35 dark:text-purple-300" : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/35 dark:text-emerald-300");
         let statusBadge = user.status === "Active"
             ? `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-[#1a4a2a] dark:text-[#81c784]">Active</span>`
-            : `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-800 dark:bg-[#681d24] dark:text-[#ffb4ab]">Blocked</span>`;
+            : `<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-800 dark:bg-[#681d24] dark:text-[#ffb4ab]">Suspended</span>`;
 
         let toggleButtonText = user.status === "Active" ? "Suspend" : "Activate";
         let toggleColor = user.status === "Active" ? "text-amber-600 hover:bg-amber-50 dark:text-amber-500 dark:hover:bg-amber-55/10" : "text-emerald-600 hover:bg-emerald-50 dark:text-emerald-500 dark:hover:bg-[#1d3d2c]";
@@ -548,8 +594,7 @@ function renderUsersTab() {
                 <td class="px-6 py-4 select-none">${statusBadge}</td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="openEditBalanceModal('${user.id}')" class="px-2 py-1 text-primary hover:bg-primary/5 dark:text-[#86d4d3] dark:hover:bg-[#86d4d3]/5 border border-outline dark:border-[#2d3135] rounded-lg text-xs font-bold transition-all">Edit Balance</button>
-                        <button onclick="toggleUserStatus('${user.id}')" class="px-2 py-1 ${toggleColor} rounded-lg text-xs font-bold transition-all">${toggleButtonText}</button>
+                        <button onclick="toggleUserStatus('${user.id}')" class="px-3 py-1 ${toggleColor} border border-outline-variant dark:border-[#2d3135] rounded-lg text-xs font-bold transition-all">${toggleButtonText}</button>
                     </div>
                 </td>
             </tr>
@@ -617,6 +662,27 @@ window.processDeposit = function (id, status) {
 
             // Sync with local users mapping
             if (trgUser) trgUser.balance = finalBal;
+
+            // Log transaction to student transaction history
+            const rawTxs = localStorage.getItem('campuspay-transactions');
+            let txs = [];
+            if (rawTxs) {
+                try {
+                    txs = JSON.parse(rawTxs);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            const methodLabel = rec.method || 'Online';
+            const newTx = {
+                date: new Date().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }),
+                type: "Recharge",
+                desc: `Top-up via ${methodLabel} (Approved)`,
+                amount: amountVal,
+                postBalance: finalBal
+            };
+            txs.push(newTx);
+            localStorage.setItem('campuspay-transactions', JSON.stringify(txs));
         }
 
         showToast(`Approved ৳ ${amountVal.toFixed(2)} deposit for ${rec.name}!`, "success");
@@ -843,24 +909,116 @@ function initEventListeners() {
     genReportBtn?.addEventListener("click", triggerReportGenerator);
     qAuditBtn?.addEventListener("click", triggerReportGenerator);
 
-    // 7. General Broadcast simulation
+    // 7. Broadcast Announcement Modal & Form Handlers
     const announceBtn = document.getElementById("btn-announce");
-    announceBtn?.addEventListener("click", () => {
-        const announcementInput = prompt("Enter announcement text to broadcast to university canteens network:");
-        if (announcementInput && announcementInput.trim() !== "") {
-            showToast("Broadcast message dispatched to mobile applications!", "success");
-            addSystemLog("OK", `Global push announcement broadcasted: "${announcementInput.trim()}"`);
-        }
+    const broadcastModal = document.getElementById("modal-broadcast-announcement");
+    const broadcastCloseBtn = document.getElementById("modal-broadcast-close");
+    const broadcastCancelBtn = document.getElementById("btn-cancel-broadcast");
+    const broadcastForm = document.getElementById("form-broadcast-announcement");
+
+    const openBroadcastModal = () => {
+        if (!broadcastModal) return;
+        broadcastModal.classList.remove("hidden");
+        broadcastModal.classList.add("modal-open");
+        void broadcastModal.offsetWidth;
+        broadcastModal.classList.add("opacity-100");
+        document.getElementById("announce-title")?.focus();
+    };
+
+    const closeBroadcastModal = () => {
+        if (!broadcastModal) return;
+        broadcastModal.classList.remove("opacity-100");
+        setTimeout(() => {
+            if (!broadcastModal.classList.contains("opacity-100")) {
+                broadcastModal.classList.add("hidden");
+                broadcastModal.classList.remove("modal-open");
+            }
+        }, 250);
+    };
+
+    announceBtn?.addEventListener("click", openBroadcastModal);
+    broadcastCloseBtn?.addEventListener("click", closeBroadcastModal);
+    broadcastCancelBtn?.addEventListener("click", closeBroadcastModal);
+
+    broadcastModal?.addEventListener("click", (e) => {
+        if (e.target === broadcastModal) closeBroadcastModal();
     });
 
-    // 8. Focus search
+    broadcastForm?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = document.getElementById("announce-title")?.value.trim();
+        const audience = document.getElementById("announce-audience")?.value;
+        const priority = document.getElementById("announce-priority")?.value;
+        const message = document.getElementById("announce-message")?.value.trim();
+
+        if (!title || !message) return;
+
+        // Push into global notification array in localStorage if available
+        const rawNotifs = localStorage.getItem('campuspay-notifications');
+        let notifs = [];
+        if (rawNotifs) {
+            try { notifs = JSON.parse(rawNotifs); } catch (_err) {}
+        }
+        notifs.unshift({
+            title: title,
+            message: message,
+            date: "Just Now",
+            audience: audience,
+            priority: priority
+        });
+        localStorage.setItem('campuspay-notifications', JSON.stringify(notifs));
+
+        closeBroadcastModal();
+        broadcastForm.reset();
+
+        showToast(`Announcement Broadcast Published Successfully! 📢`, "success");
+        addSystemLog("OK", `Global Push Broadcast Dispatched [Audience: ${audience.toUpperCase()}, Priority: ${priority.toUpperCase()}]: "${title}"`);
+    });
+
+    // 8. User Management Advanced Search & Filter Controls
+    const userSearchInput = document.getElementById("user-search-input");
+    const userRoleFilter = document.getElementById("user-role-filter");
+    const userStatusFilter = document.getElementById("user-status-filter");
+    const userResetBtn = document.getElementById("user-filter-reset-btn");
+
+    userSearchInput?.addEventListener("input", (e) => {
+        state.userSearchQuery = e.target.value;
+        renderUsersTab();
+    });
+
+    userRoleFilter?.addEventListener("change", (e) => {
+        state.userRoleFilter = e.target.value;
+        renderUsersTab();
+    });
+
+    userStatusFilter?.addEventListener("change", (e) => {
+        state.userStatusFilter = e.target.value;
+        renderUsersTab();
+    });
+
+    userResetBtn?.addEventListener("click", () => {
+        if (userSearchInput) userSearchInput.value = "";
+        if (userRoleFilter) userRoleFilter.value = "all";
+        if (userStatusFilter) userStatusFilter.value = "all";
+
+        state.userSearchQuery = "";
+        state.userRoleFilter = "all";
+        state.userStatusFilter = "all";
+        renderUsersTab();
+        showToast("User filters reset.", "info");
+    });
+
+    // 9. Focus search
     const lookUpBtn = document.getElementById("btn-user-search-focus");
     lookUpBtn?.addEventListener("click", () => {
-        searchInput?.focus();
-        showToast("Enter ID or name in header bar to query directory.", "info");
+        // Switch to users tab and focus user search input!
+        const usersTabBtn = document.querySelector('[data-tab="users"]');
+        if (usersTabBtn) usersTabBtn.click();
+        setTimeout(() => userSearchInput?.focus(), 150);
+        showToast("Enter ID or name in search box to query directory.", "info");
     });
 
-    // 9. Clear log stream
+    // 10. Clear log stream
     const clearLogsBtn = document.getElementById("btn-clear-logs");
     clearLogsBtn?.addEventListener("click", () => {
         const logsContainer = document.getElementById("terminal-console-logs");
@@ -870,14 +1028,153 @@ function initEventListeners() {
         }
     });
 
-    // 10. Responsive mobile nav toggles
+    // 11. Responsive mobile nav toggles
     const mobileMenuBtn = document.getElementById("admin-menu-toggle-btn");
     mobileMenuBtn?.addEventListener("click", openMobileNav);
 
     const backdrop = document.getElementById("mobile-nav-backdrop");
     backdrop?.addEventListener("click", closeMobileNav);
 
-    // 11. Theme toggle
+    // 12. Theme toggle
     const themeBtn = document.getElementById("theme-toggle");
     themeBtn?.addEventListener("click", toggleTheme);
 }
+// ----------------------------------------------------
+// MANUAL CASH RECHARGE LOGIC
+// ----------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const btnManualRecharge = document.getElementById("btn-manual-recharge");
+    const modalManualRecharge = document.getElementById("modal-manual-recharge");
+    const btnManualClose = document.getElementById("modal-manual-close");
+    const formManualRecharge = document.getElementById("form-manual-recharge");
+    
+    // Autocomplete elements
+    const userIdInput = document.getElementById("manual-user-id");
+    const userDropdown = document.getElementById("manual-user-dropdown");
+
+    // Autocomplete Logic
+    if (userIdInput && userDropdown) {
+        const renderDropdown = (query) => {
+            userDropdown.innerHTML = "";
+            const lowerQuery = query.toLowerCase();
+            const matchedUsers = state.users.filter(u => 
+                u.id.toLowerCase().includes(lowerQuery) || 
+                u.name.toLowerCase().includes(lowerQuery)
+            ).slice(0, 5); // Limit to 5 results
+
+            if (matchedUsers.length === 0) {
+                userDropdown.innerHTML = `<div class="p-3 text-xs text-on-surface-variant dark:text-gray-400 text-center">No users found</div>`;
+            } else {
+                matchedUsers.forEach(user => {
+                    const item = document.createElement("div");
+                    item.className = "flex items-center gap-3 p-2 hover:bg-surface-container-low dark:hover:bg-[#34363a] rounded-lg cursor-pointer transition-colors";
+                    item.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-primary/10 text-primary dark:text-[#86d4d3] flex items-center justify-center font-bold text-[10px] uppercase">
+                            ${user.avatar || user.name.slice(0,2)}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-bold text-on-surface dark:text-white truncate">${user.name}</div>
+                            <div class="text-[10px] text-on-surface-variant dark:text-gray-400 font-mono tracking-tight">${user.id} &bull; ${user.role}</div>
+                        </div>
+                    `;
+                    item.addEventListener("click", () => {
+                        userIdInput.value = user.id;
+                        userDropdown.classList.add("hidden");
+                    });
+                    userDropdown.appendChild(item);
+                });
+            }
+            userDropdown.classList.remove("hidden");
+        };
+
+        userIdInput.addEventListener("input", (e) => {
+            const val = e.target.value.trim();
+            if (val.length > 0) {
+                renderDropdown(val);
+            } else {
+                userDropdown.classList.add("hidden");
+            }
+        });
+
+        userIdInput.addEventListener("focus", (e) => {
+            const val = e.target.value.trim();
+            if (val.length > 0) {
+                renderDropdown(val);
+            }
+        });
+
+        // Hide dropdown on click outside
+        document.addEventListener("click", (e) => {
+            if (!userIdInput.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add("hidden");
+            }
+        });
+    }
+
+    if (btnManualRecharge && modalManualRecharge) {
+        btnManualRecharge.addEventListener("click", () => {
+            modalManualRecharge.classList.remove("hidden");
+            setTimeout(() => {
+                modalManualRecharge.classList.remove("opacity-0");
+                modalManualRecharge.querySelector("div").classList.remove("translate-y-4");
+            }, 10);
+        });
+    }
+
+    if (btnManualClose && modalManualRecharge) {
+        btnManualClose.addEventListener("click", () => {
+            modalManualRecharge.classList.add("opacity-0");
+            modalManualRecharge.querySelector("div").classList.add("translate-y-4");
+            setTimeout(() => {
+                modalManualRecharge.classList.add("hidden");
+                if (userDropdown) userDropdown.classList.add("hidden");
+            }, 300);
+        });
+    }
+
+    if (formManualRecharge) {
+        formManualRecharge.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const amountInput = document.getElementById("manual-amount");
+            
+            if (!userIdInput || !amountInput) return;
+            
+            const userId = userIdInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            
+            if (!userId || isNaN(amount) || amount <= 0) return;
+
+            // Generate unique TXID for cash
+            const txid = "CASH-" + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+            // Fetch name if exists
+            const matchedUser = state.users.find(u => u.id === userId);
+            const userName = matchedUser ? matchedUser.name : "User " + userId;
+
+            // Create new record
+            const newRecord = {
+                id: "rech_" + Date.now(),
+                name: userName,
+                studentId: userId, // Keeping the field name studentId in data model for consistency with other parts of the app
+                method: "Cash",
+                txid: txid,
+                amount: amount,
+                date: `${dateStr}, ${timeStr}`,
+                status: "Approved"
+            };
+
+            state.recharges.unshift(newRecord);
+            
+            showToast("Success", `Cash recharge of ৳${amount} for ${userId} added successfully.`, "success");
+            
+            // Close modal & rerender
+            btnManualClose.click();
+            formManualRecharge.reset();
+            renderRechargesTab();
+        });
+    }
+});

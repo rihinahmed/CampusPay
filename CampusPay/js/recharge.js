@@ -193,18 +193,15 @@ function processRechargeRequest(method, amount, txid) {
         amount: val,
         txid: txid,
         date: new Date().toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' }),
-        status: "Approved"
+        status: "Pending"
     };
 
     // Prepend to requests list
     state.requests.unshift(newReq);
     localStorage.setItem('campuspay-recharge-requests', JSON.stringify(state.requests));
 
-    // Add to balance immediately!
-    state.balance += val;
-    updateBalanceDOM();
     renderHistory();
-    showToast(`Top-up of ৳ ${val.toFixed(2)} successfully credited to wallet!`, "success");
+    showToast(`Recharge request of ৳ ${val.toFixed(2)} submitted for verification!`, "success");
 }
 
 function initEventListeners() {

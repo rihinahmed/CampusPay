@@ -93,7 +93,7 @@ function populateSidebar() {
     if (desktopFooter) {
         desktopFooter.innerHTML = `
             <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-[#202225] rounded-lg font-label-md text-label-md"
-                href="./login.html">
+                href="./index.html">
                 <span class="material-symbols-outlined">logout</span>
                 Logout
             </a>
@@ -116,7 +116,7 @@ function populateSidebar() {
     if (mobileFooter) {
         mobileFooter.innerHTML = `
             <a class="text-on-surface-variant dark:text-secondary-fixed-dim px-4 py-3 mx-2 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-lg font-label-md text-label-md" 
-               href="./login.html">
+               href="./index.html">
                 <span class="material-symbols-outlined">logout</span>
                 Logout
             </a>
@@ -149,7 +149,7 @@ function injectSettingsFields() {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                 <label class="font-bold text-sm text-on-surface-variant dark:text-gray-400">Student Name</label>
                 <div class="md:col-span-2">
-                    <input type="text" name="student_name" class="w-full px-4 py-3 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3d4043] rounded-xl text-on-surface dark:text-white" value="${savedSettings.student_name || 'Mashiat S. MIST'}">
+                    <input type="text" name="student_name" class="w-full px-4 py-3 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3d4043] rounded-xl text-on-surface dark:text-white" value="${savedSettings.student_name || 'Ajmain'}">
                 </div>
             </div>
             <!-- Student ID -->
