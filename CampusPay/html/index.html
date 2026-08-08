@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CampusPay | Welcome & Role Selection</title>
+    <title>CampusPay | Smart Cafeteria Management System</title>
 
     <!-- Tailwind CSS & Plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
 
-    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <!-- Synchronize dark theme state immediately -->
     <script>
         if (localStorage.getItem('campuspay-theme') === 'dark') {
             document.documentElement.classList.add('dark');
@@ -37,8 +37,9 @@
                             sans: ["Outfit", "sans-serif"]
                         },
                         colors: {
-                            "primary": "#047857",     /* Emerald 700 */
-                            "primary-dark": "#065f46" /* Emerald 800 */
+                            "primary": "#0d9488",        /* Teal 600 */
+                            "primary-dark": "#0f766e",   /* Teal 700 */
+                            "emerald-main": "#059669"
                         }
                     }
                 }
@@ -47,211 +48,513 @@
     </script>
 
     <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Modern Glassmorphism Card Aesthetics */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 50px -12px rgba(13, 148, 136, 0.15);
         }
 
-        .dark .glass-card {
-            background: rgba(26, 28, 30, 0.45);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .dark .glass-panel {
+            background: rgba(26, 28, 30, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .glass-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(4, 120, 87, 0.4);
-            box-shadow: 0 20px 40px -15px rgba(4, 120, 87, 0.15);
+        /* Floating Blobs Background Animation */
+        .blob-1 {
+            animation: floatBlob1 18s infinite alternate ease-in-out;
         }
 
-        .dark .glass-card:hover {
-            border-color: rgba(134, 212, 211, 0.3);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        .blob-2 {
+            animation: floatBlob2 22s infinite alternate ease-in-out;
         }
 
-        .floating-blob {
-            animation: float 20s infinite alternate ease-in-out;
+        @keyframes floatBlob1 {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            50% { transform: translate(40px, 60px) scale(1.15) rotate(90deg); }
+            100% { transform: translate(-30px, -40px) scale(0.95) rotate(180deg); }
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(0px) scale(1);
-            }
+        @keyframes floatBlob2 {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            50% { transform: translate(-50px, -30px) scale(1.1) rotate(-90deg); }
+            100% { transform: translate(40px, 50px) scale(0.9) rotate(-180deg); }
+        }
 
-            50% {
-                transform: translateY(30px) scale(1.1) rotate(45deg);
-            }
+        /* Error Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
 
-            100% {
-                transform: translateY(-30px) scale(0.9) rotate(-45deg);
-            }
+        /* Toast notifications */
+        .toast-item {
+            animation: toastEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: all 0.3s ease;
+        }
+        .toast-item.removing {
+            animation: toastExit 0.3s ease-in forwards;
+        }
+        @keyframes toastEnter {
+            from { transform: translateY(100%) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes toastExit {
+            to { transform: translateY(-20px) scale(0.9); opacity: 0; }
         }
     </style>
 </head>
 
 <body
-    class="bg-[#f0f4f8] dark:bg-[#0c0e12] text-slate-800 dark:text-[#e2e2e5] min-h-screen flex flex-col justify-between transition-colors duration-300 antialiased overflow-x-hidden relative font-sans">
+    class="bg-gradient-to-br from-slate-100 via-teal-50/40 to-slate-200 dark:from-[#090b0e] dark:via-[#11161b] dark:to-[#090b0e] text-slate-800 dark:text-[#e2e2e5] min-h-screen flex flex-col justify-between transition-colors duration-300 antialiased overflow-x-hidden relative font-sans">
 
-    <!-- Glowing Background blobs (Mesh) -->
+    <!-- Ambient Floating Gradient Blobs -->
     <div class="absolute inset-0 pointer-events-none opacity-40 select-none overflow-hidden z-0">
-        <div
-            class="floating-blob absolute top-10 left-10 w-96 h-96 bg-emerald-400 dark:bg-emerald-800/40 rounded-full filter blur-3xl">
-        </div>
-        <div class="floating-blob absolute bottom-10 right-10 w-[450px] h-[450px] bg-cyan-400 dark:bg-[#096969]/30 rounded-full filter blur-3xl"
-            style="animation-delay: -5s;"></div>
+        <div class="blob-1 absolute top-[-5%] left-[-5%] w-[550px] h-[550px] bg-gradient-to-tr from-emerald-400 via-teal-500 to-cyan-400 dark:from-emerald-950 dark:to-teal-900 rounded-full filter blur-[100px]"></div>
+        <div class="blob-2 absolute bottom-[-10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-br from-cyan-400 via-indigo-500 to-teal-400 dark:from-teal-950 dark:to-cyan-950 rounded-full filter blur-[110px]"></div>
     </div>
 
     <!-- Header Frame -->
     <header
-        class="w-full h-20 flex justify-between items-center px-6 md:px-12 z-10 select-none border-b border-white/20 dark:border-white/5 backdrop-blur-sm bg-white/10 dark:bg-[#0c0e12]/15">
+        class="w-full h-20 flex justify-between items-center px-6 md:px-12 z-20 select-none border-b border-white/40 dark:border-white/10 backdrop-blur-xl bg-white/20 dark:bg-[#0c0e12]/30 sticky top-0">
         <div class="flex items-center gap-3">
-            <div
-                class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-emerald-600 flex items-center justify-center text-white shadow-md">
-                <span class="material-symbols-outlined text-[20px]"
-                    style="font-variation-settings: 'FILL' 1;">wallet</span>
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-teal-500/25">
+                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">restaurant</span>
             </div>
-            <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Campus<span
-                    class="text-emerald-600 dark:text-emerald-400">Pay</span></span>
+            <div class="flex flex-col leading-none">
+                <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Campus<span class="text-teal-600 dark:text-[#86d4d3]">Pay</span></span>
+                <span class="text-[9px] uppercase tracking-widest font-mono text-slate-400 dark:text-gray-400 font-bold mt-0.5">MIST Canteen Portal</span>
+            </div>
         </div>
 
         <button id="theme-toggle"
-            class="p-2.5 text-slate-600 dark:text-[#bec8c8] hover:bg-slate-200/50 dark:hover:bg-[#2d3135] bg-white/70 dark:bg-[#1a1c1e]/70 border border-slate-200 dark:border-[#2d3135] rounded-full shadow-sm transition-all hover:scale-105 active:scale-95"
+            class="p-2.5 text-slate-600 dark:text-[#bec8c8] hover:bg-slate-200/60 dark:hover:bg-[#2d3135] bg-white/80 dark:bg-[#1a1c1e]/80 border border-slate-200 dark:border-[#2d3135] rounded-2xl shadow-sm transition-all hover:scale-105 active:scale-95"
             title="Toggle Light/Dark Theme">
-            <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-            <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+            <span class="material-symbols-outlined dark:hidden text-xl">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:inline text-xl">light_mode</span>
         </button>
     </header>
 
-    <!-- Main Entry Layout -->
-    <main class="flex-grow flex items-center justify-center py-16 px-6 z-10 relative">
-        <div class="w-full max-w-5xl text-center space-y-12">
+    <!-- Main Two-Panel Content Layout -->
+    <main class="flex-grow flex items-center justify-center py-8 px-4 sm:px-8 z-10 relative">
+        <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-            <!-- Branding Header -->
-            <div class="space-y-4 max-w-2xl mx-auto select-none animate-in fade-in slide-in-from-top-6 duration-700">
-                <div
-                    class="inline-flex px-3.5 py-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mx-auto border border-emerald-500/20">
-                    MIST Canteen Payments
+            <!-- LEFT PANEL: 3D Illustration & Smart Campus Showcase -->
+            <div class="hidden lg:flex lg:col-span-6 flex-col justify-between space-y-8 select-none pr-4">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 dark:bg-teal-400/10 text-teal-700 dark:text-[#86d4d3] text-xs font-black uppercase tracking-wider border border-teal-500/20 shadow-sm">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                        </span>
+                        Military Institute of Science and Technology
+                    </div>
+
+                    <h1 class="text-4xl xl:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                        Next-Gen Smart <br />
+                        <span class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">Campus Cafeteria</span>
+                    </h1>
+
+                    <p class="text-slate-600 dark:text-gray-300 text-base leading-relaxed max-w-lg font-normal">
+                        Experience digital cashless dining. Pre-order meals, track live preparation status, recharge RFID wallets, and verify receipts instantly with QR codes.
+                    </p>
                 </div>
-                <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-slate-950 dark:text-white leading-tight">
-                    Smart Canteen Commerce
-                </h1>
-                <p class="text-base sm:text-lg text-slate-600 dark:text-gray-400 leading-relaxed font-normal">
-                    Enter the MIST unified portal to recharge accounts, manage orders, and access administrative
-                    statistics. Select your role below.
-                </p>
+
+                <!-- 3D Cafeteria Graphic Illustration -->
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-[32px] blur-xl opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                    <div class="relative rounded-[28px] overflow-hidden border border-white/60 dark:border-white/10 shadow-2xl bg-slate-900/5">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" 
+                            alt="Smart Cafeteria Illustration" class="w-full h-64 xl:h-72 object-cover transition-transform duration-700 group-hover:scale-105" />
+                        
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-end p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs uppercase font-black tracking-widest text-teal-400">Daily Operations</span>
+                                    <h4 class="text-lg font-bold">4,500+ Daily Orders Processed</h4>
+                                </div>
+                                <div class="px-3 py-1 rounded-full bg-emerald-500 text-white font-mono text-xs font-black shadow-md">
+                                    99.8% Uptime ⚡
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Feature Badges -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="p-3 bg-white/70 dark:bg-[#1e2022]/70 border border-white/50 dark:border-white/5 rounded-2xl shadow-sm backdrop-blur-md flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-lg">bolt</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Instant Pickup</span>
+                    </div>
+                    <div class="p-3 bg-white/70 dark:bg-[#1e2022]/70 border border-white/50 dark:border-white/5 rounded-2xl shadow-sm backdrop-blur-md flex items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-lg">qr_code_2</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">QR Dispenser</span>
+                    </div>
+                    <div class="p-3 bg-white/70 dark:bg-[#1e2022]/70 border border-white/50 dark:border-white/5 rounded-2xl shadow-sm backdrop-blur-md flex items-center gap-2">
+                        <span class="material-symbols-outlined text-amber-500 text-lg">account_balance_wallet</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">bKash Top-up</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Role Cards Grid -->
-            <div
-                class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+            <!-- RIGHT PANEL: Premium Glassmorphism Login Card -->
+            <div class="lg:col-span-6 w-full max-w-md mx-auto">
+                <div id="login-card"
+                    class="glass-panel p-8 sm:p-10 rounded-[28px] transition-all duration-300 relative">
 
-                <!-- Role Card: Student -->
-                <a href="./login.html"
-                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
-                    <div class="space-y-6">
-                        <div
-                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
-                            <span class="material-symbols-outlined text-[24px]">school</span>
+                    <!-- Header & Branding inside card -->
+                    <div class="text-center space-y-2 mb-6 select-none">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-600 mx-auto flex items-center justify-center text-white shadow-xl shadow-teal-500/30 mb-3">
+                            <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">restaurant</span>
                         </div>
-                        <h2
-                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
-                            Student Portal
-                        </h2>
-                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                            Log in to view canteen food menus, order details, tray dispatches, and request secure
-                            account recharges.
-                        </p>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">CampusCafe Portal</h2>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-gray-400">Smart Cafeteria Management System</p>
                     </div>
-                    <div
-                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
-                        <span>Access Student View</span>
-                        <span
-                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
-                    </div>
-                </a>
 
-                <!-- Role Card: Staff -->
-                <a href="./stafflogin.html"
-                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
-                    <div class="space-y-6">
-                        <div
-                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
-                            <span class="material-symbols-outlined text-[24px]">restaurant</span>
+                    <!-- Modern Segmented Role Selector -->
+                    <div class="mb-6 space-y-2 select-none">
+                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-gray-400 ml-1">
+                            Select User Role
+                        </label>
+                        <div class="grid grid-cols-4 gap-1.5 p-1.5 bg-slate-200/70 dark:bg-[#141618] rounded-2xl border border-slate-300/50 dark:border-white/5">
+                            <button type="button" onclick="setRole('student')" id="role-btn-student"
+                                class="role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 bg-white dark:bg-[#202225] text-teal-700 dark:text-[#86d4d3] shadow-md">
+                                <span class="material-symbols-outlined text-base">school</span>
+                                <span class="text-[10px]">Student</span>
+                            </button>
+                            <button type="button" onclick="setRole('faculty')" id="role-btn-faculty"
+                                class="role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">
+                                <span class="material-symbols-outlined text-base">person</span>
+                                <span class="text-[10px]">Faculty</span>
+                            </button>
+                            <button type="button" onclick="setRole('kitchen stuff')" id="role-btn-kitchen"
+                                class="role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">
+                                <span class="material-symbols-outlined text-base">soup_kitchen</span>
+                                <span class="text-[10px]">Staff</span>
+                            </button>
+                            <button type="button" onclick="setRole('admin')" id="role-btn-admin"
+                                class="role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">
+                                <span class="material-symbols-outlined text-base">admin_panel_settings</span>
+                                <span class="text-[10px]">Admin</span>
+                            </button>
                         </div>
-                        <h2
-                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
-                            Canteen Staff
-                        </h2>
-                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                            Fulfill meals, verify order statuses, manage kitchen inventories, and log recharges directly
-                            from the counter.
-                        </p>
                     </div>
-                    <div
-                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
-                        <span>Access Staff View</span>
-                        <span
-                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
-                    </div>
-                </a>
 
-                <!-- Role Card: Admin -->
-                <a href="./adminlogin.html"
-                    class="glass-card group p-8 rounded-2xl flex flex-col justify-between h-80 shadow-md cursor-pointer relative overflow-hidden">
-                    <div class="space-y-6">
-                        <div
-                            class="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-500/20">
-                            <span class="material-symbols-outlined text-[24px]">admin_panel_settings</span>
+                    <!-- Login Form -->
+                    <form id="index-login-form" class="space-y-4" novalidate>
+                        <!-- Hidden Role Select (Maintained for form compatibility) -->
+                        <select id="login-role" class="hidden">
+                            <option value="student" selected>student</option>
+                            <option value="faculty">faculty</option>
+                            <option value="kitchen stuff">kitchen stuff</option>
+                            <option value="admin">admin</option>
+                        </select>
+
+                        <!-- Student ID / University Email Input -->
+                        <div class="space-y-1.5">
+                            <label id="id-input-label" class="block text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">
+                                Student ID / University Email
+                            </label>
+                            <div class="relative group">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 dark:group-focus-within:text-[#86d4d3] transition-colors text-xl">badge</span>
+                                <input
+                                    class="w-full pl-12 pr-4 py-3.5 bg-white/80 dark:bg-black/40 border border-slate-300/80 dark:border-white/10 rounded-2xl font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all shadow-sm text-sm"
+                                    placeholder="e.g. 202314033" type="text" id="login-id" required />
+                            </div>
                         </div>
-                        <h2
-                            class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-[#86d4d3] transition-colors">
-                            Administrator
-                        </h2>
-                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
-                            Enter the secure command center to audit canteen sales ledgers, track logs, and verify user
-                            credentials.
-                        </p>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 text-emerald-700 dark:text-[#86d4d3] font-bold text-sm select-none border-t border-slate-200/50 dark:border-white/5 pt-4">
-                        <span>Access Central Logic</span>
-                        <span
-                            class="material-symbols-outlined text-[16px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
-                    </div>
-                </a>
 
+                        <!-- Password Input -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    Password
+                                </label>
+                                <span id="caps-warning" class="hidden text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider animate-pulse">
+                                    ⚠️ Caps Lock ON
+                                </span>
+                            </div>
+                            <div class="relative group">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 dark:group-focus-within:text-[#86d4d3] transition-colors text-xl">lock</span>
+                                <input
+                                    class="w-full pl-12 pr-12 py-3.5 bg-white/80 dark:bg-black/40 border border-slate-300/80 dark:border-white/10 rounded-2xl font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all shadow-sm text-sm"
+                                    placeholder="••••••••" type="password" id="login-password" required />
+                                <button type="button" id="toggle-pw-btn"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors p-1"
+                                    title="Toggle Password Visibility">
+                                    <span class="material-symbols-outlined text-xl">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password Secondary Bar -->
+                        <div class="flex items-center justify-between pt-1 pb-1 px-1 text-xs select-none">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked class="rounded border-slate-300 text-teal-600 focus:ring-teal-500 dark:bg-slate-800 dark:border-slate-700" />
+                                <span class="font-medium text-slate-600 dark:text-gray-300">Remember Me</span>
+                            </label>
+                            <a href="#" onclick="showToast('Demo Credentials — Student: 202314033 / 1234 • Faculty: FAC-0000 / 1234 • Staff: ST-0000 / 1234 • Admin: ADM-0000 / 1234', 'info')" class="font-bold text-teal-600 dark:text-[#86d4d3] hover:underline">Forgot Password?</a>
+                        </div>
+
+                        <!-- Full Width Gradient Login Button -->
+                        <div class="pt-2">
+                            <button
+                                class="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white font-extrabold rounded-2xl text-base shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/35 hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 tracking-wide cursor-pointer"
+                                type="submit" id="login-submit-btn">
+                                <span>Sign In to Portal</span>
+                                <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         </div>
     </main>
 
-    <!-- Footer Frame -->
+    <!-- Minimal Modern Footer Frame -->
     <footer
-        class="w-full py-6 text-center text-xs text-slate-500 dark:text-gray-500 border-t border-white/20 dark:border-white/5 backdrop-blur-sm bg-white/10 dark:bg-[#0c0e12]/15 select-none z-10">
-        <p>CampusPay System &copy; 2026. Military Institute of Science and Technology. All Rights Reserved.</p>
+        class="w-full py-5 text-center text-xs text-slate-500 dark:text-gray-400 border-t border-white/30 dark:border-white/5 backdrop-blur-xl bg-white/20 dark:bg-[#0c0e12]/30 select-none z-20">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p class="font-medium">© CampusCafe 2026 • Military Institute of Science and Technology (MIST)</p>
+            <div class="flex gap-4 text-slate-400">
+                <a href="#" class="hover:underline">Privacy Policy</a>
+                <span>•</span>
+                <a href="#" class="hover:underline">Terms of Service</a>
+                <span>•</span>
+                <a href="#" class="hover:underline">Support</a>
+                <span>•</span>
+                <span class="font-mono font-bold">v2.4</span>
+            </div>
+        </div>
     </footer>
 
-    <!-- Theme Control Script -->
+    <!-- Script Logic (Theme, Role Selector, Form Submissions, Toasts) -->
     <script>
-        const themeBtn = document.getElementById('theme-toggle');
+        // Segmented User Role Selector
+        function setRole(roleVal) {
+            const roleSelect = document.getElementById("login-role");
+            if (roleSelect) roleSelect.value = roleVal;
 
-        themeBtn.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.contains('dark');
-            if (isDark) {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.classList.add('light');
-                localStorage.setItem('campuspay-theme', 'light');
-            } else {
-                document.documentElement.classList.remove('light');
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('campuspay-theme', 'dark');
+            const idLabel = document.getElementById("id-input-label");
+            const idInput = document.getElementById("login-id");
+
+            // Update Tab Button Styles
+            const roles = ['student', 'faculty', 'kitchen stuff', 'admin'];
+            roles.forEach(r => {
+                const btnId = r === 'kitchen stuff' ? 'role-btn-kitchen' : `role-btn-${r}`;
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (r === roleVal) {
+                        btn.className = "role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 bg-white dark:bg-[#202225] text-teal-700 dark:text-[#86d4d3] shadow-md";
+                    } else {
+                        btn.className = "role-tab-btn px-2 py-2 rounded-xl text-xs font-black transition-all flex flex-col items-center gap-0.5 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white";
+                    }
+                }
+            });
+
+            // Update Input Placeholder Hints
+            if (idLabel && idInput) {
+                if (roleVal === 'student') {
+                    idLabel.innerText = "Student ID / University Email";
+                    idInput.placeholder = "e.g. 202314033";
+                } else if (roleVal === 'faculty') {
+                    idLabel.innerText = "Faculty University ID / Email";
+                    idInput.placeholder = "e.g. FAC-0000";
+                } else if (roleVal === 'kitchen stuff') {
+                    idLabel.innerText = "Kitchen Staff Counter ID";
+                    idInput.placeholder = "e.g. ST-0000";
+                } else if (roleVal === 'admin') {
+                    idLabel.innerText = "Administrator Access Key ID";
+                    idInput.placeholder = "e.g. ADM-0000";
+                }
             }
-        });
+        }
+
+        // Theme Toggle Button
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                if (isDark) {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.add('light');
+                    localStorage.setItem('campuspay-theme', 'light');
+                } else {
+                    document.documentElement.classList.remove('light');
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('campuspay-theme', 'dark');
+                }
+            });
+        }
+
+        // Caps Lock Warning Indicator
+        const passwordInput = document.getElementById('login-password');
+        const capsWarning = document.getElementById('caps-warning');
+        if (passwordInput && capsWarning) {
+            passwordInput.addEventListener('keyup', (e) => {
+                if (e.getModifierState('CapsLock')) {
+                    capsWarning.classList.remove('hidden');
+                } else {
+                    capsWarning.classList.add('hidden');
+                }
+            });
+        }
+
+        // Toast Notifications Function
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toast-wrapper");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            let bgClass = "bg-white dark:bg-[#1a1c1e] text-slate-800 dark:text-white border-slate-200 dark:border-[#2d3135]";
+            let icon = "info";
+            let iconColor = "text-teal-600 dark:text-[#86d4d3]";
+
+            if (type === "success") {
+                bgClass = "bg-emerald-50 dark:bg-[#064e3b] text-emerald-900 dark:text-[#a7f3d0] border-emerald-300 dark:border-[#34d399]/30";
+                icon = "check_circle";
+                iconColor = "text-emerald-600 dark:text-[#34d399]";
+            } else if (type === "error") {
+                bgClass = "bg-rose-50 dark:bg-[#7f1d1d] text-rose-900 dark:text-[#fca5a5] border-rose-300 dark:border-[#f87171]/30";
+                icon = "error";
+                iconColor = "text-rose-600 dark:text-[#f87171]";
+            }
+
+            toast.className = `toast-item border flex items-center gap-3 p-4 rounded-2xl shadow-xl pointer-events-auto max-w-sm font-sans ${bgClass}`;
+            toast.innerHTML = `
+                <span class="material-symbols-outlined ${iconColor}">${icon}</span>
+                <p class="text-xs font-bold flex-1">${message}</p>
+                <button class="toast-close-btn text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">close</span>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            const closeBtn = toast.querySelector(".toast-close-btn");
+            const removeToast = () => {
+                if (toast.parentNode) {
+                    toast.classList.add("removing");
+                    toast.addEventListener("animationend", () => {
+                        toast.remove();
+                    });
+                }
+            };
+
+            closeBtn?.addEventListener("click", removeToast);
+            setTimeout(removeToast, 4000);
+        }
+
+        // Password Visibility Toggle
+        const togglePwBtn = document.getElementById("toggle-pw-btn");
+        const pwInput = document.getElementById("login-password");
+        if (togglePwBtn && pwInput) {
+            togglePwBtn.addEventListener("click", () => {
+                const iconSpan = togglePwBtn.querySelector("span");
+                if (pwInput.type === "password") {
+                    pwInput.type = "text";
+                    iconSpan.innerText = "visibility_off";
+                } else {
+                    pwInput.type = "password";
+                    iconSpan.innerText = "visibility";
+                }
+            });
+        }
+
+        // Form Submit Handler
+        const loginForm = document.getElementById("index-login-form");
+        if (loginForm) {
+            loginForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const roleEl = document.getElementById("login-role");
+                const idEl = document.getElementById("login-id");
+                const pwEl = document.getElementById("login-password");
+                const submitBtn = document.getElementById("login-submit-btn");
+                const cardEl = document.getElementById("login-card");
+
+                if (!roleEl || !idEl || !pwEl || !submitBtn) return;
+
+                const roleVal = roleEl.value;
+                const rawId = idEl.value.trim();
+                const pwVal = pwEl.value.trim();
+
+                if (rawId === "" || pwVal === "") {
+                    showToast("ID and Password are required fields.", "error");
+                    if (cardEl) {
+                        cardEl.classList.add("animate-shake");
+                        setTimeout(() => cardEl.classList.remove("animate-shake"), 500);
+                    }
+                    return;
+                }
+
+                const originalContent = submitBtn.innerHTML;
+                submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-white text-xl">sync</span> Authenticating...`;
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    let isSuccess = false;
+                    let redirectUrl = "";
+                    let successMessage = "";
+
+                    if (roleVal === "student") {
+                        if ((rawId === "202314033" || rawId === "202114042" || rawId.toLowerCase() === "student") && pwVal === "1234") {
+                            isSuccess = true;
+                            redirectUrl = "./student.html";
+                            successMessage = "Student authentication successful! Loading portal...";
+                        }
+                    } else if (roleVal === "faculty") {
+                        if ((rawId.toUpperCase() === "FAC-0000" || rawId.toUpperCase() === "FAC-2026" || rawId === "1001" || rawId.toLowerCase() === "faculty" || rawId.toLowerCase() === "faculty@mist.ac.bd") && (pwVal === "1234" || pwVal === "fac1234")) {
+                            isSuccess = true;
+                            redirectUrl = "./student.html";
+                            successMessage = "Faculty authentication successful! Loading portal...";
+                        }
+                    } else if (roleVal === "kitchen stuff") {
+                        if ((rawId.toUpperCase() === "ST-0000" || rawId.toLowerCase() === "staff" || rawId.toLowerCase() === "st-00000" || rawId.toLowerCase() === "kitchen") && pwVal === "1234") {
+                            isSuccess = true;
+                            redirectUrl = "./staff.html";
+                            successMessage = "Staff authentication successful! Loading counter...";
+                        }
+                    } else if (roleVal === "admin") {
+                        if ((rawId.toUpperCase() === "ADM-0000" || rawId.toLowerCase() === "admin" || (rawId.toUpperCase().startsWith("CP-ADM-") && rawId.length > 7)) && pwVal === "1234") {
+                            isSuccess = true;
+                            redirectUrl = "./admin.html";
+                            successMessage = "Administrator login successful! Loading dashboard...";
+                        }
+                    }
+
+                    if (isSuccess) {
+                        showToast(successMessage, "success");
+                        setTimeout(() => {
+                            window.location.href = redirectUrl;
+                        }, 1000);
+                    } else {
+                        submitBtn.innerHTML = originalContent;
+                        submitBtn.disabled = false;
+                        if (cardEl) {
+                            cardEl.classList.add("animate-shake");
+                            setTimeout(() => cardEl.classList.remove("animate-shake"), 500);
+                        }
+                        showToast(`Access Denied: Invalid ID or password for ${roleVal}.`, "error");
+                    }
+                }, 1200);
+            });
+        }
     </script>
+
+    <!-- Floating Toast Notification Wrapper -->
+    <div id="toast-wrapper" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+        <!-- Hydrated dynamically -->
+    </div>
 </body>
 
 </html>

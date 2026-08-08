@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CampusPay | Canteen Staff Dashboard</title>
+    <title>CampusPay | Kitchen Staff Dashboard</title>
 
     <!-- Tailwind CSS & Plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -19,95 +19,27 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
+                    colors: {
+                        "primary": "#004c4c",
+                        "primary-container": "#006666",
                         "on-primary": "#ffffff",
+                        "secondary": "#566060",
+                        "secondary-container": "#d8e2e2",
+                        "surface": "#f9f9fc",
                         "on-surface": "#1a1c1e",
                         "outline-variant": "#bec9c8",
-                        "surface-bright": "#f9f9fc",
-                        "on-primary-fixed-variant": "#004f4f",
                         "error": "#ba1a1a",
-                        "tertiary-fixed-dim": "#ffba31",
-                        "on-tertiary-fixed-variant": "#5f4100",
-                        "tertiary-fixed": "#ffdeab",
-                        "surface-container-high": "#e8e8ea",
-                        "inverse-on-surface": "#f0f0f3",
-                        "primary-fixed": "#a2f0ef",
-                        "tertiary": "#5b3e00",
-                        "surface-container": "#eeeef0",
-                        "inverse-primary": "#86d4d3",
-                        "on-error-container": "#93000a",
-                        "secondary-container": "#d8e2e2",
-                        "primary-fixed-dim": "#86d4d3",
-                        "surface-tint": "#096969",
-                        "on-secondary-fixed-variant": "#3f4949",
-                        "surface": "#f9f9fc",
-                        "inverse-surface": "#2f3133",
-                        "on-tertiary-fixed": "#271900",
-                        "surface-container-highest": "#e2e2e5",
-                        "secondary": "#566060",
-                        "on-tertiary": "#ffffff",
-                        "background": "#f9f9fc",
-                        "on-background": "#1a1c1e",
-                        "secondary-fixed-dim": "#bec8c8",
-                        "on-surface-variant": "#3f4948",
-                        "tertiary-container": "#795400",
-                        "surface-container-low": "#f3f3f6",
-                        "surface-variant": "#e2e2e5",
-                        "secondary-fixed": "#dae4e4",
-                        "on-primary-fixed": "#002020",
-                        "surface-container-lowest": "#ffffff",
-                        "primary": "#004c4c",
-                        "on-secondary-container": "#5b6465",
-                        "on-primary-container": "#93e1e0",
-                        "surface-dim": "#dadadc",
-                        "outline": "#6f7979",
-                        "on-error": "#ffffff",
-                        "on-secondary-fixed": "#141d1e",
-                        "primary-container": "#006666",
-                        "error-container": "#ffdad6",
-                        "on-tertiary-container": "#ffcb72",
-                        "on-secondary": "#ffffff"
+                        "error-container": "#ffdad6"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "gutter": "16px",
-                        "stack-md": "12px",
-                        "container-margin": "24px",
-                        "base": "8px",
-                        "stack-sm": "4px",
-                        "stack-lg": "24px"
-                    },
-                    "fontFamily": {
-                        "title-lg": ["Inter", "sans-serif"],
-                        "label-md": ["Inter", "sans-serif"],
-                        "body-md": ["Inter", "sans-serif"],
-                        "headline-md": ["Inter", "sans-serif"],
-                        "body-lg": ["Inter", "sans-serif"],
-                        "headline-lg-mobile": ["Inter", "sans-serif"],
-                        "headline-lg": ["Inter", "sans-serif"],
-                        "display-lg": ["Inter", "sans-serif"]
-                    },
-                    "fontSize": {
-                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
-                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
-                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"]
                     }
-                },
-            },
+                }
+            }
         }
     </script>
 
-    <!-- Synchronize dark theme state immediately to avoid flashing -->
+    <!-- Dark Mode Synchronizer -->
     <script>
         if (localStorage.getItem('campuspay-theme') === 'dark') {
             document.documentElement.classList.add('dark');
@@ -123,507 +55,1834 @@
 </head>
 
 <body
-    class="bg-surface dark:bg-[#121314] text-on-surface dark:text-[#e2e2e5] font-body-md min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+    class="bg-[#f3f4f6] dark:bg-[#121314] text-on-surface dark:text-[#e2e2e5] font-sans min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
-    <!-- Mobile Sidebar Backdrop overlay -->
+    <!-- Mobile Sidebar Backdrop Overlay -->
     <div id="mobile-nav-backdrop"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 md:hidden">
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 md:hidden">
     </div>
 
-    <!-- SIDE NAVIGATION SHELL -->
+    <!-- SIDEBAR NAVIGATION -->
     <aside id="staff-sidebar"
-        class="bg-surface-container-lowest dark:bg-[#151617] h-screen w-64 fixed left-0 top-0 overflow-y-auto border-r border-outline-variant dark:border-[#2d3135] flex flex-col py-stack-lg px-gutter z-50 transition-all duration-300">
-        <div class="mb-10 select-none">
-            <h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-[#86d4d3]">CampusPay Staff
-            </h1>
-            <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">MIST Canteen
-                Management</p>
+        class="bg-white dark:bg-[#151617] h-screen w-64 fixed left-0 top-0 overflow-y-auto border-r border-outline-variant dark:border-[#2d3135] flex flex-col py-6 px-3 z-50 transition-all duration-300 shadow-xl">
+
+        <!-- Brand Header -->
+        <div class="mb-6 select-none flex items-center gap-3 px-1">
+            <div
+                class="w-10 h-10 rounded-xl bg-primary text-on-primary font-black text-xl flex items-center justify-center shadow-md shrink-0">
+                🍳
+            </div>
+            <div class="min-w-0 flex-1">
+                <h1 class="text-base font-black text-primary dark:text-[#86d4d3] leading-tight truncate">Kitchen Display
+                </h1>
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider truncate">CampusPay • MIST</p>
+            </div>
         </div>
 
-        <nav class="flex-1 space-y-2" id="sidebar-nav">
-            <!-- Sidebar Tabs Buttons -->
+        <!-- Navigation Tabs -->
+        <nav class="flex-1 space-y-1 overflow-y-auto custom-scrollbar pr-0.5" id="sidebar-nav">
+
             <button data-tab="dashboard"
-                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-label-md text-label-md">Dashboard</span>
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl font-bold text-primary dark:text-[#86d4d3] bg-primary/10 dark:bg-[#004f4f]/30 select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg shrink-0">dashboard</span>
+                    <span class="text-xs font-bold truncate">Dashboard</span>
+                </div>
             </button>
+
+            <button data-tab="active-orders"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-amber-500 shrink-0">soup_kitchen</span>
+                    <span class="text-xs font-bold truncate">Active Orders</span>
+                </div>
+                <span id="badge-active-orders-count"
+                    class="shrink-0 bg-amber-500 text-neutral-900 text-[10px] font-black px-2 py-0.5 rounded-full hidden whitespace-nowrap">0</span>
+            </button>
+
             <button data-tab="menu"
-                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
-                <span class="material-symbols-outlined">restaurant</span>
-                <span class="font-label-md text-label-md">Food Menu</span>
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-pink-500 shrink-0">restaurant_menu</span>
+                    <span class="text-xs font-bold truncate">Food Menu</span>
+                </div>
+                <span
+                    class="shrink-0 bg-pink-500/20 text-pink-700 dark:text-pink-300 text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">10
+                    Items</span>
             </button>
-            <button data-tab="orders"
-                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
-                <span class="material-symbols-outlined">shopping_bag</span>
-                <span class="font-label-md text-label-md">Orders</span>
+
+            <button data-tab="ready-pickup"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-emerald-500 shrink-0">verified</span>
+                    <span class="text-xs font-bold truncate">Ready for Pickup</span>
+                </div>
+                <span id="badge-ready-count"
+                    class="shrink-0 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden whitespace-nowrap">0</span>
             </button>
-            <button data-tab="recharge"
-                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container dark:hover:bg-[#202225] transition-all duration-200">
-                <span class="material-symbols-outlined">add_card</span>
-                <span class="font-label-md text-label-md">Recharge</span>
+
+            <button data-tab="delivered-orders"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-slate-400 shrink-0">task_alt</span>
+                    <span class="text-xs font-bold truncate">Delivered Orders</span>
+                </div>
             </button>
-            <!-- ACTIVE TAB: Inventory (Default) -->
+
             <button data-tab="inventory"
-                class="sidebar-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-all duration-200 text-primary dark:text-[#86d4d3] border-r-4 border-primary dark:border-[#86d4d3] bg-secondary-container/30 dark:bg-[#004f4f]/20">
-                <span class="material-symbols-outlined">inventory_2</span>
-                <span class="font-label-md text-label-md">Inventory</span>
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-blue-500 shrink-0">inventory_2</span>
+                    <span class="text-xs font-bold truncate">Inventory</span>
+                </div>
+            </button>
+
+            <button data-tab="notifications"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-purple-500 shrink-0">notifications</span>
+                    <span class="text-xs font-bold truncate">Notifications</span>
+                </div>
+            </button>
+
+            <button data-tab="reports"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-indigo-500 shrink-0">analytics</span>
+                    <span class="text-xs font-bold truncate">Reports</span>
+                </div>
+            </button>
+
+            <button data-tab="branch-management"
+                class="sidebar-tab-btn w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-on-surface-variant dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202225] transition-all select-none min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span class="material-symbols-outlined text-lg text-cyan-500 shrink-0">storefront</span>
+                    <span class="text-xs font-bold truncate">Branch Management</span>
+                </div>
+                <span
+                    class="shrink-0 bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">MIST
+                    Old Cafe</span>
             </button>
         </nav>
 
-        <div class="mt-auto pt-6 border-t border-outline-variant dark:border-[#2d3135] space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-[#202225] transition-colors"
+        <!-- Sidebar Footer links -->
+        <div class="mt-auto pt-4 border-t border-outline-variant dark:border-[#2d3135] space-y-1">
+            <a class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-[#202225] transition-colors min-w-0"
                 href="./settings.html?role=staff">
-                <span class="material-symbols-outlined">settings</span>
-                <span class="font-label-md text-label-md">Settings</span>
+                <span class="material-symbols-outlined text-base shrink-0">settings</span>
+                <span class="truncate">Settings</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-colors"
+            <a class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors min-w-0"
                 href="./index.html">
-                <span class="material-symbols-outlined">logout</span>
-                <span class="font-label-md text-label-md">Logout</span>
+                <span class="material-symbols-outlined text-base shrink-0">logout</span>
+                <span class="truncate">Logout</span>
             </a>
         </div>
     </aside>
 
     <!-- MAIN CONTENT CANVAS -->
     <main class="ml-0 md:ml-64 flex flex-col flex-1 min-h-screen transition-all duration-300">
-        <!-- TOP APP BAR -->
+
+        <!-- TOP NAVIGATION BAR -->
         <header
-            class="h-16 flex items-center justify-between px-container-margin bg-surface dark:bg-[#1a1c1e] border-b border-outline-variant dark:border-[#2d3135] sticky top-0 z-40 transition-colors duration-250">
-            <div class="flex items-center gap-stack-md">
+            class="h-20 flex items-center justify-between px-4 sm:px-6 bg-white dark:bg-[#1a1c1e] border-b border-outline-variant dark:border-[#2d3135] sticky top-0 z-40 shadow-sm gap-4">
+
+            <div class="flex items-center gap-4 shrink-0">
                 <button id="staff-menu-toggle-btn"
-                    class="md:hidden p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors mr-1">
+                    class="md:hidden p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-gray-100 dark:hover:bg-[#2d3135] rounded-full transition-colors">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <h2 id="view-header-title"
-                    class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Inventory Overview
-                </h2>
-            </div>
-            <div class="flex items-center gap-container-margin">
-                <!-- Search engine bar inputs -->
-                <div class="relative hidden sm:block">
-                    <span
-                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-secondary-fixed-dim text-sm">search</span>
-                    <input id="staff-global-search"
-                        class="bg-surface-container-low dark:bg-[#2c2d30] border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary w-64 dark:text-white dark:placeholder-gray-500"
-                        placeholder="Search..." type="text" />
-                </div>
-                <div class="flex items-center gap-stack-md">
-                    <!-- Theme toggle button -->
-                    <button id="theme-toggle"
-                        class="p-2 text-on-surface-variant dark:text-[#bec8c8] hover:bg-surface-container-low dark:hover:bg-[#2d3135] rounded-full transition-colors"
-                        title="Toggle Mode theme">
-                        <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                        <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
-                    </button>
-                    <span
-                        class="material-symbols-outlined text-on-surface-variant dark:text-[#bec8c8] cursor-pointer p-2 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full">notifications</span>
-                    <div
-                        class="w-10 h-10 rounded-full bg-primary-container dark:bg-[#004f4f] flex items-center justify-center text-on-primary-container dark:text-[#86d4d3] font-bold select-none">
-                        S
+
+                <!-- Kitchen Status Open/Closed Fancy Toggle Button -->
+                <div onclick="toggleKitchenStatus()" id="btn-toggle-kitchen-status"
+                    class="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface-container-low dark:bg-[#25282a] border border-outline-variant/50 dark:border-[#383a3e] shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer select-none shrink-0"
+                    title="Click to toggle kitchen ordering status">
+                    <!-- Live Beacon & Status Pill -->
+                    <span id="kitchen-status-pill"
+                        class="px-2.5 py-1 rounded-full text-[11px] font-black uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 whitespace-nowrap transition-all duration-300">
+                        <span id="kitchen-status-beacon"
+                            class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span id="kitchen-status-text">KITCHEN OPEN</span>
+                    </span>
+
+                    <!-- Fancy Sliding Switch Track -->
+                    <div id="kitchen-switch-track"
+                        class="relative inline-flex h-6 w-11 items-center rounded-full p-0.5 transition-colors duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm shrink-0">
+                        <span id="kitchen-switch-knob"
+                            class="inline-flex items-center justify-center h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ease-in-out translate-x-5">
+                            <span id="kitchen-switch-icon"
+                                class="material-symbols-outlined text-[12px] font-bold text-emerald-600">check</span>
+                        </span>
                     </div>
                 </div>
+            </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+
+                <!-- Horizontally Wider Global Search Input -->
+                <div class="relative hidden sm:block">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">search</span>
+                    <input id="staff-global-search"
+                        class="bg-gray-100 dark:bg-[#2c2d30] border-none rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:ring-2 focus:ring-primary w-64 md:w-80 lg:w-96 dark:text-white dark:placeholder-gray-500 shadow-inner transition-all duration-300"
+                        placeholder="Search Order #, Customer Name, Student ID..." type="text" />
+                </div>
+
+                <!-- Funky Colorful Real-time Clock & Date Widget -->
+                <div
+                    class="hidden sm:flex flex-col items-end px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-md shadow-indigo-500/25 border border-white/20 select-none shrink-0 hover:scale-105 transition-all duration-300">
+                    <span id="header-realtime-clock"
+                        class="font-mono font-black text-xs sm:text-sm text-amber-300 flex items-center gap-1 drop-shadow">
+                        <span class="material-symbols-outlined text-xs text-cyan-200">schedule</span>
+                        <span>12:00:00 PM</span>
+                    </span>
+                    <span id="header-realtime-date"
+                        class="text-[9px] font-extrabold text-indigo-100 uppercase tracking-wider">Fri, Oct 14,
+                        2026</span>
+                </div>
+
+                <!-- Audio Notification Mute Button -->
+                <button id="btn-toggle-audio" onclick="toggleAudioMute()"
+                    class="p-2 text-[#566060] dark:text-[#bec8c8] hover:bg-gray-100 dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                    title="Toggle Sound Chime">
+                    <span class="material-symbols-outlined text-primary dark:text-[#86d4d3]">volume_up</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle"
+                    class="p-2 text-[#566060] dark:text-[#bec8c8] hover:bg-gray-100 dark:hover:bg-[#2d3135] rounded-full transition-colors"
+                    title="Toggle Theme">
+                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+                </button>
+
+                <!-- Kitchen Staff Profile -->
+                <div class="flex items-center gap-2 pl-2 border-l border-outline-variant dark:border-[#2d3135]">
+                    <div
+                        class="w-9 h-9 rounded-full bg-primary-container text-on-primary dark:bg-[#004f4f] dark:text-[#86d4d3] flex items-center justify-center font-black text-sm select-none shadow">
+                        K
+                    </div>
+                    <div class="hidden xl:block select-none">
+                        <p class="text-xs font-black text-on-surface dark:text-white leading-tight">Chef Kabir</p>
+                        <p class="text-[10px] font-bold text-gray-500">Head Chef</p>
+                    </div>
+                </div>
+
             </div>
         </header>
 
-        <!-- DASHBOARD BODY -->
-        <section class="p-container-margin flex flex-col gap-stack-lg flex-1">
+        <!-- DASHBOARD CONTENT BODY -->
+        <section class="p-6 flex flex-col gap-6 flex-1">
 
-            <!-- QUICK STATS GRID -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter select-none">
-                <div
-                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
-                    <div
-                        class="w-12 h-12 rounded-full bg-primary-container dark:bg-[#004f4f]/30 flex items-center justify-center text-primary dark:text-[#86d4d3]">
-                        <span class="material-symbols-outlined">payments</span>
+            <!-- DASHBOARD STATISTICS (TOP ROW - 5 BALANCED METRIC CARDS) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 select-none">
+
+                <!-- Active Orders -->
+                <div class="glass-card bg-white dark:bg-[#1e2022] p-4 rounded-2xl border border-outline-variant/40 shadow-sm flex flex-col justify-between h-full min-h-[115px]">
+                    <div class="flex justify-between items-center h-6 text-primary dark:text-[#86d4d3]">
+                        <span class="material-symbols-outlined text-2xl leading-none shrink-0">soup_kitchen</span>
+                        <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary dark:text-[#86d4d3] border border-primary/20 text-[10px] font-black uppercase tracking-wider leading-none shrink-0">Queue</span>
                     </div>
-                    <div>
-                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
-                            Today's Sales</p>
-                        <h3 id="stat-sales"
-                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">৳
-                            42,850</h3>
+                    <div class="mt-3 flex flex-col justify-end">
+                        <h3 id="stat-active-orders" class="text-2xl sm:text-3xl font-black text-primary dark:text-[#86d4d3] leading-none tracking-tight">00</h3>
+                        <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mt-1 truncate">Active Orders</p>
                     </div>
                 </div>
-                <div
-                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
-                    <div
-                        class="w-12 h-12 rounded-full bg-secondary-container dark:bg-[#566060]/30 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
-                        <span class="material-symbols-outlined">fastfood</span>
+
+                <!-- Preparing -->
+                <div class="glass-card bg-white dark:bg-[#1e2022] p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 shadow-sm flex flex-col justify-between h-full min-h-[115px]">
+                    <div class="flex justify-between items-center h-6 text-amber-500">
+                        <span class="material-symbols-outlined text-2xl leading-none animate-spin shrink-0">skillet</span>
+                        <span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-[10px] font-black uppercase tracking-wider leading-none shrink-0">In Prep</span>
                     </div>
-                    <div>
-                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
-                            Items Sold</p>
-                        <h3 id="stat-items-sold"
-                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">312
-                        </h3>
+                    <div class="mt-3 flex flex-col justify-end">
+                        <h3 id="stat-preparing" class="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 leading-none tracking-tight">00</h3>
+                        <p class="text-xs font-bold text-amber-700 dark:text-amber-300 mt-1 truncate">Preparing</p>
                     </div>
                 </div>
-                <div
-                    class="glass-card bg-[#fffbfa] dark:bg-[#2c1a1a] p-stack-lg rounded-xl border-2 border-error-container dark:border-red-900/40 flex items-center gap-stack-lg shadow-sm">
-                    <div
-                        class="w-12 h-12 rounded-full bg-error-container dark:bg-[#852222] flex items-center justify-center text-error dark:text-red-200">
-                        <span class="material-symbols-outlined">warning</span>
+
+                <!-- Ready for Pickup -->
+                <div class="glass-card bg-white dark:bg-[#1e2022] p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 shadow-sm flex flex-col justify-between h-full min-h-[115px]">
+                    <div class="flex justify-between items-center h-6 text-emerald-500">
+                        <span class="material-symbols-outlined text-2xl leading-none shrink-0">verified</span>
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider leading-none shrink-0">Pickup</span>
                     </div>
-                    <div>
-                        <p class="font-label-md text-label-md text-error dark:text-red-400 font-bold">Low Stock Alerts
-                        </p>
-                        <h3 id="stat-low-stock"
-                            class="font-headline-md text-headline-md text-on-error-container dark:text-red-200 font-black">
-                            02</h3>
+                    <div class="mt-3 flex flex-col justify-end">
+                        <h3 id="stat-ready" class="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 leading-none tracking-tight">00</h3>
+                        <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300 mt-1 truncate">Ready</p>
                     </div>
                 </div>
-                <div
-                    class="glass-card bg-white dark:bg-[#1e2022] p-stack-lg rounded-xl flex items-center gap-stack-lg border border-outline-variant dark:border-[#2d3135] shadow-sm">
-                    <div
-                        class="w-12 h-12 rounded-full bg-tertiary-fixed dark:bg-[#795400]/25 flex items-center justify-center text-tertiary dark:text-tertiary-fixed-dim">
-                        <span class="material-symbols-outlined">hourglass_empty</span>
+
+                <!-- Delivered Today -->
+                <div class="glass-card bg-white dark:bg-[#1e2022] p-4 rounded-2xl border border-outline-variant/40 shadow-sm flex flex-col justify-between h-full min-h-[115px]">
+                    <div class="flex justify-between items-center h-6 text-slate-500">
+                        <span class="material-symbols-outlined text-2xl leading-none shrink-0">task_alt</span>
+                        <span class="px-2 py-0.5 rounded-full bg-slate-500/15 text-slate-700 dark:text-slate-300 border border-slate-500/30 text-[10px] font-black uppercase tracking-wider leading-none shrink-0">Today</span>
                     </div>
-                    <div>
-                        <p class="font-label-md text-label-md text-on-surface-variant dark:text-secondary-fixed-dim">
-                            Pending Orders</p>
-                        <h3 id="stat-orders"
-                            class="font-headline-md text-headline-md text-on-surface dark:text-white font-black">03</h3>
+                    <div class="mt-3 flex flex-col justify-end">
+                        <h3 id="stat-delivered" class="text-2xl sm:text-3xl font-black text-slate-700 dark:text-slate-200 leading-none tracking-tight">00</h3>
+                        <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mt-1 truncate">Delivered</p>
                     </div>
                 </div>
+
+                <!-- Low Stock Ingredients -->
+                <div class="glass-card bg-white dark:bg-[#1e2022] p-4 rounded-2xl border border-red-500/40 bg-red-500/10 shadow-sm flex flex-col justify-between h-full min-h-[115px]">
+                    <div class="flex justify-between items-center h-6 text-red-600">
+                        <span class="material-symbols-outlined text-2xl leading-none shrink-0">inventory</span>
+                        <span class="px-2 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-wider leading-none shrink-0 shadow-sm">Alert</span>
+                    </div>
+                    <div class="mt-3 flex flex-col justify-end">
+                        <h3 id="stat-low-stock" class="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-300 leading-none tracking-tight">00</h3>
+                        <p class="text-xs font-bold text-red-700 dark:text-red-300 mt-1 truncate">Low Stock</p>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- TAB: INVENTORY (Active Default) -->
-            <div id="tab-content-inventory" class="tab-content-pane space-y-6">
-                <div
-                    class="glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] overflow-hidden flex flex-col shadow-md">
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <div id="tab-content-dashboard" class="tab-content-pane space-y-6 select-none">
+
+                <!-- ROW 1: 3 KEY METRIC HIGHLIGHTS -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- 12. TODAY'S SALES SNAPSHOT -->
                     <div
-                        class="p-container-margin border-b border-outline-variant dark:border-[#2d3135] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-stack-md bg-surface-bright dark:bg-[#1a1b1d]">
-                        <div>
-                            <h4 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Manage
-                                Stock Logs</h4>
-                            <p class="font-label-md text-label-md text-on-surface-variant dark:text-gray-400">Update
-                                item availability and quantities for the live student portal</p>
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+                            <h4
+                                class="font-black text-xs text-primary dark:text-[#86d4d3] uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-sm">payments</span> Sales Snapshot
+                            </h4>
+                            <span
+                                class="px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-[10px] font-black rounded-full uppercase">Today</span>
                         </div>
-                        <button id="btn-add-item-modal"
-                            class="bg-primary dark:bg-primary-container text-on-primary dark:text-[#86d4d3] px-container-margin py-2.5 rounded-full font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-md">
-                            <span class="material-symbols-outlined text-sm font-bold">add</span>
-                            Add New Item
+                        <div>
+                            <div class="text-2xl font-black text-on-surface dark:text-white" id="dash-sales-revenue">৳
+                                31,450</div>
+                            <p class="text-[11px] font-semibold text-gray-400 mt-0.5">Total Revenue Generated</p>
+                        </div>
+                        <div
+                            class="grid grid-cols-2 gap-2 pt-2 border-t border-outline-variant/30 text-xs font-extrabold">
+                            <div class="bg-surface-container-low dark:bg-[#151617] p-2 rounded-xl text-center">
+                                <span class="text-gray-400 block text-[9px] uppercase font-bold">Orders</span>
+                                <span id="dash-sales-orders"
+                                    class="text-primary dark:text-[#86d4d3] font-black text-sm">176</span>
+                            </div>
+                            <div class="bg-surface-container-low dark:bg-[#151617] p-2 rounded-xl text-center">
+                                <span class="text-gray-400 block text-[9px] uppercase font-bold">Meals</span>
+                                <span id="dash-sales-meals"
+                                    class="text-emerald-600 dark:text-emerald-400 font-black text-sm">301</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. LIVE KITCHEN STATUS -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-col justify-between space-y-3">
+                        <div
+                            class="flex justify-between items-center border-b border-outline-variant/30 pb-2 gap-2 min-w-0">
+                            <h4
+                                class="font-black text-xs text-on-surface dark:text-white uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                <span class="material-symbols-outlined text-emerald-500 shrink-0">sensors</span> Live
+                                Kitchen Workload
+                            </h4>
+                            <span id="dash-workload-badge"
+                                class="px-2 py-0.5 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-black rounded-full uppercase shrink-0 whitespace-nowrap">🟢
+                                Normal</span>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-baseline">
+                                <span class="text-xs font-bold text-gray-400">Current Load:</span>
+                                <span id="dash-workload-percent"
+                                    class="text-xl font-black text-emerald-600 dark:text-emerald-400">42%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2.5 rounded-full overflow-hidden mt-1.5">
+                                <div id="dash-workload-bar"
+                                    class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
+                                    style="width: 42%;"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-xs font-bold pt-2 border-t border-outline-variant/30">
+                            <span class="text-gray-400">Estimated Capacity:</span>
+                            <span id="dash-workload-capacity"
+                                class="font-mono font-black text-on-surface dark:text-white">18 / 40 orders</span>
+                        </div>
+                    </div>
+
+                    <!-- 9. PEAK HOUR INDICATOR -->
+                    <div id="dash-peakhour-card"
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-col justify-between space-y-3 transition-all duration-500">
+                        <div
+                            class="flex justify-between items-center border-b border-outline-variant/30 pb-2 gap-2 min-w-0">
+                            <h4 id="dash-peakhour-header-title"
+                                class="font-black text-xs text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                <span id="dash-peakhour-icon"
+                                    class="material-symbols-outlined text-blue-500 shrink-0">schedule</span> Peak Hour
+                                Indicator
+                            </h4>
+                            <span id="dash-peakhour-badge"
+                                class="px-2 py-0.5 bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[10px] font-black rounded-full uppercase shrink-0 whitespace-nowrap">Busy</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-black uppercase text-gray-400 block">Current Hour Load</span>
+                            <div id="dash-peakhour-status-text"
+                                class="text-xl font-black text-blue-600 dark:text-blue-400">Lunch Peak Rush</div>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-xs font-bold pt-2 border-t border-outline-variant/30">
+                            <span class="text-gray-400">Next Expected Rush:</span>
+                            <span id="dash-peakhour-next-rush"
+                                class="font-mono font-black text-primary dark:text-[#86d4d3]">1:00–2:00 PM</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 2: MERGED SMART KITCHEN WIDGETS -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- WIDGET: BATCH PREPARATION SUGGESTIONS ⭐ -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-amber-500/40 bg-amber-500/5 shadow-md flex flex-col justify-between space-y-4">
+                        <div>
+                            <div
+                                class="flex justify-between items-center border-b border-amber-500/30 pb-3 mb-4 gap-2 flex-wrap sm:flex-nowrap">
+                                <h3
+                                    class="text-base font-black text-amber-700 dark:text-amber-300 flex items-center gap-2 min-w-0">
+                                    <span class="material-symbols-outlined text-amber-500 shrink-0">skillet</span> Batch
+                                    Preparation Suggestions ⭐
+                                </h3>
+                                <span
+                                    class="px-2.5 py-1 bg-amber-500/20 text-amber-800 dark:text-amber-200 text-[10px] font-black rounded-full uppercase shrink-0 whitespace-nowrap">Chef
+                                    Smart Assistant</span>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-3">Groups identical items
+                                across active orders to optimize batch cooking speed.</p>
+                            <div id="dash-batch-suggestions-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Hydrated dynamically from state -->
+                            </div>
+                        </div>
+
+                        <div
+                            class="pt-3 border-t border-amber-500/30 flex justify-between items-center flex-wrap gap-2">
+                            <span class="text-xs font-bold text-amber-800 dark:text-amber-300">Tip: Cook items in batch
+                                for 3x faster order dispatch!</span>
+                            <button onclick="switchTab('active-orders')"
+                                class="px-3 py-1.5 bg-amber-500 text-neutral-900 font-extrabold text-xs rounded-xl shadow hover:bg-amber-600 transition-all">
+                                View Full Batch Queue →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MERGED WIDGET 2: ALERTS PANEL & LOW INVENTORY PREVIEW -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-red-500/40 bg-red-500/5 shadow-md flex flex-col justify-between space-y-4">
+                        <div>
+                            <div
+                                class="flex justify-between items-center border-b border-red-500/30 pb-3 mb-4 gap-2 flex-wrap sm:flex-nowrap">
+                                <h3
+                                    class="text-base font-black text-red-600 dark:text-red-400 flex items-center gap-2 min-w-0">
+                                    <span class="material-symbols-outlined shrink-0">warning</span> Alerts & Low
+                                    Inventory Warning
+                                </h3>
+                                <span
+                                    class="px-2.5 py-1 bg-red-600 text-white text-[10px] font-black rounded-full uppercase shrink-0 whitespace-nowrap">Urgent
+                                    Stock</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Left: Urgent Alerts Panel -->
+                                <div>
+                                    <h4
+                                        class="text-xs font-black uppercase text-red-600 dark:text-red-400 mb-2 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">notifications_active</span>
+                                        Urgent Warnings
+                                    </h4>
+                                    <div id="dash-alerts-panel-list" class="space-y-2">
+                                        <!-- Hydrated dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Right: Low Inventory Preview -->
+                                <div>
+                                    <h4
+                                        class="text-xs font-black uppercase text-on-surface dark:text-gray-200 mb-2 flex items-center gap-1">
+                                        <span
+                                            class="material-symbols-outlined text-sm text-amber-500">inventory_2</span>
+                                        Low Stock Levels
+                                    </h4>
+                                    <div id="dash-low-inventory-preview-list" class="space-y-2">
+                                        <!-- Hydrated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-red-500/30 flex justify-between items-center flex-wrap gap-2">
+                            <span class="text-xs font-bold text-red-600 dark:text-red-400">Ingredient stock thresholds
+                                monitored live.</span>
+                            <button onclick="switchTab('inventory')"
+                                class="px-3 py-1.5 bg-primary text-on-primary font-bold text-xs rounded-xl shadow hover:brightness-105 transition-all">
+                                Manage Stock Inventory →
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 3: QUICK ACTIONS & PERFORMANCE COUNTERS -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                    <!-- 13. QUICK ACTION BUTTONS (Span 2 cols) -->
+                    <div
+                        class="lg:col-span-2 glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-4">
+                        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+                            <h3 class="text-base font-black text-on-surface dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-emerald-500">touch_app</span> Quick Action
+                                Buttons
+                            </h3>
+                            <span class="text-xs font-bold text-gray-400 uppercase">Emergency & Controls</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-extrabold">
+                            <button onclick="switchTab('inventory')"
+                                class="p-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-700 dark:text-blue-300 rounded-2xl transition-all flex flex-col items-center justify-center gap-1.5 text-center active:scale-95">
+                                <span class="material-symbols-outlined text-2xl">add_shopping_cart</span>
+                                <span>+ Add Inventory</span>
+                            </button>
+
+                            <button onclick="toggleOnlineOrderIntake()" id="btn-quick-pause-orders"
+                                class="p-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-700 dark:text-amber-300 rounded-2xl transition-all flex flex-col items-center justify-center gap-1.5 text-center active:scale-95">
+                                <span class="material-symbols-outlined text-2xl">pause_circle</span>
+                                <span>Pause Orders</span>
+                            </button>
+
+                            <button onclick="toggleKitchenBusyMode()" id="btn-quick-busy-mode"
+                                class="p-3.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-700 dark:text-red-300 rounded-2xl transition-all flex flex-col items-center justify-center gap-1.5 text-center active:scale-95">
+                                <span class="material-symbols-outlined text-2xl">local_fire_department</span>
+                                <span>Mark Kitchen Busy</span>
+                            </button>
+
+                            <button onclick="triggerEmergencyAnnouncement()"
+                                class="p-3.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-700 dark:text-purple-300 rounded-2xl transition-all flex flex-col items-center justify-center gap-1.5 text-center active:scale-95">
+                                <span class="material-symbols-outlined text-2xl">campaign</span>
+                                <span>Emergency Alert</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 8. AVERAGE PREPARATION TIME -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-3">
+                        <div
+                            class="flex justify-between items-center border-b border-outline-variant/30 pb-2 gap-2 min-w-0">
+                            <h4
+                                class="font-black text-xs text-on-surface dark:text-white uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                <span class="material-symbols-outlined text-primary shrink-0">avg_time</span> Average
+                                Prep Time
+                            </h4>
+                            <span
+                                class="px-2 py-0.5 bg-emerald-500/20 text-emerald-600 text-[10px] font-black rounded-full shrink-0 whitespace-nowrap">On
+                                Target</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-xs font-bold text-gray-400">Today's Average:</span>
+                            <span class="text-2xl font-black text-primary dark:text-[#86d4d3]">11 min</span>
+                        </div>
+                        <div class="space-y-1 text-xs font-bold border-t border-outline-variant/30 pt-2">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Yesterday:</span>
+                                <span class="text-on-surface dark:text-white">13 min</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Kitchen Target:</span>
+                                <span class="text-emerald-600 dark:text-emerald-400">10 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 17. DELIVERY COUNTER -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-3">
+                        <div
+                            class="flex justify-between items-center border-b border-outline-variant/30 pb-2 gap-2 min-w-0">
+                            <h4
+                                class="font-black text-xs text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
+                                <span class="material-symbols-outlined text-emerald-500 shrink-0">task_alt</span>
+                                Delivery Counter
+                            </h4>
+                            <span
+                                class="px-2 py-0.5 bg-emerald-500/20 text-emerald-600 text-[10px] font-black rounded-full shrink-0 whitespace-nowrap">Completed</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-xs font-bold text-gray-400">Delivered Today:</span>
+                            <span id="dash-delivered-today-count"
+                                class="text-2xl font-black text-emerald-600 dark:text-emerald-400">145</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-xs font-bold border-t border-outline-variant/30 pt-2">
+                            <span class="text-gray-400">Delivered This Hour:</span>
+                            <span id="dash-delivered-hour-count"
+                                class="font-mono font-black text-on-surface dark:text-white">18 orders</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 4: ANNOUNCEMENTS, STAFF ON DUTY & CUSTOMER FEEDBACK -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                    <!-- 6. KITCHEN ANNOUNCEMENTS (Span 1 col) -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-blue-500/40 bg-blue-500/5 shadow-md space-y-3">
+                        <div class="flex justify-between items-center border-b border-blue-500/30 pb-2">
+                            <h4
+                                class="font-black text-xs text-blue-700 dark:text-blue-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-blue-500 shrink-0">campaign</span> Kitchen
+                                Announcements
+                            </h4>
+                        </div>
+                        <div class="space-y-2 text-xs font-bold text-blue-900 dark:text-blue-200">
+                            <div class="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                                <span class="text-[10px] text-blue-600 font-black uppercase block">Admin Notice</span>
+                                <p class="text-xs text-blue-800 dark:text-blue-300">Fresh chicken arriving at 2 PM.
+                                    Today's special starts at 1 PM.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 10. STAFF ON DUTY (Span 2 cols) -->
+                    <div
+                        class="lg:col-span-2 glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-3">
+                        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+                            <h3
+                                class="text-xs font-black text-on-surface dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-primary text-sm">badge</span> Staff on Duty
+                                Roster
+                            </h3>
+                            <span
+                                class="px-2 py-0.5 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-black rounded-full uppercase">3
+                                Active Staff</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div
+                                class="p-2 bg-surface-container-low dark:bg-[#151617] rounded-xl border border-outline-variant/20 flex items-center gap-2">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-primary/20 text-primary dark:text-[#86d4d3] flex items-center justify-center text-xs font-black shrink-0">
+                                    CA</div>
+                                <div class="min-w-0">
+                                    <h5 class="font-extrabold text-xs text-on-surface dark:text-white truncate">Chef
+                                        Ahmed</h5>
+                                    <span
+                                        class="px-1.5 py-0.2 bg-amber-500/20 text-amber-700 text-[8px] font-black rounded uppercase">Cooking</span>
+                                </div>
+                            </div>
+                            <div
+                                class="p-2 bg-surface-container-low dark:bg-[#151617] rounded-xl border border-outline-variant/20 flex items-center gap-2">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-xs font-black shrink-0">
+                                    CR</div>
+                                <div class="min-w-0">
+                                    <h5 class="font-extrabold text-xs text-on-surface dark:text-white truncate">Chef
+                                        Rahim</h5>
+                                    <span
+                                        class="px-1.5 py-0.2 bg-blue-500/20 text-blue-700 text-[8px] font-black rounded uppercase">Packing</span>
+                                </div>
+                            </div>
+                            <div
+                                class="p-2 bg-surface-container-low dark:bg-[#151617] rounded-xl border border-outline-variant/20 flex items-center gap-2">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-600 flex items-center justify-center text-xs font-black shrink-0">
+                                    CH</div>
+                                <div class="min-w-0">
+                                    <h5 class="font-extrabold text-xs text-on-surface dark:text-white truncate">Chef
+                                        Hasan</h5>
+                                    <span
+                                        class="px-1.5 py-0.2 bg-emerald-500/20 text-emerald-700 text-[8px] font-black rounded uppercase">Counter</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 15. CUSTOMER FEEDBACK SNAPSHOT (Span 1 col) -->
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-3">
+                        <div class="flex justify-between items-center border-b border-outline-variant/30 pb-2">
+                            <h4
+                                class="font-black text-xs text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-amber-500">star</span> Customer Feedback
+                            </h4>
+                            <span
+                                class="px-2 py-0.5 bg-amber-500/20 text-amber-700 text-[10px] font-black rounded-full">Ratings</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-400">Today's Rating:</span>
+                            <span class="text-2xl font-black text-amber-500">⭐ 4.8</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-xs font-bold border-t border-outline-variant/30 pt-2">
+                            <span class="text-gray-400">New Reviews Today:</span>
+                            <span class="font-black text-primary dark:text-[#86d4d3]">5 reviews</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TAB 2: ACTIVE ORDERS MAIN QUEUE -->
+            <div id="tab-content-active-orders" class="tab-content-pane hidden space-y-6">
+
+                <!-- Filter Controls Bar -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-col gap-4">
+
+                    <!-- Top Action Buttons (Equally Aligned in 3 Columns with Equal Horizontal Distance) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                        <!-- 1. Create Manual Order Button -->
+                        <button onclick="openCreateOrderModal()"
+                            class="w-full justify-center px-4 py-2.5 bg-primary hover:bg-primary-container text-on-primary font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95">
+                            <span class="material-symbols-outlined text-base font-black">add_circle</span>
+                            <span>Create Manual Order</span>
+                        </button>
+
+                        <!-- 2. Batch Cooking View Switcher Button -->
+                        <button id="btn-toggle-batch-view" onclick="toggleBatchCookingView()"
+                            class="w-full justify-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-neutral-900 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95">
+                            <span class="material-symbols-outlined text-base"> </span>
+                            <span>🍽️ Batch Cooking View</span>
+                        </button>
+
+                        <!-- 3. Simulate Test Order Button -->
+                        <button onclick="simulateIncomingOrder()"
+                            class="w-full justify-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95">
+                            <span class="material-symbols-outlined text-base">add_alert</span>
+                            <span>Simulate Test Order</span>
                         </button>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full border-collapse text-left">
-                            <thead>
-                                <tr
-                                    class="bg-secondary-container/30 dark:bg-[#34363a]/30 border-b border-outline-variant dark:border-[#2d3135]">
-                                    <th
-                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Item Name</th>
-                                    <th
-                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Price</th>
-                                    <th
-                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Stock Volume</th>
-                                    <th
-                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Status</th>
-                                    <th
-                                        class="px-container-margin py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase text-right">
-                                        Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body-inventory"
-                                class="divide-y divide-outline-variant dark:divide-[#2d3135]">
-                                <!-- Hydrated dynamically -->
-                            </tbody>
-                        </table>
+
+                    <!-- Bottom Section: Status Filter Pills & Grid Selector (Just Below Top Buttons) -->
+                    <div
+                        class="pt-3 border-t border-outline-variant/30 dark:border-[#2d3135] flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex flex-wrap items-center gap-2 select-none" id="status-filter-pills">
+                            <button onclick="state.selectedStatusFilter='All'; renderActiveTab();"
+                                class="px-4 py-1.5 bg-primary text-on-primary text-xs font-bold rounded-full shadow-sm">All</button>
+                            <button onclick="state.selectedStatusFilter='Pending'; renderActiveTab();"
+                                class="px-4 py-1.5 bg-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-bold rounded-full hover:bg-blue-500/30 transition-all">Pending</button>
+                            <button onclick="state.selectedStatusFilter='Accepted'; renderActiveTab();"
+                                class="px-4 py-1.5 bg-blue-600/20 text-blue-800 dark:text-blue-200 text-xs font-bold rounded-full hover:bg-blue-600/30 transition-all">Accepted</button>
+                            <button onclick="state.selectedStatusFilter='Preparing'; renderActiveTab();"
+                                class="px-4 py-1.5 bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold rounded-full hover:bg-amber-500/30 transition-all">Preparing</button>
+                            <button onclick="state.selectedStatusFilter='Ready for Pickup'; renderActiveTab();"
+                                class="px-4 py-1.5 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-full hover:bg-emerald-500/30 transition-all">Ready</button>
+                        </div>
+
+                        <!-- Right Actions: Grid Columns Selector & Refresh -->
+                        <div class="flex items-center gap-2">
+                            <!-- Grid Columns View Selector -->
+                            <div
+                                class="flex items-center gap-1 bg-gray-100 dark:bg-[#2c2d30] p-1 rounded-xl border border-outline-variant/30 select-none">
+                                <button onclick="setQueueGridCols(2)" id="btn-grid-2"
+                                    class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all bg-white dark:bg-[#151617] text-primary dark:text-[#86d4d3] shadow-sm"
+                                    title="2 Columns Layout (Default)">
+                                    2 Cols
+                                </button>
+                                <button onclick="setQueueGridCols(3)" id="btn-grid-3"
+                                    class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all text-gray-500 hover:text-on-surface"
+                                    title="3 Columns Layout">
+                                    3 Cols
+                                </button>
+                            </div>
+
+                            <button onclick="renderActiveOrdersTab()"
+                                class="px-3 py-1.5 bg-gray-100 dark:bg-[#2c2d30] hover:bg-gray-200 dark:hover:bg-[#383a3e] rounded-xl transition-all text-xs font-bold text-on-surface flex items-center gap-1.5"
+                                title="Refresh Queue">
+                                <span class="material-symbols-outlined text-sm">refresh</span>
+                                <span>Refresh</span>
+                            </button>
+                        </div>
                     </div>
+
                 </div>
+
+                <!-- Glanceable Active Orders Grid -->
+                <div id="active-orders-queue-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hydrated dynamically -->
+                </div>
+
             </div>
 
-            <!-- TAB: DASHBOARD SUMMARY -->
-            <div id="tab-content-dashboard" class="tab-content-pane hidden space-y-6">
-                <!-- ASYMMETRIC BENTO GRID -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
-
-                    <!-- LIVE FEED (1/3 Width) -->
-                    <div
-                        class="lg:col-span-1 glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] flex flex-col h-[520px] shadow-md">
-                        <div
-                            class="p-container-margin border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center bg-surface-bright dark:bg-[#1a1b1d] rounded-t-xl select-none">
-                            <h4
-                                class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 bg-error rounded-full animate-ping"></span>
-                                Live Feed Logs
-                            </h4>
-                            <button onclick="refreshLiveFeed()"
-                                class="material-symbols-outlined text-on-surface-variant dark:text-gray-400 hover:text-primary transition-colors">refresh</button>
-                        </div>
-                        <div id="live-feed-container"
-                            class="flex-1 overflow-y-auto p-gutter custom-scrollbar space-y-3">
-                            <!-- Activity Feed Hydrated -->
-                        </div>
-                    </div>
-
-                    <!-- TOP SELLING FOODS (2/3 Width) -->
-                    <div
-                        class="lg:col-span-2 glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] p-gutter h-[520px] flex flex-col shadow-md">
-                        <h4
-                            class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold mb-4 select-none">
-                            Canteen Operations Summary</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-                            <div
-                                class="border border-outline-variant dark:border-[#2d3135] p-4 rounded-xl flex flex-col justify-between">
-                                <div>
-                                    <p
-                                        class="text-xs text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-wider font-semibold">
-                                        Bestseller Item</p>
-                                    <h3
-                                        class="font-headline-md text-headline-sm text-on-surface dark:text-white font-bold mt-1">
-                                        Beef Biryani</h3>
-                                </div>
-                                <div
-                                    class="flex items-center gap-2 text-primary dark:text-[#86d4d3] font-bold text-xs select-none">
-                                    <span class="material-symbols-outlined">trending_up</span>
-                                    <span>142 units sold this week</span>
-                                </div>
-                            </div>
-                            <div
-                                class="border border-outline-variant dark:border-[#2d3135] p-4 rounded-xl flex flex-col justify-between">
-                                <div>
-                                    <p
-                                        class="text-xs text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-wider font-semibold">
-                                        Active Counter Status</p>
-                                    <h3
-                                        class="font-headline-md text-headline-sm text-[#008f51] dark:text-[#81c784] font-bold mt-1">
-                                        Online</h3>
-                                </div>
-                                <div class="text-xs text-on-surface-variant dark:text-gray-400 select-none">
-                                    <span>Serving counter registers active</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="mt-4 p-4 border border-outline-variant dark:border-[#2d3135] rounded-xl bg-surface-container-low dark:bg-[#202123] select-none">
-                            <p class="text-xs text-on-surface dark:text-[#86d4d3] font-bold mb-1">Quick Note</p>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400">Updates to Food items stock
-                                values are synchronized to students immediately via local storage variables.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: FOOD MENU -->
+            <!-- TAB: FOOD MENU CATALOG (10 DECORATIVE BOXES) -->
             <div id="tab-content-menu" class="tab-content-pane hidden space-y-6">
-                <div id="food-cards-grid"
-                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-lg font-black text-primary dark:text-[#86d4d3] flex items-center gap-2">
+                            <span class="material-symbols-outlined text-pink-500">restaurant_menu</span> Canteen
+                            Decorative Food Menu Catalog
+                        </h3>
+                        <p class="text-xs font-semibold text-gray-500">Manage 10 canteen menu items, prices, ratings,
+                            prep times, and dietary tags.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="openAddItemModal()"
+                            class="px-4 py-2 bg-primary text-on-primary font-bold text-xs rounded-xl shadow hover:brightness-105 transition-all flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm">add</span> Add New Food Item
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Decorative Food Cards Grid -->
+                <div id="food-menu-cards-grid"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <!-- Hydrated dynamically -->
                 </div>
             </div>
 
-            <!-- TAB: ORDERS PANEL -->
-            <div id="tab-content-orders" class="tab-content-pane hidden space-y-6">
+            <!-- TAB 3: READY FOR PICKUP PANEL -->
+            <div id="tab-content-ready-pickup" class="tab-content-pane hidden space-y-6">
+
                 <div
-                    class="glass-card bg-white dark:bg-[#1e2022] rounded-xl border border-outline-variant dark:border-[#2d3135] shadow-md p-gutter">
-                    <div class="flex justify-between items-center mb-6 select-none">
-                        <div>
-                            <h4 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Client
-                                Order Tickets</h4>
-                            <p class="font-label-md text-label-md text-on-surface-variant dark:text-gray-400">Advance
-                                food items tickets from preparing to successfully served</p>
-                        </div>
-                        <span id="orders-badge-count"
-                            class="px-3 py-1 bg-primary text-on-primary dark:bg-primary-container dark:text-[#86d4d3] font-bold rounded-full text-xs">3
-                            Active</span>
+                    class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-emerald-500/40 shadow-md">
+                    <h3 class="text-lg font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-2 mb-1">
+                        <span class="material-symbols-outlined text-2xl">verified</span> Dedicated Ready for Pickup
+                        Panel
+                    </h3>
+                    <p class="text-xs font-bold text-gray-500">Staff can click "Delivered" with one tap when students
+                        pick up food at counter.</p>
+                </div>
+
+                <div id="ready-pickup-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hydrated dynamically -->
+                </div>
+
+            </div>
+
+            <!-- TAB 4: DELIVERED ORDERS LOG -->
+            <div id="tab-content-delivered-orders" class="tab-content-pane hidden space-y-6">
+
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-outline-variant dark:border-[#2d3135]">
+                        <h3 class="text-lg font-black text-primary dark:text-[#86d4d3]">Delivered Orders Log</h3>
+                        <p class="text-xs font-semibold text-gray-500">History of all successfully completed canteen
+                            tickets today.</p>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full border-collapse text-left min-w-[700px]">
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr
-                                    class="bg-secondary-container/30 dark:bg-[#34363a]/30 border-b border-outline-variant dark:border-[#2d3135]">
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Order ID</th>
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Student ID</th>
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Ordered Foods</th>
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Total Cost</th>
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase">
-                                        Ticket Status</th>
-                                    <th
-                                        class="px-6 py-4 font-label-md text-xs text-primary dark:text-[#86d4d3] uppercase text-right">
-                                        Actions</th>
+                                    class="bg-gray-100 dark:bg-[#202123] border-b border-outline-variant dark:border-[#2d3135] text-xs font-extrabold uppercase text-gray-500">
+                                    <th class="px-6 py-4">Order ID</th>
+                                    <th class="px-6 py-4">Customer Name</th>
+                                    <th class="px-6 py-4">Items Delivered</th>
+                                    <th class="px-6 py-4">Total Paid</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-body-orders" class="divide-y divide-outline-variant dark:divide-[#2d3135]">
+                            <tbody id="table-body-delivered" class="divide-y divide-outline-variant/30">
                                 <!-- Hydrated dynamically -->
                             </tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
 
-            <!-- TAB: RECHARGE desk -->
-            <div id="tab-content-recharge" class="tab-content-pane hidden space-y-6">
+            <!-- TAB 5: INVENTORY & STOCK MANAGEMENT -->
+            <div id="tab-content-inventory" class="tab-content-pane hidden space-y-6">
+
                 <div
-                    class="max-w-md mx-auto glass-card bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] p-stack-lg rounded-xl shadow-lg">
-                    <div class="text-center mb-6 select-none">
-                        <div
-                            class="w-12 h-12 bg-primary-container dark:bg-[#004f4f]/30 rounded-full flex items-center justify-center text-primary dark:text-[#86d4d3] mx-auto mb-2">
-                            <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+                    class="glass-card bg-white dark:bg-[#1e2022] rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md overflow-hidden">
+                    <div
+                        class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex flex-wrap justify-between items-center gap-4">
+                        <div>
+                            <h3 class="text-lg font-black text-primary dark:text-[#86d4d3]">Raw Ingredients Stock Roster
+                            </h3>
+                            <p class="text-xs font-semibold text-gray-500">Manage kitchen raw material stock and trigger
+                                low-stock alerts.</p>
                         </div>
-                        <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Counter Cash
-                            Top-up</h3>
-                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Instantly credit a student's card
-                            wallet balance with cash cash transactions</p>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openAddInventoryItemModal()"
+                                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                                <span class="material-symbols-outlined text-sm">add_box</span>
+                                <span>Add New Item in Inventory</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <form id="form-counter-recharge" class="space-y-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-on-surface-variant block select-none">Recipient Student
-                                Roll ID</label>
-                            <input type="text" id="recharge-student-id" required
-                                class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white"
-                                placeholder="e.g. 202114042" />
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-on-surface-variant block select-none">Amount Credit
-                                (৳)</label>
-                            <input type="number" id="recharge-cash-val" min="10" max="10000" required
-                                class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white"
-                                placeholder="e.g. 500" />
-                        </div>
-                        <button type="submit"
-                            class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 select-none">
-                            <span class="material-symbols-outlined text-sm">payments</span>
-                            Dispatch Cash Recharge
-                        </button>
-                    </form>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-100 dark:bg-[#202123] border-b border-outline-variant dark:border-[#2d3135] text-xs font-extrabold uppercase text-gray-500">
+                                    <th class="px-6 py-4">Ingredient Name</th>
+                                    <th class="px-6 py-4">Remaining Volume</th>
+                                    <th class="px-6 py-4">Stock Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-inventory" class="divide-y divide-outline-variant/30">
+                                <!-- Hydrated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+            </div>
+
+            <!-- TAB 6: NOTIFICATIONS PANEL -->
+            <div id="tab-content-notifications" class="tab-content-pane hidden space-y-6">
+                <div id="notifications-feed-list" class="space-y-3">
+                    <!-- Hydrated dynamically -->
+                </div>
+            </div>
+
+            <!-- TAB 7: REPORTS & DAILY SUMMARY -->
+            <div id="tab-content-reports" class="tab-content-pane hidden space-y-6">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">TOTAL ORDERS TODAY</span>
+                        <h3 id="summary-orders-today" class="text-3xl font-black text-primary dark:text-[#86d4d3]">0
+                        </h3>
+                    </div>
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">MEALS SERVED</span>
+                        <h3 id="summary-meals-served" class="text-3xl font-black text-emerald-600">0</h3>
+                    </div>
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">TOTAL REVENUE GENERATED</span>
+                        <h3 id="summary-revenue" class="text-3xl font-black text-amber-500">৳ 0</h3>
+                    </div>
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">AVERAGE COOKING TIME</span>
+                        <h3 id="summary-avg-time" class="text-3xl font-black text-blue-500">7.5 mins</h3>
+                    </div>
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">CANCELLED ORDERS</span>
+                        <h3 id="summary-cancelled" class="text-3xl font-black text-red-500">1</h3>
+                    </div>
+
+                    <div
+                        class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant shadow-md">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">MOST ORDERED MEAL</span>
+                        <h3 id="summary-popular-meal" class="text-lg font-black text-on-surface dark:text-white">Chicken
+                            Burger</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TAB 8: BRANCH MANAGEMENT & FOOD DISPATCH OPERATIONS HUB -->
+            <div id="tab-content-branch-management" class="tab-content-pane hidden space-y-6">
+
+                <!-- TOP HEADER CONTROL TOOLBAR (EVENLY BALANCED & OVERFLOW-FREE) -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-5 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-20">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 shadow-inner">
+                            <span class="material-symbols-outlined text-2xl">storefront</span>
+                        </div>
+                        <div class="space-y-0.5 min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 class="text-lg font-black text-on-surface dark:text-white leading-tight">Child
+                                    Branch Operations & Food Transfer</h3>
+                                <span
+                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-1 shrink-0">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live Sync
+                                    Active
+                                </span>
+                            </div>
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate"></p>
+                        </div>
+                    </div>
+
+                    <!-- Balanced Evenly Spaced Actions Toolbar -->
+                    <div
+                        class="flex items-center justify-end gap-3 flex-wrap w-full md:w-auto shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-outline-variant/30">
+                        <div
+                            class="px-3.5 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-xs font-black text-primary dark:text-[#86d4d3] flex items-center gap-1.5 shadow-sm">
+                            <span class="material-symbols-outlined text-base">storefront</span>
+                            <span>MIST Old Cafe</span>
+                        </div>
+
+                        <!-- LIVE NOTIFICATIONS BELL BUTTON & DROPDOWN (HIGH Z-INDEX) -->
+                        <div class="relative">
+                            <button onclick="toggleBranchNotifDropdown(event)"
+                                class="relative p-2.5 bg-surface-container-high dark:bg-[#2c2d30] text-on-surface dark:text-gray-200 rounded-xl border border-outline-variant/40 hover:bg-gray-200 dark:hover:bg-[#383a3e] transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                                title="Branch Live Notifications">
+                                <span class="material-symbols-outlined text-xl text-purple-500">notifications</span>
+                                <span
+                                    class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-600 text-white font-black text-[9px] flex items-center justify-center animate-pulse">3</span>
+                            </button>
+
+                            <!-- FLOATING NOTIFICATIONS DROPDOWN PANEL -->
+                            <div id="branch-notif-dropdown"
+                                class="absolute right-0 top-14 w-80 sm:w-96 bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] rounded-2xl shadow-2xl p-4 hidden z-[100] space-y-3">
+                                <div
+                                    class="flex justify-between items-center border-b border-outline-variant/30 pb-2.5">
+                                    <h4
+                                        class="font-black text-sm text-on-surface dark:text-white flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-purple-500 text-lg">campaign</span>
+                                        Branch Live Notifications
+                                    </h4>
+                                    <span class="text-[10px] font-black uppercase text-gray-400">Real-time Feed</span>
+                                </div>
+
+                                <div id="branch-notifications-log-list"
+                                    class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
+                                    <!-- Hydrated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="openCreateFoodTransferModal()"
+                            class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span class="material-symbols-outlined text-base">local_shipping</span>
+                            <span>Create Dispatch</span>
+                        </button>
+
+                        <button onclick="openBranchReportModal()"
+                            class="px-4 py-2 bg-surface-container-high dark:bg-[#2c2d30] text-on-surface dark:text-gray-200 font-bold text-xs rounded-xl border border-outline-variant/40 hover:bg-gray-200 dark:hover:bg-[#383a3e] transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span class="material-symbols-outlined text-base">file_download</span>
+                            <span>Export Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BRANCH PROFILE & LIVE STATUS CARD -->
+                <div id="branch-profile-card-container">
+                    <!-- Hydrated dynamically by JS -->
+                </div>
+
+                <!-- FULL WIDTH HORIZONTAL BRANCH DISPATCH REQUEST PANEL -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-4">
+                    <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+                        <h4 class="font-black text-base text-on-surface dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-500">move_to_inbox</span> Branch Dispatch
+                            Request Panel
+                        </h4>
+                        <span id="branch-pending-req-badge"
+                            class="px-3 py-1 bg-amber-500/20 text-amber-600 font-black text-xs rounded-full uppercase">2
+                            Pending Requests</span>
+                    </div>
+
+                    <div id="branch-pending-requests-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Hydrated dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- TODAY'S DISPATCH SUMMARY TABLE -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md overflow-hidden space-y-4 p-6">
+                    <div
+                        class="flex flex-wrap justify-between items-center gap-3 pb-4 border-b border-outline-variant/30">
+                        <div>
+                            <h4 class="font-black text-base text-on-surface dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-indigo-500">takeout_dining</span> Today's
+                                Food Dispatch Summary
+                            </h4>
+                            <p class="text-xs font-semibold text-gray-400">Track raw & prepared food shipments
+                                dispatched from central kitchen</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap text-xs font-bold">
+                            <button onclick="filterDispatchesByStatus('ALL')"
+                                class="dispatch-filter-btn px-3 py-1 rounded-lg bg-primary/10 text-primary dark:text-[#86d4d3] font-black text-xs">All</button>
+                            <button onclick="filterDispatchesByStatus('Pending')"
+                                class="dispatch-filter-btn px-3 py-1 rounded-lg text-gray-500 hover:text-on-surface">Pending</button>
+                            <button onclick="filterDispatchesByStatus('Dispatched')"
+                                class="dispatch-filter-btn px-3 py-1 rounded-lg text-gray-500 hover:text-on-surface">Dispatched</button>
+                            <button onclick="filterDispatchesByStatus('Rejected')"
+                                class="dispatch-filter-btn px-3 py-1 rounded-lg text-gray-500 hover:text-on-surface">Rejected</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-surface-container-low dark:bg-[#151617] text-[10px] uppercase font-black text-gray-400 border-b border-outline-variant/30">
+                                    <th class="p-3">Dispatch ID</th>
+                                    <th class="p-3">Dispatch Time</th>
+                                    <th class="p-3">Items</th>
+                                    <th class="p-3">Total Qty</th>
+                                    <th class="p-3">Value</th>
+                                    <th class="p-3">Prepared By</th>
+                                    <th class="p-3">Carried By</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-branch-dispatches"
+                                class="divide-y divide-outline-variant/20 text-xs font-semibold">
+                                <!-- Hydrated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SALES OVERVIEW & VISUAL ANALYTICS CHARTS -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-6">
+                    <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+                        <div>
+                            <h4 class="font-black text-base text-on-surface dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-purple-500">bar_chart</span> Branch Sales
+                                Overview & Performance Analytics
+                            </h4>
+                            <p class="text-xs font-semibold text-gray-400">Revenue, transaction volumes, and sales
+                                velocity at MIST Old Cafe</p>
+                        </div>
+                        <span class="text-xs font-extrabold text-primary dark:text-[#86d4d3]">Weekly Trend +14.2%</span>
+                    </div>
+
+                    <!-- Mini Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="branch-sales-overview-cards">
+                        <!-- Hydrated dynamically -->
+                    </div>
+
+                    <!-- Visual Charts Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-outline-variant/30">
+                        <div class="space-y-3">
+                            <span class="text-xs font-black uppercase tracking-wider text-gray-400 block">Daily Sales
+                                Breakdown (Current Week)</span>
+                            <div
+                                class="h-44 bg-surface-container-low dark:bg-[#151617] rounded-xl p-4 flex items-end justify-between gap-2 border border-outline-variant/20">
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/80 rounded-t-md" style="height: 65%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Mon</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/80 rounded-t-md" style="height: 78%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Tue</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/80 rounded-t-md" style="height: 85%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Wed</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/80 rounded-t-md" style="height: 92%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Thu</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-emerald-500 rounded-t-md shadow-md" style="height: 100%;">
+                                    </div><span class="text-[9px] font-bold text-emerald-500 font-black">Today</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/40 rounded-t-md" style="height: 40%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Sat</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-1">
+                                    <div class="w-full bg-cyan-500/40 rounded-t-md" style="height: 30%;"></div><span
+                                        class="text-[9px] font-bold text-gray-400">Sun</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <span class="text-xs font-black uppercase tracking-wider text-gray-400 block">Food Category
+                                Revenue Share</span>
+                            <div class="space-y-2.5 pt-2">
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>Main Meals &
+                                            Biryani</span><span class="text-primary dark:text-[#86d4d3]">৳ 32,400
+                                            (62%)</span></div>
+                                    <div
+                                        class="h-2.5 w-full bg-surface-container-low dark:bg-[#151617] rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary rounded-full" style="width: 62%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>Snacks & Fast
+                                            Food</span><span class="text-amber-500">৳ 12,100 (23%)</span></div>
+                                    <div
+                                        class="h-2.5 w-full bg-surface-container-low dark:bg-[#151617] rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500 rounded-full" style="width: 23%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>Beverages &
+                                            Desserts</span><span class="text-purple-500">৳ 7,600 (15%)</span></div>
+                                    <div
+                                        class="h-2.5 w-full bg-surface-container-low dark:bg-[#151617] rounded-full overflow-hidden">
+                                        <div class="h-full bg-purple-500 rounded-full" style="width: 15%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BRANCH PEAK HOUR FOOD DEMAND & DISPATCH PLANNER -->
+                <div
+                    class="glass-card bg-white dark:bg-[#1e2022] p-6 rounded-2xl border border-outline-variant dark:border-[#2d3135] shadow-md space-y-4">
+                    <div class="flex justify-between items-center border-b border-outline-variant/30 pb-3">
+                        <div>
+                            <h4 class="font-black text-base text-on-surface dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-amber-500">schedule</span> Branch Peak Hour
+                                Food Demand & Dispatch Planner
+                            </h4>
+                            <p class="text-xs font-semibold text-gray-400">Anticipate cafeteria student rush hours and
+                                schedule timely food shipments</p>
+                        </div>
+                        <span
+                            class="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-black rounded-full border border-amber-500/20">AI
+                            Demand Forecast</span>
+                    </div>
+
+                    <div id="branch-peak-demand-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Hydrated dynamically by JS -->
+                    </div>
+                </div>
+
             </div>
 
         </section>
 
         <!-- FOOTER -->
         <footer
-            class="mt-auto w-full py-6 px-container-margin flex flex-col md:flex-row justify-between items-center gap-stack-md bg-inverse-surface dark:bg-[#151617] text-surface-container-lowest dark:text-[#bebebe] border-t border-outline-variant dark:border-[#2d3135]">
-            <div class="flex flex-col md:flex-row gap-gutter items-center select-none">
-                <span
-                    class="font-title-lg text-title-lg text-primary-fixed dark:text-[#86d4d3] font-bold">CampusPay</span>
-                <span class="hidden md:block w-px h-6 bg-outline"></span>
-                <p class="font-body-md text-body-md text-secondary-fixed-dim">MIST and CampusPay rights reserved © 2026
-                </p>
-            </div>
-            <div class="flex gap-gutter">
-                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
-                    href="#">Privacy Policy</a>
-                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
-                    href="#">Terms of Service</a>
-                <a class="font-body-md text-body-md hover:text-primary dark:hover:text-[#86d4d3] transition-colors"
-                    href="#">University Guidelines</a>
+            class="mt-auto py-6 px-6 bg-white dark:bg-[#151617] border-t border-outline-variant dark:border-[#2d3135] text-xs font-semibold text-gray-500 flex justify-between items-center">
+            <div>CampusPay Canteen Staff Portal © 2026 MIST</div>
+            <div class="flex gap-4">
+                <a href="#" class="hover:underline">System Guidelines</a>
+                <a href="#" class="hover:underline">Helpdesk</a>
             </div>
         </footer>
+
     </main>
 
-    <!-- FLOATING ACTION BUTTON (Contextual: Add Inventory) -->
-    <button id="fab-add-item"
-        class="fixed bottom-container-margin right-container-margin w-14 h-14 bg-primary text-on-primary dark:bg-primary-container dark:text-[#86d4d3] rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform md:hidden z-50">
-        <span class="material-symbols-outlined">add</span>
-    </button>
-
-    <!-- UNIFIED MODALS -->
-
-    <!-- Modal: Add Item -->
-    <div id="modal-add-item"
-        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
+    <!-- MODAL: EDIT / ADD FOOD MENU ITEM -->
+    <div id="modal-edit-food-item"
+        class="fixed inset-0 z-50 overflow-y-auto hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300 p-4">
         <div
-            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 rounded-2xl shadow-xl flex flex-col translate-y-4 transition-transform duration-300">
-            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center">
-                <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Add New Food Item
-                </h3>
-                <button id="modal-add-close"
-                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
-                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
-                </button>
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-lg w-full rounded-3xl shadow-2xl flex flex-col p-6 relative select-none">
+            <button onclick="closeEditFoodModal()"
+                class="absolute right-5 top-5 p-1.5 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors">
+                <span class="material-symbols-outlined text-gray-400 text-lg">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 mb-5 border-b border-outline-variant/40 pb-4">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-primary/10 text-primary dark:text-[#86d4d3] flex items-center justify-center font-bold">
+                    <span class="material-symbols-outlined text-xl">restaurant_menu</span>
+                </div>
+                <div>
+                    <h3 id="edit-food-modal-title" class="text-base font-black text-on-surface dark:text-white">Edit
+                        Food Menu Item</h3>
+                    <p class="text-xs text-on-surface-variant dark:text-gray-400">Update item details, pricing, picture,
+                        prep time, and tags</p>
+                </div>
             </div>
-            <form id="form-add-item" class="p-6 space-y-4 text-left">
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-on-surface-variant block">Item Name</label>
-                    <input type="text" id="add-item-name" required
-                        class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant block">Price (৳)</label>
-                        <input type="number" id="add-item-price" min="0" required
-                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+
+            <form id="form-edit-food-item" onsubmit="handleEditFoodItemSubmit(event)"
+                class="space-y-4 text-xs font-semibold">
+                <input type="hidden" id="edit-food-idx" value="" />
+
+                <!-- Item Name & Price -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Item
+                            Name</label>
+                        <input type="text" id="edit-food-name" placeholder="e.g. Crispy Chicken Burger" required
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none" />
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant block">Stock Quantity</label>
-                        <input type="number" id="add-item-stock" min="0" required
-                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Price
+                            (৳)</label>
+                        <input type="number" id="edit-food-price" min="0" step="5" placeholder="150" required
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none font-black text-primary dark:text-[#86d4d3]" />
                     </div>
                 </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-on-surface-variant block">Image Preset Cover</label>
-                    <select id="add-item-img"
-                        class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] text-body-md rounded-lg px-3 outline-none dark:text-white">
-                        <option value="beef">Beef Biryani</option>
-                        <option value="sandwich">Egg Sandwich</option>
-                        <option value="tea">Lemon Iced Tea</option>
-                        <option value="fruit">Fruit Platter</option>
+
+                <!-- Food Picture Image URL -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Food Image
+                        URL</label>
+                    <input type="url" id="edit-food-img" placeholder="https://images.unsplash.com/photo-..." required
+                        class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none mb-1.5" />
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase">Presets:</span>
+                        <button type="button" onclick="setEditImgPreset('burger')"
+                            class="px-2 py-0.5 bg-gray-100 dark:bg-[#2c2d30] hover:bg-gray-200 text-[10px] rounded-lg">Burger</button>
+                        <button type="button" onclick="setEditImgPreset('biryani')"
+                            class="px-2 py-0.5 bg-gray-100 dark:bg-[#2c2d30] hover:bg-gray-200 text-[10px] rounded-lg">Biryani</button>
+                        <button type="button" onclick="setEditImgPreset('coffee')"
+                            class="px-2 py-0.5 bg-gray-100 dark:bg-[#2c2d30] hover:bg-gray-200 text-[10px] rounded-lg">Coffee</button>
+                        <button type="button" onclick="setEditImgPreset('sandwich')"
+                            class="px-2 py-0.5 bg-gray-100 dark:bg-[#2c2d30] hover:bg-gray-200 text-[10px] rounded-lg">Sandwich</button>
+                    </div>
+                </div>
+
+                <!-- Preparation Time & Category -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Prep
+                            Time</label>
+                        <input type="text" id="edit-food-preptime" placeholder="e.g. 10-15 mins" required
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none" />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Category</label>
+                        <select id="edit-food-category"
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none font-medium">
+                            <option value="Main Course">Main Course</option>
+                            <option value="Fast Food">Fast Food</option>
+                            <option value="Snacks">Snacks</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Desserts">Desserts</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Availability Status & Stock Volume -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Stock
+                            Volume</label>
+                        <input type="number" id="edit-food-stock" min="0" value="25" required
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none" />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Availability
+                            Status</label>
+                        <select id="edit-food-status"
+                            class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none font-medium">
+                            <option value="Available">Available</option>
+                            <option value="Low Stock">Low Stock</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label
+                        class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Description</label>
+                    <textarea id="edit-food-desc" rows="2" placeholder="Brief food description..." required
+                        class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none custom-scrollbar"></textarea>
+                </div>
+
+                <!-- Tags (Comma separated) -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Tags (Comma
+                        separated, e.g. Bestseller, Chef Special)</label>
+                    <input type="text" id="edit-food-tags" placeholder="Bestseller, Chef Special, Popular"
+                        class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-outline-variant/40 mt-4">
+                    <button type="button" onclick="closeEditFoodModal()"
+                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] text-on-surface dark:text-gray-300 font-bold text-xs rounded-xl transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-primary hover:bg-primary-container text-on-primary font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-base">save</span> Save Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: UPDATE INVENTORY STOCK -->
+    <div id="modal-update-stock"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-md w-full mx-4 rounded-3xl shadow-2xl flex flex-col p-6 relative select-none">
+            <button onclick="closeUpdateStockModal()"
+                class="absolute right-5 top-5 p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-4">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-primary/10 text-primary dark:text-[#86d4d3] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">inventory</span>
+                </div>
+                <div>
+                    <h3 id="update-stock-modal-title" class="text-base font-black text-on-surface dark:text-white">
+                        Update Stock Level</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Adjust ingredient volume in kitchen
+                        storage</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleSaveUpdateStock(event)" class="space-y-4 text-xs font-semibold">
+                <input type="hidden" id="update-stock-item-id" value="" />
+
+                <!-- Target Item Display -->
+                <div
+                    class="p-3 bg-surface-container-low dark:bg-[#151617] rounded-xl border border-outline-variant/30 flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block">Selected Ingredient</span>
+                        <h4 id="update-stock-item-name" class="font-extrabold text-sm text-on-surface dark:text-white">
+                            Basmati Rice</h4>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block">Current Stock</span>
+                        <span id="update-stock-current-val"
+                            class="font-black text-sm text-primary dark:text-[#86d4d3]">45 kg</span>
+                    </div>
+                </div>
+
+                <!-- Numeric Counter Input with + / - Buttons -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">New Total
+                        Stock Volume</label>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="stepStockInput(-1)"
+                            class="w-10 h-10 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] rounded-xl font-black text-base text-on-surface dark:text-white transition-all flex items-center justify-center">-</button>
+                        <input type="number" min="0" id="update-stock-val-input" required
+                            class="flex-1 px-4 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white font-mono text-center font-black text-base focus:ring-2 focus:ring-primary focus:outline-none" />
+                        <button type="button" onclick="stepStockInput(1)"
+                            class="w-10 h-10 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] rounded-xl font-black text-base text-on-surface dark:text-white transition-all flex items-center justify-center">+</button>
+                    </div>
+                </div>
+
+                <!-- Update Reason Note -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Adjustment
+                        Note (Optional)</label>
+                    <input type="text" id="update-stock-note" placeholder="e.g. Received morning shipment from vendor"
+                        class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+
+                <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeUpdateStockModal()"
+                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] text-on-surface dark:text-gray-300 font-bold text-xs rounded-xl transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-primary hover:bg-primary-container text-on-primary font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-base">check_circle</span> Save Stock Volume
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW INVENTORY ITEM POPUP -->
+    <div id="modal-add-inventory-item"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-md w-full mx-4 rounded-3xl shadow-2xl flex flex-col p-6 relative select-none">
+            <button onclick="closeAddInventoryItemModal()"
+                class="absolute right-5 top-5 p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-4">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">add_box</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-on-surface dark:text-white">Add New Inventory Item</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Register a new raw ingredient or
+                        kitchen supply</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleCreateInventoryItem(event)" class="space-y-4 text-xs font-semibold">
+                <!-- Item Name -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Ingredient /
+                        Supply Name</label>
+                    <input type="text" id="new-inv-name" required placeholder="e.g. Cheese Slices, Basmati Rice, Butter"
+                        class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                </div>
+
+                <!-- Initial Stock Volume & Unit -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Initial
+                            Stock Volume</label>
+                        <input type="number" min="0" id="new-inv-stock" required value="20"
+                            class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Unit of
+                            Measure</label>
+                        <select id="new-inv-unit"
+                            class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="kg">kg (Kilograms)</option>
+                            <option value="pcs">pcs (Pieces)</option>
+                            <option value="liters">liters (Liters)</option>
+                            <option value="grams">grams (Grams)</option>
+                            <option value="packets">packets (Packets)</option>
+                            <option value="boxes">boxes (Boxes)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Supplier / Vendor Name -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Supplier /
+                        Vendor Name (Optional)</label>
+                    <input type="text" id="new-inv-vendor" placeholder="e.g. Aarong Dairy / Fresh Market Vendor"
+                        class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                </div>
+
+                <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeAddInventoryItemModal()"
+                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] text-on-surface dark:text-gray-300 font-bold text-xs rounded-xl transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-base">add_circle</span> Add to Inventory
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CREATE FOOD TRANSFER DISPATCH -->
+    <div id="modal-create-food-transfer"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-xl w-full mx-4 rounded-3xl shadow-2xl flex flex-col p-6 relative select-none max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCreateFoodTransferModal()"
+                class="absolute right-5 top-5 p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-4">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">local_shipping</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-on-surface dark:text-white">Create Food Transfer Dispatch</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Send food shipments from Central
+                        Kitchen to Child Branch</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleSaveFoodTransferModal(event)" class="space-y-4 text-xs font-semibold">
+                <!-- Target Branch (Static MIST Old Cafe) -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Target
+                        Branch</label>
+                    <input type="text" readonly id="transfer-modal-branch" value="MIST Old Cafe"
+                        class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#151617] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs font-black" />
+                </div>
+
+                <!-- Food Items List Header & + Add Item Button -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold text-[10px]">Dispatch Food
+                            Items</label>
+                        <button type="button" onclick="addTransferItemRow()"
+                            class="px-3 py-1 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 rounded-lg text-xs font-black flex items-center gap-1 cursor-pointer transition-all">
+                            <span class="material-symbols-outlined text-sm">add</span> Add Food Item
+                        </button>
+                    </div>
+
+                    <div id="transfer-items-list" class="space-y-2.5">
+                        <!-- Dynamic Item Row 1 (Default) -->
+                        <div
+                            class="transfer-item-row grid grid-cols-12 gap-2 items-center p-2.5 bg-surface-container-low dark:bg-[#151617] rounded-xl border border-outline-variant/30">
+                            <div class="col-span-5">
+                                <label class="block text-[9px] uppercase text-gray-400 font-bold mb-0.5">Item
+                                    Select</label>
+                                <select onchange="updateTransferRowPrice(this)"
+                                    class="transfer-row-item w-full p-2 bg-white dark:bg-[#2c2d30] border border-outline-variant/40 rounded-lg text-on-surface dark:text-white text-xs font-bold">
+                                    <option value="Chicken Kacchi Biryani" data-price="180">Chicken Kacchi Biryani
+                                        (৳180)</option>
+                                    <option value="Crispy Chicken Burger" data-price="120">Crispy Chicken Burger (৳120)
+                                    </option>
+                                    <option value="Cold Coffee Bottles" data-price="70">Cold Coffee Bottles (৳70)
+                                    </option>
+                                    <option value="Singara & Samosa Trays" data-price="150">Singara & Samosa Trays
+                                        (৳150)</option>
+                                    <option value="Chocolate Brownies" data-price="90">Chocolate Brownies (৳90)</option>
+                                </select>
+                            </div>
+                            <div class="col-span-3">
+                                <label class="block text-[9px] uppercase text-gray-400 font-bold mb-0.5">Qty</label>
+                                <input type="number" min="1" value="60" oninput="calculateTransferModalTotal()"
+                                    class="transfer-row-qty w-full p-2 bg-white dark:bg-[#2c2d30] border border-outline-variant/40 rounded-lg text-on-surface dark:text-white text-xs font-mono font-bold" />
+                            </div>
+                            <div class="col-span-3">
+                                <label class="block text-[9px] uppercase text-gray-400 font-bold mb-0.5">Subtotal
+                                    (৳)</label>
+                                <input type="text" readonly value="10800"
+                                    class="transfer-row-subtotal w-full p-2 bg-transparent text-emerald-600 dark:text-emerald-400 font-mono font-black text-xs" />
+                            </div>
+                            <div class="col-span-1 flex justify-end pt-3">
+                                <button type="button" onclick="removeTransferItemRow(this)"
+                                    class="text-gray-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                                    title="Remove item">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carried by & Prepared By (Chef) -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Carried
+                            by</label>
+                        <input type="text" id="transfer-modal-driver" required value="Rafiq (Kitchen Staff)"
+                            class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Prepared
+                            By (Chef)</label>
+                        <input type="text" id="transfer-modal-chef" required value="Chef Kabir"
+                            class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
+                    </div>
+                </div>
+
+                <!-- Total Value (Calculated dynamically) -->
+                <div class="p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <label
+                            class="block text-cyan-700 dark:text-cyan-300 uppercase tracking-wider font-black text-[10px]">Value
+                            (৳)</label>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">Auto-calculated from items
+                            & quantities</p>
+                    </div>
+                    <div class="flex items-center gap-1 text-xl font-black text-cyan-600 dark:text-cyan-400 font-mono">
+                        <span>৳</span>
+                        <input type="number" readonly id="transfer-modal-value" value="10800"
+                            class="bg-transparent border-none p-0 text-right w-28 text-xl font-black font-mono focus:outline-none" />
+                    </div>
+                </div>
+
+                <!-- Special Handling Notes -->
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1 text-[10px]">Special
+                        Delivery Notes</label>
+                    <input type="text" id="transfer-modal-notes"
+                        placeholder="e.g. Packed in thermal containers. Keep chilled."
+                        class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
+                </div>
+
+                <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeCreateFoodTransferModal()"
+                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] text-on-surface dark:text-gray-300 font-bold text-xs rounded-xl transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-base">send</span> Save & Dispatch Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: BRANCH REPORT EXPORT GENERATOR -->
+    <div id="modal-branch-report-generator"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-md w-full mx-4 rounded-3xl shadow-2xl flex flex-col p-6 relative select-none">
+            <button onclick="closeBranchReportModal()"
+                class="absolute right-5 top-5 p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-4 mb-4">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">file_download</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-on-surface dark:text-white">Export Branch Analytics Report</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Download audit, dispatch logs, or
+                        financial summaries</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs font-semibold">
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Report
+                        Type</label>
+                    <select id="export-report-type"
+                        class="w-full px-3 py-2.5 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl text-on-surface dark:text-white text-xs font-bold">
+                        <option value="Daily Dispatch Log">Daily Dispatch Log</option>
+                        <option value="Weekly Branch Inventory Summary">Weekly Branch Inventory Summary</option>
+                        <option value="Monthly Sales & Wastage Report">Monthly Sales & Wastage Report</option>
+                        <option value="Financial & Profitability Summary">Financial & Profitability Summary</option>
                     </select>
                 </div>
-                <button type="submit"
-                    class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all">Submit
-                    Menu Addition</button>
-            </form>
-        </div>
-    </div>
 
-    <!-- Modal: Edit Item -->
-    <div id="modal-edit-item"
-        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center select-none backdrop-blur-sm bg-black/50 opacity-0 transition-opacity duration-300">
-        <div
-            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-sm w-full mx-6 rounded-2xl shadow-xl flex flex-col translate-y-4 transition-transform duration-300">
-            <div class="p-6 border-b border-outline-variant dark:border-[#2d3135] flex justify-between items-center">
-                <h3 class="font-title-lg text-title-lg text-primary dark:text-[#86d4d3] font-bold">Edit Stock Parameters
-                </h3>
-                <button id="modal-edit-close"
-                    class="p-1 hover:bg-surface-container-high dark:hover:bg-[#2d3135] rounded-full transition-colors">
-                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
-                </button>
+                <div>
+                    <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Choose
+                        Format</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="triggerReportDownload('PDF')"
+                            class="p-3 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl border border-red-500/30 flex flex-col items-center gap-1 transition-all">
+                            <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+                            <span class="text-[11px] font-black">PDF Document</span>
+                        </button>
+                        <button type="button" onclick="triggerReportDownload('Excel')"
+                            class="p-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/30 flex flex-col items-center gap-1 transition-all">
+                            <span class="material-symbols-outlined text-xl">table_chart</span>
+                            <span class="text-[11px] font-black">Excel Sheet</span>
+                        </button>
+                        <button type="button" onclick="triggerReportDownload('CSV')"
+                            class="p-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-500/30 flex flex-col items-center gap-1 transition-all">
+                            <span class="material-symbols-outlined text-xl">csv</span>
+                            <span class="text-[11px] font-black">CSV Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-end">
+                    <button type="button" onclick="closeBranchReportModal()"
+                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] text-gray-600 dark:text-gray-300 font-bold text-xs rounded-xl transition-all">
+                        Close
+                    </button>
+                </div>
             </div>
-            <form id="form-edit-item" class="p-6 space-y-4 text-left">
-                <input type="hidden" id="edit-item-index" />
-                <div class="space-y-1">
-                    <p class="text-xs text-on-surface-variant dark:text-gray-400">Editing: <span
-                            id="edit-item-title-name" class="font-bold text-on-surface dark:text-white">Beef
-                            Biryani</span></p>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant block">Price (৳)</label>
-                        <input type="number" id="edit-item-price" min="0" required
-                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant block">Stock Quantity</label>
-                        <input type="number" id="edit-item-stock" min="0" required
-                            class="w-full h-11 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant dark:border-[#3a3d40] rounded-lg px-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none dark:text-white" />
-                    </div>
-                </div>
-                <button type="submit"
-                    class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-105 active:scale-98 transition-all">Submit
-                    Stock Updates</button>
-            </form>
         </div>
     </div>
 
-    <!-- Toasts elements -->
-    <div id="toast-wrapper" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
-        <!-- Spawned dynamically -->
+    <!-- CREATE MANUAL ORDER MODAL -->
+    <div id="modal-create-order"
+        class="fixed inset-0 z-50 overflow-hidden hidden flex items-center justify-center backdrop-blur-sm bg-black/60 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-[#1e2022] border border-outline-variant dark:border-[#2d3135] max-w-lg w-full mx-4 rounded-3xl shadow-2xl flex flex-col max-h-[90vh] relative select-none">
+            
+            <button onclick="closeCreateOrderModal()"
+                class="absolute right-5 top-5 p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d30] rounded-full transition-colors z-10">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="p-6 pb-4 border-b border-outline-variant/30 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary dark:text-[#86d4d3] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">add_circle</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-on-surface dark:text-white">Create Manual Order</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Add a walk-in or phone order directly to queue</p>
+                </div>
+            </div>
+
+            <div class="p-6 overflow-y-auto">
+                <form id="form-create-manual-order" onsubmit="handleCreateManualOrder(event)" class="space-y-4">
+                    
+                    <!-- Customer Details -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Customer Name</label>
+                            <input type="text" id="manual-student-name" required value="Walk-in Customer"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Student ID (Optional)</label>
+                            <input type="text" id="manual-student-id" placeholder="e.g. 202114001"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                        </div>
+                    </div>
+
+                    <!-- Food Selection -->
+                    <div class="space-y-3 p-4 bg-gray-50 dark:bg-[#25272a] rounded-xl border border-outline-variant/30">
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Menu Preset</label>
+                            <select id="manual-food-preset" onchange="onManualFoodPresetChange()"
+                                class="w-full px-3 py-2 bg-white dark:bg-[#1e2022] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Food Item Name</label>
+                            <input type="text" id="manual-food-name" required placeholder="Type custom food name if not in preset"
+                                class="w-full px-3 py-2 bg-white dark:bg-[#1e2022] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Quantity</label>
+                                <input type="number" id="manual-quantity" min="1" value="1" required oninput="calculateManualTotal()"
+                                    class="w-full px-3 py-2 bg-white dark:bg-[#1e2022] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Total Price (৳)</label>
+                                <input type="number" id="manual-total-price" min="0" required placeholder="e.g. 150"
+                                    class="w-full px-3 py-2 bg-white dark:bg-[#1e2022] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-primary dark:text-[#86d4d3]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Details -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Dine Option</label>
+                            <select id="manual-dine-option"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                                <option value="Dine In">Dine In</option>
+                                <option value="Takeaway">Takeaway</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Payment</label>
+                            <select id="manual-payment-status"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                                <option value="Paid">Paid (Cash/Card)</option>
+                                <option value="Unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Order Status</label>
+                            <select id="manual-order-status"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                                <option value="Pending">Queue (Pending)</option>
+                                <option value="Preparing">Preparing</option>
+                                <option value="Ready for Pickup">Ready</option>
+                                <option value="Delivered">Delivered</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-500 uppercase tracking-wider font-bold mb-1.5 text-[10px]">Notes</label>
+                            <input type="text" id="manual-notes" placeholder="Optional notes"
+                                class="w-full px-3 py-2 bg-surface-container-low dark:bg-[#2c2d30] border border-outline-variant/60 dark:border-[#383a3e] rounded-xl focus:outline-none focus:border-primary text-xs font-bold text-on-surface dark:text-white">
+                        </div>
+                    </div>
+                    
+                    <div class="pt-4 flex justify-end gap-3 border-t border-outline-variant/30 mt-2">
+                        <button type="button" onclick="closeCreateOrderModal()"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-[#2c2d30] dark:hover:bg-[#383a3e] text-gray-600 dark:text-gray-300 font-bold text-xs rounded-xl transition-all">Cancel</button>
+                        <button type="submit"
+                            class="px-5 py-2 bg-primary hover:bg-primary-container text-on-primary font-bold text-xs rounded-xl shadow-md transition-all">Create Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINTABLE RECEIPT TEMPLATE (Hidden on screen, rendered clearly on print/PDF) -->
+    <div id="printable-receipt" class="print-receipt-wrapper"></div>
+
+    <!-- TOAST NOTIFICATIONS WRAPPER -->
+    <div id="toast-wrapper" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
     </div>
 
 </body>

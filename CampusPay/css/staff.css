@@ -1,23 +1,22 @@
-/* CampusPay Staff Dashboard styling overrides */
+/* CampusPay Kitchen Staff Dashboard Styling */
 
 /* Glassmorphism definition */
 .glass-card {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.90);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .glass-card {
-    background: rgba(30, 32, 34, 0.85);
+    background: rgba(26, 28, 30, 0.90);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-color: #2d3135;
 }
 
 .glass-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
 }
 
 /* Custom Scrollbars */
@@ -45,28 +44,22 @@
     animation: fadeIn 0.25s forwards ease-out;
 }
 
-.modal-open>div {
+.modal-open > div {
     animation: slideUp 0.3s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideUp {
     from {
-        transform: translateY(20px);
+        transform: translateY(24px) scale(0.98);
         opacity: 0;
     }
-
     to {
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 }
@@ -86,7 +79,6 @@
         transform: translateY(100%) scale(0.9);
         opacity: 0;
     }
-
     to {
         transform: translateY(0) scale(1);
         opacity: 1;
@@ -100,6 +92,212 @@
     }
 }
 
+/* Kitchen Order Card Status Theme Classes */
+.order-card-pending {
+    border-left: 8px solid #3b82f6 !important; /* Blue */
+    background: rgba(239, 246, 255, 0.85);
+}
+.dark .order-card-pending {
+    background: rgba(30, 58, 138, 0.25);
+    border-left: 8px solid #60a5fa !important;
+}
+
+.order-card-accepted {
+    border-left: 8px solid #2563eb !important; /* Blue */
+    background: rgba(239, 246, 255, 0.85);
+}
+.dark .order-card-accepted {
+    background: rgba(30, 58, 138, 0.3);
+    border-left: 8px solid #3b82f6 !important;
+}
+
+.order-card-preparing {
+    border-left: 8px solid #f59e0b !important; /* Orange / Amber */
+    background: rgba(254, 243, 199, 0.7);
+}
+.dark .order-card-preparing {
+    background: rgba(120, 53, 15, 0.3);
+    border-left: 8px solid #fbbf24 !important;
+}
+
+.order-card-ready {
+    border-left: 8px solid #10b981 !important; /* Emerald Green */
+    background: rgba(209, 250, 229, 0.7);
+    animation: readyGlow 2.5s infinite alternate;
+}
+.dark .order-card-ready {
+    background: rgba(6, 78, 59, 0.35);
+    border-left: 8px solid #34d399 !important;
+}
+
+.order-card-delivered {
+    border-left: 8px solid #64748b !important; /* Slate / Gray */
+    background: rgba(241, 245, 249, 0.8);
+    opacity: 0.85;
+}
+.dark .order-card-delivered {
+    background: rgba(30, 41, 59, 0.3);
+    border-left: 8px solid #94a3b8 !important;
+}
+
+.order-card-cancelled {
+    border-left: 8px solid #ef4444 !important; /* Red */
+    background: rgba(254, 226, 226, 0.7);
+    opacity: 0.75;
+}
+.dark .order-card-cancelled {
+    background: rgba(127, 29, 29, 0.3);
+    border-left: 8px solid #f87171 !important;
+}
+
+/* Overdue Warning Pulse (Red highlight if waiting > 10m) */
+.order-card-overdue {
+    border: 2px solid #dc2626 !important;
+    border-left: 10px solid #dc2626 !important;
+    animation: overduePulse 1.5s infinite alternate;
+}
+
+@keyframes overduePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+}
+
+@keyframes readyGlow {
+    0% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+    }
+}
+
+/* High Legibility Large Kitchen Text Utilities */
+.text-glance-number {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+}
+
+.text-glance-title {
+    font-size: 1.75rem;
+    line-height: 2rem;
+    font-weight: 800;
+}
+
+/* DECORATIVE FOOD MENU CARDS */
+.decorative-food-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 76, 76, 0.12);
+}
+
+.dark .decorative-food-card {
+    background: rgba(26, 28, 30, 0.95);
+    border-color: rgba(134, 212, 211, 0.15);
+}
+
+.decorative-food-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 76, 76, 0.35);
+}
+
+.dark .decorative-food-card:hover {
+    border-color: rgba(134, 212, 211, 0.4);
+}
+
+.decorative-food-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #004c4c, #10b981, #f59e0b, #ec4899);
+    z-index: 10;
+}
+
+.decorative-card-badge {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* KITCHEN STAFF DECORATIVE WIDGET BOXES */
+.kitchen-widget-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 76, 76, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.dark .kitchen-widget-card {
+    background: rgba(26, 28, 30, 0.95);
+    border-color: rgba(134, 212, 211, 0.18);
+}
+
+.kitchen-widget-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08);
+}
+
+.kitchen-widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed rgba(0, 76, 76, 0.15);
+}
+
+.dark .kitchen-widget-header {
+    border-bottom-color: rgba(134, 212, 211, 0.2);
+}
+
+/* LED Indicator Lights */
+.led-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    display: inline-block;
+}
+
+.led-green {
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    animation: ledPulse 2s infinite;
+}
+
+.led-amber {
+    background: #f59e0b;
+    box-shadow: 0 0 10px #f59e0b;
+    animation: ledPulse 1.5s infinite;
+}
+
+.led-red {
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+}
+
+@keyframes ledPulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
 /* Mobile Sidebar Drawer styling overrides */
 @media (max-width: 767.98px) {
     #staff-sidebar {
@@ -108,5 +306,58 @@
 
     #staff-sidebar.drawer-open {
         transform: translateX(0);
+    }
+}
+
+/* PRINT RECEIPT STYLES (PREVENTS BLANK PAGE) */
+.print-receipt-wrapper {
+    display: none;
+}
+
+@media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    body * {
+        visibility: hidden !important;
+    }
+    .print-receipt-wrapper, 
+    .print-receipt-wrapper *,
+    #printable-receipt,
+    #printable-receipt * {
+        visibility: visible !important;
+    }
+    .print-receipt-wrapper,
+    #printable-receipt {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 80mm !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 12px !important;
+        font-family: monospace, 'Courier New', Courier, sans-serif !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+        z-index: 99999 !important;
+        box-sizing: border-box !important;
+    }
+    #printable-receipt table {
+        display: table !important;
+        width: 100% !important;
+    }
+    #printable-receipt tr {
+        display: table-row !important;
+    }
+    #printable-receipt td, #printable-receipt th {
+        display: table-cell !important;
     }
 }
