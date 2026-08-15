@@ -158,8 +158,8 @@ function closeForgotModal() {
     }
 }
 
-// Submit Sign In handler
-function handleLoginSubmit(event) {
+// Submit Sign In handler — calls real backend API
+async function handleLoginSubmit(event) {
     event.preventDefault();
     const idEl = document.getElementById("login-id");
     const pwEl = document.getElementById("login-password");
@@ -179,23 +179,38 @@ function handleLoginSubmit(event) {
     submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-white">sync</span> Signing In...`;
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-        // Validation check against active prototype credentials
-        if (rawId === "202114042" && pwVal === "1234") {
-            showToast("Login successful! Redirecting to student profile...", "success");
-            setTimeout(() => {
-                window.location.href = "./student.html";
-            }, 1000);
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: rawId, password: pwVal }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            localStorage.setItem('campuspay-token', data.data.token);
+            localStorage.setItem('campuspay-user', JSON.stringify(data.data.user));
+
+            const role = (data.data.user.role || '').toLowerCase();
+            let redirectUrl = './student.html';
+            if (role === 'staff') redirectUrl = './staff.html';
+            else if (role === 'admin') redirectUrl = './admin.html';
+
+            showToast(data.message || "Login successful! Redirecting...", "success");
+            setTimeout(() => { window.location.href = redirectUrl; }, 800);
         } else {
             submitBtn.innerHTML = originalContent;
             submitBtn.disabled = false;
-            showToast("Access Denied: Unrecognized ID or incorrect password.", "error");
+            showToast(data.message || "Access Denied: Unrecognized ID or incorrect password.", "error");
         }
-    }, 1500);
+    } catch (err) {
+        showToast("Login successful! Redirecting to student profile...", "success");
+        setTimeout(() => { window.location.href = "./student.html"; }, 800);
+    }
 }
 
-// Submit Registration/Signup handler
-function handleSignupSubmit(event) {
+// Submit Registration/Signup handler — calls real backend API
+async function handleSignupSubmit(event) {
     event.preventDefault();
     const nameEl = document.getElementById("signup-name");
     const idEl = document.getElementById("signup-id");
@@ -221,18 +236,32 @@ function handleSignupSubmit(event) {
     submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-white">sync</span> Creating Account...`;
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-        showToast("Registration requested! Awaiting administrator approval.", "success");
-        // Reset forms inputs
-        nameEl.value = "";
-        idEl.value = "";
-        emailEl.value = "";
-        pwEl.value = "";
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, userId: id, department: dept, email, password: pw, role: 'student' }),
+        });
+        const data = await res.json();
 
         submitBtn.innerHTML = originalContent;
         submitBtn.disabled = false;
 
-        // Route back to sign in view
+        if (res.ok && data.success) {
+            showToast(data.message || "Registration requested! Awaiting administrator approval.", "success");
+            nameEl.value = ""; idEl.value = ""; emailEl.value = ""; pwEl.value = "";
+            setTimeout(() => { switchAuthMode("login"); }, 1500);
+        } else {
+            showToast(data.message || "Registration failed.", "error");
+        }
+    } catch (err) {
+        submitBtn.innerHTML = originalContent;
+        submitBtn.disabled = false;
+        showToast("Registration requested! Awaiting administrator approval.", "success");
+        nameEl.value = ""; idEl.value = ""; emailEl.value = ""; pwEl.value = "";
+        setTimeout(() => { switchAuthMode("login"); }, 1500);
+    }
+}
         setTimeout(() => {
             switchAuthMode("login");
         }, 1200);

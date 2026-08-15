@@ -111,8 +111,8 @@ function closeAdminModal() {
     }
 }
 
-// Login validation
-function handleLoginSubmit(event) {
+// Login validation — calls real backend API
+async function handleLoginSubmit(event) {
     event.preventDefault();
 
     const staffIdInput = document.getElementById("staff-id");
@@ -129,31 +129,53 @@ function handleLoginSubmit(event) {
         return;
     }
 
-    // Toggle button loader
     const oContent = submitBtn.innerHTML;
     submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-white">sync</span> Authenticating...`;
     submitBtn.disabled = true;
 
-    // Simulate verification delay
-    setTimeout(() => {
-        // Validation Check
-        if (idVal.toLowerCase() === "admin" && pinVal === "1234") {
-            showToast("Admin authorization granted. Redirecting...", "success");
-            setTimeout(() => {
-                window.location.href = "./admin.html";
-            }, 1000);
-        } else if ((idVal.toLowerCase() === "st-00000" || idVal.toLowerCase() === "staff") && pinVal === "1234") {
-            showToast("Canteen Staff authorization granted. Redirecting...", "success");
-            setTimeout(() => {
-                window.location.href = "./staff.html";
-            }, 1000);
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: idVal, password: pinVal }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            localStorage.setItem('campuspay-token', data.data.token);
+            localStorage.setItem('campuspay-user', JSON.stringify(data.data.user));
+
+            const role = (data.data.user.role || '').toLowerCase();
+            let redirectUrl = './student.html';
+            if (role === 'staff') redirectUrl = './staff.html';
+            else if (role === 'admin') redirectUrl = './admin.html';
+
+            showToast("Login granted. Redirecting...", "success");
+            setTimeout(() => { window.location.href = redirectUrl; }, 900);
         } else {
-            // Restore button
+            showToast(data.message || "Access Denied: Unrecognized ID or Security PIN.", "error");
             submitBtn.innerHTML = oContent;
             submitBtn.disabled = false;
-            showToast("Access Denied: Unrecognized ID or Security PIN.", "error");
         }
-    }, 1500);
+    } catch (err) {
+        // Demo fallback
+        console.warn('Backend unreachable, demo mode.');
+        const staffIds = ['st-0000', 'staff', 'kitchen'];
+        const isAdmin = (idVal.toLowerCase() === 'adm-0000' || idVal.toLowerCase() === 'admin') && pinVal === '1234';
+        const isStaff = staffIds.includes(idVal.toLowerCase()) && pinVal === '1234';
+
+        if (isAdmin) {
+            showToast("Demo: Admin access granted.", "success");
+            setTimeout(() => { window.location.href = "./admin.html"; }, 900);
+        } else if (isStaff) {
+            showToast("Demo: Staff access granted.", "success");
+            setTimeout(() => { window.location.href = "./staff.html"; }, 900);
+        } else {
+            submitBtn.innerHTML = oContent;
+            submitBtn.disabled = false;
+            showToast("Access Denied: Invalid credentials.", "error");
+        }
+    }
 }
 
 // Bind events

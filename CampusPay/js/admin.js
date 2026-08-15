@@ -127,7 +127,66 @@ document.addEventListener("DOMContentLoaded", () => {
     addSystemLog("INFO", "CampusPay Administration panel environment initialized.");
     addSystemLog("INFO", `Active database synced successfully. Loaded ${state.users.length} active users.`);
     renderActiveTab();
+    // Connect to real-time Socket.IO
+    initAdminSocket();
 });
+
+// ─── Socket.IO Admin Real-time Connection ─────────────────────────
+let adminSocket = null;
+
+function initAdminSocket() {
+    if (typeof io === 'undefined') {
+        console.warn('[CampusPay Admin] Socket.IO not loaded');
+        return;
+    }
+
+    adminSocket = io('http://127.0.0.1:5000', {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 2000,
+    });
+
+    adminSocket.on('connect', () => {
+        const user = JSON.parse(localStorage.getItem('campuspay-user') || 'null');
+        adminSocket.emit('join', {
+            userId: user?.userId || 'admin',
+            mongoUserId: user?.id || user?._id,
+            role: 'admin',
+        });
+        addSystemLog("INFO", `Admin socket connected: ${adminSocket.id}`);
+    });
+
+    adminSocket.on('order:new', (payload) => {
+        addSystemLog("INFO", `New Order #${payload.orderId} from ${payload.studentName || 'student'} — ৳${payload.total}`);
+        showAdminToast(`📥 New Order #${payload.orderId} received!`, 'info');
+    });
+
+    adminSocket.on('order:status-updated', (payload) => {
+        addSystemLog("INFO", `Order #${payload.orderId} status changed → ${payload.status}`);
+    });
+
+    adminSocket.on('order:cancelled', (payload) => {
+        addSystemLog("WARN", `Order #${payload.orderId} was cancelled.`);
+    });
+
+    adminSocket.on('recharge:new-request', (payload) => {
+        addSystemLog("INFO", `New recharge request from ${payload.studentName}: ৳${payload.amount}`);
+        showAdminToast(`💰 Recharge request: ৳${payload.amount}`, 'info');
+    });
+
+    adminSocket.on('disconnect', (reason) => {
+        addSystemLog("WARN", `Admin socket disconnected: ${reason}`);
+    });
+}
+
+function showAdminToast(message, type) {
+    // Use existing toast system if available, otherwise log
+    if (typeof showToast === 'function') {
+        showToast(message, type);
+    }
+}
+
+
 
 // Theme Management
 function initTheme() {

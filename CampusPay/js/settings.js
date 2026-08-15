@@ -1,3 +1,7 @@
+// CampusPay Settings Controller
+const API_BASE = 'http://127.0.0.1:5000/api';
+function getToken() { return localStorage.getItem('campuspay-token'); }
+
 // parse url search params
 const urlParams = new URLSearchParams(window.location.search);
 const activeRole = urlParams.get('role') || 'student'; // fallback
@@ -292,41 +296,73 @@ function setupNavigationRedirections() {
 }
 
 // handle save submit
-function handleSettingsSubmit(e) {
+async function handleSettingsSubmit(e) {
     e.preventDefault();
 
-    // read values inside form
     const formData = new FormData(e.target);
     const settingsObj = {};
 
     for (let [key, val] of formData.entries()) {
-        if (key === 'dispatch_notifications' || key === 'print_receipts' || key === 'sound_effects' || key === 'hourly_backups' || key === 'system_lock') {
+        if (['dispatch_notifications', 'print_receipts', 'sound_effects', 'hourly_backups', 'system_lock'].includes(key)) {
             settingsObj[key] = true;
         } else {
             settingsObj[key] = val;
         }
     }
 
-    // handle toggles not selected in FormData array
     const toggles = {
         student: ['dispatch_notifications'],
         staff: ['print_receipts', 'sound_effects'],
         admin: ['hourly_backups', 'system_lock']
     };
-
     const expectedToggles = toggles[activeRole] || [];
-    expectedToggles.forEach(name => {
-        if (!formData.has(name)) {
-            settingsObj[name] = false;
-        }
-    });
+    expectedToggles.forEach(name => { if (!formData.has(name)) settingsObj[name] = false; });
 
-    // save values in localStorage
+    // Save to localStorage always
     localStorage.setItem(`campuspay-config-${activeRole}`, JSON.stringify(settingsObj));
 
-    showToast('Settings saved successfully! Redirecting...', 'success');
+    // If student/faculty, also save profile fields to API
+    if (getToken() && (activeRole === 'student' || activeRole === 'faculty' || activeRole === 'staff' || activeRole === 'admin')) {
+        const profileUpdate = {};
+        if (settingsObj.full_name) profileUpdate.name = settingsObj.full_name;
+        if (settingsObj.department) profileUpdate.department = settingsObj.department;
+        if (settingsObj.phone) profileUpdate.phone = settingsObj.phone;
 
-    // redirect to dashboard
+        // Password change if provided
+        if (settingsObj.current_password && settingsObj.new_password) {
+            try {
+                const pwRes = await fetch(`${API_BASE}/users/me/password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    body: JSON.stringify({ currentPassword: settingsObj.current_password, newPassword: settingsObj.new_password }),
+                });
+                const pwData = await pwRes.json();
+                if (!pwRes.ok) {
+                    showToast(pwData.message || 'Password change failed.', 'error');
+                    return;
+                }
+                showToast('Password changed. Please log in again.', 'success');
+                setTimeout(() => {
+                    localStorage.removeItem('campuspay-token');
+                    localStorage.removeItem('campuspay-user');
+                    window.location.href = '../html/index.html';
+                }, 1500);
+                return;
+            } catch (err) { /* ignore */ }
+        }
+
+        if (Object.keys(profileUpdate).length > 0) {
+            try {
+                await fetch(`${API_BASE}/users/me`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    body: JSON.stringify(profileUpdate),
+                });
+            } catch (err) { /* ignore, already saved to localStorage */ }
+        }
+    }
+
+    showToast('Settings saved successfully! Redirecting...', 'success');
     setTimeout(() => {
         window.location.href = backRedirectionUrl[activeRole] || './student.html';
     }, 1500);

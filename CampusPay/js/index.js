@@ -1,8 +1,19 @@
 // CampusPay Interactive Logic & State Management
 
+// ─── API Configuration ───────────────────────────────────────────
+const API_BASE = 'http://127.0.0.1:5000/api';
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('campuspay-token');
+    return {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    };
+}
+
 // Core State
 const state = {
-    balance: parseFloat(localStorage.getItem('campuspay-balance')) || 500.00,
+    balance: parseFloat(localStorage.getItem('campuspay-balance')) || 0,
     cart: [],
     meals: [
         {
@@ -87,66 +98,20 @@ const state = {
     searchQuery: "",
     selectedServiceType: "Dine In",
     isDarkMode: localStorage.getItem('campuspay-theme') === 'dark',
-    orderHistory: (() => {
-        const saved = JSON.parse(localStorage.getItem('campuspay-orders') || 'null');
-        if (Array.isArray(saved) && saved.length > 0) return saved;
-        const defaults = [
-            {
-                orderId: 10254,
-                timestamp: 'Aug 5, 2026, 02:10 PM',
-                items: [{ mealId: 1, quantity: 1 }, { mealId: 4, quantity: 2 }],
-                amount: 250.00,
-                dineOption: 'Dine In'
-            },
-            {
-                orderId: 10253,
-                timestamp: 'Aug 4, 2026, 01:15 PM',
-                items: [{ mealId: 2, quantity: 2 }],
-                amount: 320.00,
-                dineOption: 'Parcel'
-            },
-            {
-                orderId: 10252,
-                timestamp: 'Aug 3, 2026, 12:45 PM',
-                items: [{ mealId: 3, quantity: 1 }, { mealId: 5, quantity: 1 }],
-                amount: 210.00,
-                dineOption: 'Dine In'
-            },
-            {
-                orderId: 10251,
-                timestamp: 'Aug 1, 2026, 08:30 AM',
-                items: [{ mealId: 6, quantity: 2 }],
-                amount: 180.00,
-                dineOption: 'Parcel'
-            },
-            {
-                orderId: 10250,
-                timestamp: 'Jul 28, 2026, 07:45 PM',
-                items: [{ mealId: 1, quantity: 2 }],
-                amount: 360.00,
-                dineOption: 'Dine In'
-            }
-        ];
-        localStorage.setItem('campuspay-orders', JSON.stringify(defaults));
-        return defaults;
-    })(),
-    activeOrder: JSON.parse(localStorage.getItem('campuspay-active-order')) || null,
+    orderHistory: [],        // Loaded from API on DOMContentLoaded
+    activeOrder: null,        // Loaded from API on DOMContentLoaded
 
-    // NEW state items
     favorites: JSON.parse(localStorage.getItem('campuspay-favorites')) || [1, 5],
     notifications: JSON.parse(localStorage.getItem('campuspay-notifications')) || [
         { title: "Welcome to CampusPay", message: "Enjoy digital cashless dining experience inside MIST Counter Cafeteria.", date: "Today, 10:00 AM" }
     ],
     profile: JSON.parse(localStorage.getItem('campuspay-profile')) || {
-        name: "Ajmain",
-        id: "202114042",
-        department: "CSE Department",
-        phone: "01700000000",
-        password: "••••••••"
+        name: "Student",
+        id: "--",
+        department: "",
+        phone: "",
     },
-    transactions: JSON.parse(localStorage.getItem('campuspay-transactions')) || [
-        { date: "25/07/2026 10:00 AM", type: "Recharge", desc: "Initial Card Balance Set", amount: 500.00, postBalance: 500.00 }
-    ],
+    transactions: [],         // Loaded from API
     activePanel: localStorage.getItem('campuspay-active-panel') || 'menu',
     txFilter: 'All',
     feedbackStars: 5
@@ -161,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartDOM();
     initHeaderClock();
 
-    // Render new dashboard widgets
+    // Render dashboard widgets (with placeholder state, will update after API)
     renderDashboardGreeting();
     renderActiveOrderStatus();
     renderRecentOrders();
@@ -172,10 +137,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Route to current active view panel
     showPanel(state.activePanel);
 
-    // Start active order simulation if there is a running order
-    if (state.activeOrder && state.activeOrder.status === "Preparing") {
-        startActiveOrderSimulation();
-    }
+    // ── Load real data from backend API ──
+    initSocketConnection();
+    loadUserProfile();
+    loadUserBalance();
+    loadActiveOrder();
+    loadOrderHistory();
+    loadMenuItems(); // Enrich local meals with backend MongoDB IDs
 });
 
 // Theme Management
@@ -358,7 +326,12 @@ function addToCart(mealId) {
         }
         cartItem.quantity++;
     } else {
-        state.cart.push({ mealId: mealId, quantity: 1 });
+        // Include the backend MongoDB _id as menuItemId for API order placement
+        state.cart.push({
+            mealId: mealId,
+            menuItemId: meal.menuItemId || null,  // Set by loadMenuItems()
+            quantity: 1,
+        });
     }
 
     showToast(`${meal.name} added to Tray!`, "success");
@@ -506,25 +479,207 @@ function closeMobileNav() {
     }, 300);
 }
 
-function getNextGlobalOrderId() {
-    let current = parseInt(localStorage.getItem('campuspay-global-order-counter')) || 3030;
+// ─── Real API Functions ──────────────────────────────────────────
+
+async function loadUserProfile() {
     try {
-        const staffOrders = JSON.parse(localStorage.getItem('campuspay-staff-orders')) || [];
-        const existingIds = staffOrders.map(o => parseInt(o.id)).filter(n => !isNaN(n));
-        if (existingIds.length > 0) {
-            const maxExisting = Math.max(...existingIds);
-            if (maxExisting >= current) {
-                current = maxExisting + 1;
-            }
+        const savedUser = JSON.parse(localStorage.getItem('campuspay-user') || 'null');
+        if (savedUser) {
+            state.profile = {
+                name: savedUser.name || 'Student',
+                id: savedUser.userId || '',
+                department: savedUser.department || '',
+                phone: savedUser.phone || '',
+                _id: savedUser.id || savedUser._id,
+            };
+            renderDashboardGreeting();
         }
-    } catch (e) {}
-    const nextId = current;
-    localStorage.setItem('campuspay-global-order-counter', (nextId + 1).toString());
-    return nextId.toString();
+        const res = await fetch(`${API_BASE}/users/me`, { headers: getAuthHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            const u = data.data;
+            state.profile = {
+                name: u.name,
+                id: u.userId,
+                department: u.department || '',
+                phone: u.phone || '',
+                _id: u._id,
+            };
+            state.balance = parseFloat(u.balance) || 0;
+            updateBalanceDOM();
+            renderDashboardGreeting();
+            localStorage.setItem('campuspay-user', JSON.stringify(u));
+        }
+    } catch (e) {
+        console.warn('[CampusPay] loadUserProfile failed:', e.message);
+    }
 }
 
-// Perform simulated checkout flow
-function processCheckout() {
+async function loadUserBalance() {
+    try {
+        const res = await fetch(`${API_BASE}/users/me/balance`, { headers: getAuthHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            state.balance = parseFloat(data.data.balance) || 0;
+            localStorage.setItem('campuspay-balance', state.balance.toFixed(2));
+            updateBalanceDOM();
+        }
+    } catch (e) {
+        console.warn('[CampusPay] loadUserBalance failed:', e.message);
+    }
+}
+
+async function loadActiveOrder() {
+    try {
+        const res = await fetch(`${API_BASE}/orders/active`, { headers: getAuthHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            state.activeOrder = data.data;  // null if no active order
+            renderActiveOrderStatus();
+            updateWelcomeStatsDOM();
+        }
+    } catch (e) {
+        console.warn('[CampusPay] loadActiveOrder failed:', e.message);
+    }
+}
+
+async function loadOrderHistory() {
+    try {
+        const res = await fetch(`${API_BASE}/orders?limit=20`, { headers: getAuthHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            state.orderHistory = data.data || [];
+            renderRecentOrders();
+            updateWelcomeStatsDOM();
+        }
+    } catch (e) {
+        console.warn('[CampusPay] loadOrderHistory failed:', e.message);
+    }
+}
+
+async function loadMenuItems() {
+    try {
+        const res = await fetch(`${API_BASE}/menu`, { headers: getAuthHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            const backendMenu = data.data || [];
+
+            // Enrich local state.meals with MongoDB _id by matching on name
+            state.meals.forEach(localMeal => {
+                const match = backendMenu.find(bm =>
+                    bm.name.toLowerCase().trim() === localMeal.name.toLowerCase().trim()
+                );
+                if (match) {
+                    localMeal.menuItemId = match._id;
+                    // Sync stock from backend (authoritative)
+                    localMeal.stock = match.stock;
+                }
+            });
+
+            // If backend has additional items not in local state, add them
+            backendMenu.forEach(bm => {
+                const localMatch = state.meals.find(m =>
+                    m.name.toLowerCase().trim() === bm.name.toLowerCase().trim()
+                );
+                if (!localMatch && bm.isAvailableForOrder) {
+                    state.meals.push({
+                        id: `bk_${bm._id}`,  // Unique local ID with prefix
+                        menuItemId: bm._id,
+                        name: bm.name,
+                        tagline: bm.description || '',
+                        category: bm.category || 'Other',
+                        price: bm.price,
+                        rating: bm.rating || 4.5,
+                        stock: bm.stock,
+                        image: bm.image || '',
+                        stockText: `${bm.stock} available`,
+                    });
+                }
+            });
+
+            renderFoodGrid();
+            console.log('[CampusPay] Menu enriched with backend IDs');
+        }
+    } catch (e) {
+        console.warn('[CampusPay] loadMenuItems failed (proceeding with local-only menu):', e.message);
+    }
+}
+
+// ─── Socket.IO Real-time Connection ─────────────────────────────
+let campusSocket = null;
+
+function initSocketConnection() {
+    if (typeof io === 'undefined') {
+        console.warn('[CampusPay] Socket.IO not loaded');
+        return;
+    }
+
+    campusSocket = io('http://127.0.0.1:5000', {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 2000,
+    });
+
+    campusSocket.on('connect', () => {
+        console.log('[CampusPay] Socket connected:', campusSocket.id);
+        // Join personal room using MongoDB _id
+        const user = JSON.parse(localStorage.getItem('campuspay-user') || 'null');
+        if (user) {
+            const mongoId = user.id || user._id;
+            campusSocket.emit('join', {
+                userId: user.userId,
+                mongoUserId: mongoId,
+                role: user.role || 'student',
+            });
+        }
+        // On reconnect, always refetch active order
+        loadActiveOrder();
+    });
+
+    // Kitchen changed our order status
+    campusSocket.on('order:status-changed', (payload) => {
+        console.log('[CampusPay] order:status-changed', payload);
+        if (state.activeOrder && String(state.activeOrder._id) === String(payload._id)) {
+            state.activeOrder.status = payload.status;
+            renderActiveOrderStatus();
+            updateWelcomeStatsDOM();
+
+            // If delivered, clear active order after a moment
+            if (payload.status === 'Delivered') {
+                showToast(`Order #${payload.orderId} has been delivered. Enjoy your meal! 🍽️`, 'success');
+                setTimeout(() => {
+                    state.activeOrder = null;
+                    renderActiveOrderStatus();
+                    loadOrderHistory();
+                }, 3000);
+            } else {
+                showToast(payload.message || `Order status: ${payload.status}`, 'success');
+            }
+        } else {
+            // May be a new order we didn't have — refetch
+            loadActiveOrder();
+        }
+    });
+
+    // Our order was cancelled
+    campusSocket.on('order:cancelled', (payload) => {
+        console.log('[CampusPay] order:cancelled', payload);
+        if (state.activeOrder && String(state.activeOrder._id) === String(payload._id)) {
+            state.activeOrder = null;
+            renderActiveOrderStatus();
+            updateWelcomeStatsDOM();
+            showToast('Your order has been cancelled.', 'error');
+            loadOrderHistory();
+        }
+    });
+
+    campusSocket.on('disconnect', (reason) => {
+        console.log('[CampusPay] Socket disconnected:', reason);
+    });
+}
+
+// ─── Real Checkout — calls backend POST /api/orders ─────────────
+async function processCheckout() {
     const totalPrice = state.cart.reduce((sum, item) => {
         const meal = state.meals.find(m => m.id === item.mealId);
         return sum + (meal ? meal.price * item.quantity : 0);
@@ -532,125 +687,91 @@ function processCheckout() {
 
     if (totalPrice <= 0) return;
 
-    if (state.balance < totalPrice) {
-        showToast("Insufficient Balance! Please recharge your account.", "error");
-        setTimeout(() => {
-            showPanel('wallet');
-        }, 1200);
-        return;
-    }
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutSpinner = document.getElementById('checkout-spinner');
+    const checkoutBtnText = document.getElementById('checkout-btn-text');
 
-    const checkoutBtn = document.getElementById("checkout-btn");
-    const checkoutSpinner = document.getElementById("checkout-spinner");
-    const checkoutBtnText = document.getElementById("checkout-btn-text");
+    const setLoading = (loading) => {
+        if (!checkoutBtn) return;
+        checkoutBtn.disabled = loading;
+        checkoutSpinner?.classList.toggle('hidden', !loading);
+        if (checkoutBtnText) checkoutBtnText.innerText = loading ? 'Placing Order...' : 'Confirm Tray Order';
+    };
 
-    if (checkoutBtn && checkoutSpinner && checkoutBtnText) {
-        checkoutBtn.disabled = true;
-        checkoutSpinner.classList.remove("hidden");
-        checkoutBtnText.innerText = "Processing...";
-    }
+    setLoading(true);
 
-    // Simulate Server Order validation and processing
-    setTimeout(() => {
-        // Validate stock once again
-        let stockAvailable = true;
-        for (const item of state.cart) {
-            const meal = state.meals.find(m => m.id === item.mealId);
-            if (!meal || meal.stock < item.quantity) {
-                stockAvailable = false;
-                showToast(`Sorry! Extra portions of ${meal ? meal.name : 'item'} sold out while checking.`, "error");
-                break;
-            }
+    try {
+        // Build items array using menuItemId from the meal object
+        const orderItems = state.cart
+            .filter(item => item.menuItemId) // Only items with backend IDs
+            .map(item => ({ menuItemId: item.menuItemId, quantity: item.quantity }));
+
+        if (orderItems.length === 0) {
+            showToast('Cannot place order: menu items not synced with backend. Refresh the page.', 'error');
+            setLoading(false);
+            return;
         }
 
-        if (stockAvailable) {
-            // Success order path
-            state.balance -= totalPrice;
-            state.cart.forEach(item => {
-                const meal = state.meals.find(m => m.id === item.mealId);
-                if (meal) meal.stock -= item.quantity;
-            });
+        // Idempotency key — prevents duplicate order if button clicked twice
+        const idempotencyKey = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
 
-            // Create active order state with synchronized global order ID
-            const orderId = getNextGlobalOrderId();
+        const res = await fetch(`${API_BASE}/orders`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                items: orderItems,
+                dineOption: state.selectedServiceType || 'Dine In',
+                pickupType: 'Counter Pickup',
+                specialNote: '',
+                idempotencyKey,
+            }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && (data.success || res.status === 201 || res.status === 200)) {
+            // Update local balance from server response
+            if (data.data.newBalance !== undefined) {
+                state.balance = parseFloat(data.data.newBalance);
+                localStorage.setItem('campuspay-balance', state.balance.toFixed(2));
+                updateBalanceDOM();
+            }
+
+            // Set active order from server response — status is always "Pending"
             state.activeOrder = {
-                orderId: orderId,
-                items: [...state.cart],
-                amount: totalPrice,
-                status: "Preparing",
-                timestamp: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                pin: `MIST-${Math.floor(1000 + Math.random() * 9000)}`,
-                dineOption: state.selectedServiceType
+                _id: data.data._id,
+                orderId: data.data.orderId,
+                total: data.data.total,
+                status: data.data.status,  // "Pending" — never auto-advances
+                pin: data.data.pin,
+                qrCode: data.data.qrCode,
+                dineOption: data.data.dineOption,
+                items: data.data.items || state.cart,
+                createdAt: data.data.createdAt,
             };
-            localStorage.setItem('campuspay-active-order', JSON.stringify(state.activeOrder));
 
-            // Store order copy
-            state.orderHistory.push({
-                orderId: orderId,
-                timestamp: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                items: [...state.cart],
-                amount: totalPrice,
-                dineOption: state.selectedServiceType
-            });
-            localStorage.setItem('campuspay-orders', JSON.stringify(state.orderHistory));
-
-            // Record transaction audit log
-            const itemsSummaryStr = state.cart.map(item => {
-                const meal = state.meals.find(m => m.id === item.mealId);
-                return `${meal ? meal.name : 'Item'} (${item.quantity})`;
-            }).join(', ');
-
-            const newTx = {
-                date: new Date().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }),
-                type: "Checkout",
-                desc: `Purchase: ${itemsSummaryStr}`,
-                amount: totalPrice,
-                postBalance: state.balance
-            };
-            state.transactions.push(newTx);
-            localStorage.setItem('campuspay-transactions', JSON.stringify(state.transactions));
-
-            // Sync with kitchen staff dashboard orders queue
-            const staffOrders = JSON.parse(localStorage.getItem('campuspay-staff-orders')) || [
-                { id: "3024", studentId: "202114042", items: "Beef Biryani (1), MIST Cold Coffee (1)", total: 170, status: "Pending", dineOption: "Dine In" },
-                { id: "3023", studentId: "201914005", items: "Egg Sandwich (2)", total: 90, status: "Preparing", dineOption: "Parcel" },
-                { id: "3022", studentId: "202214112", items: "Fruit Platter (1)", total: 60, status: "Completed", dineOption: "Dine In" }
-            ];
-            staffOrders.push({
-                id: orderId.toString(),
-                studentId: "202114042",
-                items: itemsSummaryStr,
-                total: totalPrice,
-                status: "Pending",
-                dineOption: state.selectedServiceType
-            });
-            localStorage.setItem('campuspay-staff-orders', JSON.stringify(staffOrders));
-
-            state.cart = []; // Reset Cart
-
-            updateBalanceDOM();
-            localStorage.setItem('campuspay-balance', state.balance.toFixed(2));
+            state.cart = [];
             updateCartDOM();
             renderFoodGrid();
             closeCartDrawer();
-
-            // Refresh new widgets
             renderActiveOrderStatus();
             renderRecentOrders();
             updateWelcomeStatsDOM();
 
-            pushNotification("Order Placed", `Order #${orderId} was successfully placed for ${totalPrice.toFixed(2)} ৳ (${state.selectedServiceType}).`);
-            showToast("Order placed successfully! 🍕", "success");
-            startActiveOrderSimulation();
-        }
+            showToast(`Order #${data.data.orderId} placed! Waiting for kitchen. 🍽️`, 'success');
+            pushNotification('Order Placed', `Order #${data.data.orderId} placed for ৳${totalPrice.toFixed(2)}.`);
 
-        // Restore Checkout Button states
-        if (checkoutBtn && checkoutSpinner && checkoutBtnText) {
-            checkoutBtn.disabled = false;
-            checkoutSpinner.classList.add("hidden");
-            checkoutBtnText.innerText = "Confirm Tray Order";
+            // Reload history from API
+            loadOrderHistory();
+        } else {
+            showToast(data.message || 'Failed to place order. Please try again.', 'error');
         }
-    }, 1500);
+    } catch (err) {
+        console.error('[CampusPay] processCheckout error:', err);
+        showToast('Network error: Cannot reach backend. Is the server running?', 'error');
+    } finally {
+        setLoading(false);
+    }
 }
 
 // Quick Reorder logic (Replaces current cart with elements of the last order)
@@ -786,20 +907,24 @@ function renderActiveOrderStatus() {
 
     if (titleEl) titleEl.innerText = `Order #${state.activeOrder.orderId} (${state.activeOrder.dineOption || 'Dine In'})`;
     if (badgeEl) {
-        badgeEl.innerText = state.activeOrder.status;
-        if (state.activeOrder.status === "Preparing") {
+        const status = state.activeOrder.status;
+        const activeStatuses = ['Pending', 'Accepted', 'Preparing'];
+        badgeEl.innerText = status;
+        if (activeStatuses.includes(status)) {
             badgeEl.className = "bg-primary/10 text-primary dark:text-[#86d4d3] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
         } else {
             badgeEl.className = "bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse";
         }
     }
-    if (pinEl) pinEl.innerText = state.activeOrder.pin;
+    if (pinEl) pinEl.innerText = state.activeOrder.pin || '--';
 
-    const itemsSummary = state.activeOrder.items.map(item => {
+    // Items can come from API (with name property) or from cart (with mealId)
+    const itemsSummary = (state.activeOrder.items || []).map(item => {
+        if (item.name) return `${item.quantity}x ${item.name}`;  // API format
         const meal = state.meals.find(m => m.id === item.mealId);
         return `${item.quantity}x ${meal ? meal.name : 'Item'}`;
     }).join(', ');
-    if (summaryEl) summaryEl.innerText = itemsSummary;
+    if (summaryEl) summaryEl.innerText = itemsSummary || 'Order placed';
 
     // Render Dynamic QR code or placeholder
     const largeQrContainer = document.getElementById("large-qr-code-container");
@@ -835,48 +960,42 @@ function renderActiveOrderStatus() {
     const stepReadyText = document.getElementById("step-ready-text");
     const progressLine = document.getElementById("active-progress-line");
 
+    const orderStatus = state.activeOrder.status;
+
     if (stepPlacedCircle) {
         stepPlacedCircle.className = "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shadow step-circle-completed";
     }
 
-    if (state.activeOrder.status === "Preparing") {
+    if (orderStatus === 'Pending' || orderStatus === 'Accepted') {
+        if (stepPreparingCircle) stepPreparingCircle.className = "w-6 h-6 rounded-full bg-surface-container-high dark:bg-[#2c2d30] text-on-surface-variant flex items-center justify-center text-[10px] font-bold font-mono shadow";
+        if (stepReadyCircle) stepReadyCircle.className = "w-6 h-6 rounded-full bg-surface-container-high dark:bg-[#2c2d30] text-on-surface-variant flex items-center justify-center text-[10px] font-bold font-mono shadow";
+        if (progressLine) progressLine.style.width = "10%";
+    } else if (orderStatus === "Preparing") {
         if (stepPreparingCircle) stepPreparingCircle.className = "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shadow step-circle-active";
         if (stepPreparingText) stepPreparingText.className = "text-[9px] md:text-[10px] font-bold mt-1.5 text-emerald-600 dark:text-emerald-400";
-        
         if (stepReadyCircle) stepReadyCircle.className = "w-6 h-6 rounded-full bg-surface-container-high dark:bg-[#2c2d30] text-on-surface-variant flex items-center justify-center text-[10px] font-bold font-mono shadow";
         if (stepReadyText) stepReadyText.className = "text-[9px] md:text-[10px] font-bold mt-1.5 text-on-surface-variant";
         if (progressLine) progressLine.style.width = "50%";
-    } else if (state.activeOrder.status === "Ready for Pickup") {
+    } else if (orderStatus === "Ready for Pickup") {
         if (stepPreparingCircle) stepPreparingCircle.className = "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shadow step-circle-completed";
         if (stepPreparingText) stepPreparingText.className = "text-[9px] md:text-[10px] font-bold mt-1.5 text-on-surface";
-
         if (stepReadyCircle) stepReadyCircle.className = "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shadow step-circle-active animate-bounce";
         if (stepReadyText) stepReadyText.className = "text-[9px] md:text-[10px] font-bold mt-1.5 text-emerald-600 dark:text-emerald-400";
         if (progressLine) progressLine.style.width = "100%";
     }
 }
 
-function startActiveOrderSimulation() {
-    if (!state.activeOrder || state.activeOrder.status !== "Preparing") return;
-    // Simulate pipeline update after 12 seconds
-    setTimeout(() => {
-        if (state.activeOrder && state.activeOrder.status === "Preparing") {
-            state.activeOrder.status = "Ready for Pickup";
-            localStorage.setItem('campuspay-active-order', JSON.stringify(state.activeOrder));
-            renderActiveOrderStatus();
-            pushNotification("Order Ready for Pickup", `Your Order #${state.activeOrder.orderId} is Ready for Pickup! Collect it at Counter.`);
-            showToast(`Your Order #${state.activeOrder.orderId} is Ready for Pickup! 🍽️`, "success");
-        }
-    }, 12000);
-}
+// startActiveOrderSimulation() has been REMOVED.
+// Order status is now controlled ONLY by kitchen staff via the backend.
+// The student page listens for 'order:status-changed' Socket.IO events
+// and polls GET /api/orders/active on reconnect.
 
 function markActiveOrderCollected() {
     if (!state.activeOrder) return;
     showToast(`Order #${state.activeOrder.orderId} collected successfully! Enjoy your meal! 🍽️`, "success");
     state.activeOrder = null;
-    localStorage.removeItem('campuspay-active-order');
     renderActiveOrderStatus();
-    renderRecentOrders();
+    loadOrderHistory();
     updateWelcomeStatsDOM();
 }
 
@@ -1034,36 +1153,40 @@ function renderRecentOrders() {
     if (!listEl) return;
 
     if (state.orderHistory.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-on-surface-variant dark:text-[#bec9c8] py-8 text-center select-none">No recent orders yet today.</p>`;
+        listEl.innerHTML = `<p class="text-xs text-on-surface-variant dark:text-[#bec9c8] py-8 text-center select-none">No order history yet.</p>`;
         return;
     }
 
-    const recent = state.orderHistory.slice(-3).reverse();
-    listEl.innerHTML = recent.map(order => {
-        const itemsHtml = order.items.map(item => {
+    const recent = state.orderHistory.slice(0, 3); // API returns newest first
+    listEl.innerHTML = recent.map((order, orderIdx) => {
+        // Handle both API format (items have name) and legacy format (items have mealId)
+        const itemsHtml = (order.items || []).map(item => {
+            if (item.name) return `<span class="text-xs text-on-surface font-medium block">${item.name} x ${item.quantity}</span>`;
             const meal = state.meals.find(m => m.id === item.mealId);
-            return `<span class="text-xs text-on-surface font-medium block">${meal ? meal.name : 'Meal'} x ${item.quantity}</span>`;
+            return `<span class="text-xs text-on-surface font-medium block">${meal ? meal.name : 'Item'} x ${item.quantity}</span>`;
         }).join('');
 
         const orderIdStr = `Order #${order.orderId}`;
-        const orderIdx = state.orderHistory.indexOf(order);
+        const total = order.total ?? order.amount ?? 0;
+        const dateStr = order.createdAt
+            ? new Date(order.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+            : (order.timestamp || '');
+        const statusBadge = order.status
+            ? `<span class="text-[9px] bg-primary/10 text-primary dark:text-[#86d4d3] font-bold px-1.5 py-0.5 rounded">${order.status}</span>`
+            : `<span class="text-[9px] bg-green-500/10 text-green-600 dark:text-green-400 font-bold px-1.5 py-0.5 rounded">Delivered</span>`;
 
         return `
             <div class="p-3 bg-surface-container-low dark:bg-[#1a1c1e] rounded-xl border border-outline-variant hover:border-primary/20 transition-all flex justify-between items-center gap-3">
                 <div class="flex-1 select-none">
                     <div class="flex items-center gap-2 mb-1.5">
                         <span class="text-[9px] font-bold text-on-surface-variant dark:text-secondary-fixed-dim uppercase tracking-wider">${orderIdStr}</span>
-                        <span class="text-[9px] bg-green-500/10 text-green-600 dark:text-green-400 font-bold px-1.5 py-0.5 rounded">Collected</span>
+                        ${statusBadge}
                     </div>
                     <div class="space-y-0.5">
                         ${itemsHtml}
                     </div>
-                    <span class="text-[9px] text-on-surface-variant dark:text-secondary-fixed-dim block mt-1">${order.timestamp} • ${order.amount.toFixed(2)} ৳</span>
+                    <span class="text-[9px] text-on-surface-variant dark:text-secondary-fixed-dim block mt-1">${dateStr} • ${total.toFixed(2)} ৳</span>
                 </div>
-                <button onclick="window.reorderRecent(${orderIdx})" class="bg-primary/10 text-primary dark:text-[#86d4d3] hover:bg-primary hover:text-on-primary px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap">
-                    <span class="material-symbols-outlined text-[14px]">refresh</span>
-                    Reorder
-                </button>
             </div>
         `;
     }).join('');
@@ -1159,7 +1282,8 @@ function updateWelcomeStatsDOM() {
     const countEl = document.getElementById("banner-stat-count");
     if (!spentEl || !countEl) return;
 
-    const totalSpent = state.orderHistory.reduce((sum, order) => sum + order.amount, 0);
+    // Handle both API (order.total) and legacy (order.amount) formats
+    const totalSpent = state.orderHistory.reduce((sum, order) => sum + (order.total ?? order.amount ?? 0), 0);
     spentEl.innerText = `${totalSpent.toFixed(2)} ৳`;
     countEl.innerText = state.orderHistory.length.toString();
 }

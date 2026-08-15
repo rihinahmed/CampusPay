@@ -1,22 +1,79 @@
 // CampusPay Recharge Page Controller & State Management
 
+const API_BASE = 'http://127.0.0.1:5000/api';
+
 const state = {
     balance: parseFloat(localStorage.getItem('campuspay-balance')) || 500.00,
     isDarkMode: localStorage.getItem('campuspay-theme') === 'dark',
-    requests: JSON.parse(localStorage.getItem('campuspay-recharge-requests')) || [
-        { id: "1", method: "bKash", amount: 500, txid: "AH87B9JK2", date: "Oct 12, 2026", status: "Pending" },
-        { id: "2", method: "Nagad", amount: 1000, txid: "99M8N2XQ1", date: "Oct 10, 2026", status: "Approved" },
-        { id: "3", method: "bKash", amount: 200, txid: "76ZZ2LP45", date: "Oct 05, 2026", status: "Declined" },
-        { id: "4", method: "bKash", amount: 1500, txid: "AX22RTY99", date: "Sep 28, 2026", status: "Approved" }
-    ]
+    requests: []
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+// ─── API Helpers ──────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('campuspay-token'); }
+
+async function apiGet(endpoint) {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    return res.json();
+}
+
+async function apiPost(endpoint, body) {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+        body: JSON.stringify(body),
+    });
+    return { ok: res.ok, data: await res.json() };
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     initEventListeners();
     updateBalanceDOM();
-    renderHistory();
+
+    // Load real data from API if token available
+    if (getToken()) {
+        await loadRechargeHistory();
+        await loadBalance();
+    } else {
+        // Fallback to localStorage
+        state.requests = JSON.parse(localStorage.getItem('campuspay-recharge-requests')) || state.requests;
+        renderHistory();
+    }
 });
+
+async function loadBalance() {
+    try {
+        const data = await apiGet('/users/me/balance');
+        if (data.success) {
+            state.balance = data.data.balance;
+            localStorage.setItem('campuspay-balance', state.balance.toFixed(2));
+            updateBalanceDOM();
+        }
+    } catch (e) { /* Use cached balance */ }
+}
+
+async function loadRechargeHistory() {
+    try {
+        const data = await apiGet('/recharge');
+        if (data.success) {
+            state.requests = data.data.map(r => ({
+                id: r._id,
+                method: r.method,
+                amount: r.amount,
+                txid: r.txid,
+                date: new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                status: r.status,
+            }));
+            renderHistory();
+        }
+    } catch (e) {
+        // Fallback
+        state.requests = JSON.parse(localStorage.getItem('campuspay-recharge-requests')) || state.requests;
+        renderHistory();
+    }
+}
 
 // Theme Management
 function initTheme() {
@@ -185,23 +242,37 @@ function showToast(message, type = "info") {
     setTimeout(removeToast, 4000);
 }
 
-function processRechargeRequest(method, amount, txid) {
+async function processRechargeRequest(method, amount, txid) {
     const val = parseFloat(amount);
-    const newReq = {
-        id: Date.now().toString(),
-        method: method,
-        amount: val,
-        txid: txid,
-        date: new Date().toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' }),
-        status: "Pending"
-    };
 
-    // Prepend to requests list
-    state.requests.unshift(newReq);
-    localStorage.setItem('campuspay-recharge-requests', JSON.stringify(state.requests));
-
-    renderHistory();
-    showToast(`Recharge request of ৳ ${val.toFixed(2)} submitted for verification!`, "success");
+    if (getToken()) {
+        // Real API call
+        try {
+            const { ok, data } = await apiPost('/recharge', { method, amount: val, txid });
+            if (ok && data.success) {
+                showToast(`Recharge request of ৳ ${val.toFixed(2)} submitted for verification!`, 'success');
+                await loadRechargeHistory();
+            } else {
+                showToast(data.message || 'Failed to submit recharge request.', 'error');
+            }
+        } catch (e) {
+            showToast('Network error. Please try again.', 'error');
+        }
+    } else {
+        // Fallback: localStorage
+        const newReq = {
+            id: Date.now().toString(),
+            method,
+            amount: val,
+            txid,
+            date: new Date().toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' }),
+            status: 'Pending'
+        };
+        state.requests.unshift(newReq);
+        localStorage.setItem('campuspay-recharge-requests', JSON.stringify(state.requests));
+        renderHistory();
+        showToast(`Recharge request of ৳ ${val.toFixed(2)} submitted for verification!`, 'success');
+    }
 }
 
 function initEventListeners() {

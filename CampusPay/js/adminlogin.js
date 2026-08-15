@@ -114,8 +114,8 @@ function closeForgotModal() {
     }
 }
 
-// Verify Admin Command Credentials
-function handleAdminLogin(event) {
+// Verify Admin Command Credentials — calls real backend API
+async function handleAdminLogin(event) {
     event.preventDefault();
     const idField = document.getElementById("admin-id");
     const pwField = document.getElementById("password");
@@ -135,20 +135,41 @@ function handleAdminLogin(event) {
     submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-white">sync</span> Authenticating...`;
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-        // Accepts: "admin" OR "CP-ADM-XXXXX" formats, with pin: "1234"
-        const isValidId = idVal.toLowerCase() === "admin" || (idVal.startsWith("CP-ADM-") && idVal.length > 7);
-        if (isValidId && pwVal === "1234") {
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: idVal, password: pwVal }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success && data.data.user.role === 'admin') {
+            localStorage.setItem('campuspay-token', data.data.token);
+            localStorage.setItem('campuspay-user', JSON.stringify(data.data.user));
             showToast("Access Granted. Redirecting to Command Center...", "success");
-            setTimeout(() => {
-                window.location.href = "./admin.html";
-            }, 1000);
+            setTimeout(() => { window.location.href = "./admin.html"; }, 900);
+        } else if (res.ok && data.success && data.data.user.role !== 'admin') {
+            showToast("Access Denied: Admin credentials required.", "error");
+            submitBtn.innerHTML = origContent;
+            submitBtn.disabled = false;
         } else {
-            showToast("Access Denied: Unrecognized ID or Security PIN.", "error");
+            showToast(data.message || "Access Denied: Unrecognized ID or Security PIN.", "error");
             submitBtn.innerHTML = origContent;
             submitBtn.disabled = false;
         }
-    }, 1500);
+    } catch (err) {
+        // Demo fallback
+        console.warn('Backend unreachable, demo mode.');
+        const isValid = (idVal.toUpperCase() === 'ADM-0000' || idVal.toLowerCase() === 'admin') && pwVal === '1234';
+        if (isValid) {
+            showToast("Demo Mode: Access Granted.", "success");
+            setTimeout(() => { window.location.href = "./admin.html"; }, 900);
+        } else {
+            showToast("Access Denied: Invalid credentials.", "error");
+            submitBtn.innerHTML = origContent;
+            submitBtn.disabled = false;
+        }
+    }
 }
 
 // Bind listeners
