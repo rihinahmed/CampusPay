@@ -1,104 +1,28 @@
 // CampusPay Kitchen Staff Dashboard Controller & Interactions
 
+// ─── API Configuration ───────────────────────────────────────────
+const API_BASE = 'http://127.0.0.1:5000/api';
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('campuspay-token');
+    return {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    };
+}
+
 function getNextGlobalOrderId() {
+    // Legacy helper — no longer used for real orders.
+    // Real order IDs come from the backend MongoDB counter.
     let current = parseInt(localStorage.getItem('campuspay-global-order-counter')) || 3030;
-    try {
-        const staffOrders = JSON.parse(localStorage.getItem('campuspay-staff-orders')) || [];
-        const existingIds = staffOrders.map(o => parseInt(o.id)).filter(n => !isNaN(n));
-        if (existingIds.length > 0) {
-            const maxExisting = Math.max(...existingIds);
-            if (maxExisting >= current) {
-                current = maxExisting + 1;
-            }
-        }
-    } catch (e) {}
     const nextId = current;
     localStorage.setItem('campuspay-global-order-counter', (nextId + 1).toString());
     return nextId.toString();
 }
 
+// getInitialOrders() — Now returns empty array. Real orders loaded from backend API.
 function getInitialOrders() {
-    const defaultOrders = [
-        {
-            id: "3024",
-            studentName: "Tanvir Ahmed",
-            studentId: "202114042",
-            orderTime: Date.now() - 360000, // 6 mins ago
-            items: [
-                { name: "Crispy Chicken Burger", qty: 2, tags: ["Bestseller"] },
-                { name: "French Fries", qty: 1, tags: ["Vegetarian"] },
-                { name: "Fresh Lemon Iced Tea", qty: 2, tags: ["Refreshing"] }
-            ],
-            specialNote: "No mayonnaise, extra crispy fries",
-            total: 320,
-            payment: "Paid",
-            pickupType: "Counter Pickup",
-            status: "Preparing",
-            isPinned: true,
-            statusHistory: [
-                { status: "Pending", time: "11:45 AM" },
-                { status: "Accepted", time: "11:46 AM" },
-                { status: "Preparing", time: "11:47 AM" }
-            ]
-        },
-        {
-            id: "3023",
-            studentName: "Nusrat Jahan",
-            studentId: "201914005",
-            orderTime: Date.now() - 780000, // 13 mins ago
-            items: [
-                { name: "Beef Kacchi Biryani", qty: 1, tags: ["Chef Special"] },
-                { name: "Double Egg Toast Sandwich", qty: 2, tags: ["Quick Snack"] }
-            ],
-            specialNote: "Less spicy, extra salad",
-            total: 280,
-            payment: "Paid",
-            pickupType: "Counter Pickup",
-            status: "Accepted",
-            isPinned: false,
-            statusHistory: [
-                { status: "Pending", time: "11:38 AM" },
-                { status: "Accepted", time: "11:40 AM" }
-            ]
-        },
-        {
-            id: "3022",
-            studentName: "Rafi Hossain",
-            studentId: "202214112",
-            orderTime: Date.now() - 960000, // 16 mins ago
-            items: [
-                { name: "Japanese Chicken Katsu Curry", qty: 2, tags: ["New Item"] },
-                { name: "Fresh Lemon Iced Tea", qty: 2, tags: ["Refreshing"] }
-            ],
-            specialNote: "Pack curry separately",
-            total: 520,
-            payment: "Paid",
-            pickupType: "Parcel",
-            status: "Ready for Pickup",
-            isPinned: false,
-            statusHistory: [
-                { status: "Pending", time: "11:32 AM" },
-                { status: "Accepted", time: "11:34 AM" },
-                { status: "Preparing", time: "11:36 AM" },
-                { status: "Ready for Pickup", time: "11:44 AM" }
-            ]
-        }
-    ];
-
-    try {
-        const raw = localStorage.getItem('campuspay-staff-orders');
-        if (raw) {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                const active = parsed.filter(o => o.status !== "Completed" && o.status !== "Delivered" && o.status !== "Cancelled");
-                if (active.length > 0) {
-                    return parsed;
-                }
-            }
-        }
-    } catch (e) {}
-
-    return defaultOrders;
+    return [];
 }
 
 const state = {
@@ -372,13 +296,174 @@ function playAudioChime(type = "new_order") {
     }
 }
 
-// Sync database state to localStorage
+// Sync non-order preferences to localStorage
 function saveState() {
-    localStorage.setItem('campuspay-staff-orders', JSON.stringify(state.orders));
-    localStorage.setItem('campuspay-canteen-menu', JSON.stringify(state.foodMenu));
-    localStorage.setItem('campuspay-kitchen-inventory', JSON.stringify(state.inventory));
+    // NOTE: orders are now managed by MongoDB, not localStorage
     localStorage.setItem('campuspay-kitchen-open', JSON.stringify(state.isKitchenOpen));
     localStorage.setItem('campuspay-audio-muted', JSON.stringify(state.isAudioMuted));
+}
+
+// ─── Backend API Integration ───────────────────────────────────────
+
+async function loadOrderQueue() {
+    try {
+        const res = await fetch(`${API_BASE}/staff/orders?status=active`, { headers: getAuthHeaders() });
+        if (!res.ok) {
+            console.warn('[CampusPay] Failed to load order queue:', res.status);
+            return;
+        }
+        const data = await res.json();
+        const apiOrders = data.data?.orders || [];
+
+        // Normalize API orders to the format the dashboard expects
+        const normalized = apiOrders.map(o => normalizeApiOrder(o));
+
+        // Merge: preserve local isPinned state for already-known orders
+        const existing = state.orders;
+        state.orders = normalized.map(newOrder => {
+            const old = existing.find(e => e._id === newOrder._id);
+            if (old) newOrder.isPinned = old.isPinned;
+            return newOrder;
+        });
+
+        renderActiveTab();
+        updateSidePanelStats();
+        console.log(`[CampusPay] Loaded ${state.orders.length} active orders from backend`);
+    } catch (err) {
+        console.warn('[CampusPay] loadOrderQueue error:', err.message);
+    }
+}
+
+/**
+ * Convert a backend API order document to the format expected by the dashboard UI.
+ */
+function normalizeApiOrder(apiOrder) {
+    return {
+        _id: apiOrder._id,
+        id: String(apiOrder.orderId),  // Human-readable number as string for UI
+        orderId: apiOrder.orderId,
+        studentName: apiOrder.student?.name || 'Student',
+        studentId: apiOrder.student?.userId || '',
+        orderTime: new Date(apiOrder.createdAt).getTime(),
+        items: (apiOrder.items || []).map(item => ({
+            name: item.name,
+            qty: item.quantity,
+            tags: [],
+        })),
+        specialNote: apiOrder.specialNote || '',
+        total: apiOrder.total,
+        payment: apiOrder.paymentStatus || 'Paid',
+        pickupType: apiOrder.pickupType || 'Counter Pickup',
+        dineOption: apiOrder.dineOption || 'Dine In',
+        status: apiOrder.status,
+        isPinned: apiOrder.isPinned || false,
+        statusHistory: (apiOrder.statusHistory || []).map(h => ({
+            status: h.status,
+            time: new Date(h.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        })),
+        pin: apiOrder.pin,
+    };
+}
+
+// ─── Socket.IO Real-time Connection ─────────────────────────────
+let kitchenSocket = null;
+
+function initKitchenSocket() {
+    if (typeof io === 'undefined') {
+        console.warn('[CampusPay] Socket.IO not loaded');
+        return;
+    }
+
+    kitchenSocket = io('http://127.0.0.1:5000', {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 2000,
+    });
+
+    kitchenSocket.on('connect', () => {
+        console.log('[CampusPay Kitchen] Socket connected:', kitchenSocket.id);
+        const user = JSON.parse(localStorage.getItem('campuspay-user') || 'null');
+        kitchenSocket.emit('join', {
+            userId: user?.userId || 'staff',
+            mongoUserId: user?.id || user?._id,
+            role: user?.role || 'staff',
+        });
+        // On reconnect, refetch missed orders from API
+        loadOrderQueue();
+    });
+
+    // New order placed by student — add to queue immediately
+    kitchenSocket.on('order:new', (payload) => {
+        console.log('[CampusPay Kitchen] order:new received', payload);
+        // Avoid duplicates
+        if (state.orders.find(o => o._id === payload._id || o.id === String(payload.orderId))) return;
+
+        const newOrder = {
+            _id: payload._id,
+            id: String(payload.orderId),
+            orderId: payload.orderId,
+            studentName: payload.studentName || 'Student',
+            studentId: payload.studentId || '',
+            orderTime: new Date(payload.createdAt || Date.now()).getTime(),
+            items: (payload.items || []).map(item => ({
+                name: item.name,
+                qty: item.quantity,
+                tags: [],
+            })),
+            specialNote: payload.specialNote || '',
+            total: payload.total,
+            payment: 'Paid',
+            pickupType: payload.pickupType || 'Counter Pickup',
+            dineOption: payload.dineOption || 'Dine In',
+            status: 'Pending',
+            isPinned: false,
+            statusHistory: [{ status: 'Pending', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }],
+        };
+
+        state.orders.unshift(newOrder); // Add to top
+        renderActiveTab();
+        updateSidePanelStats();
+        playAudioChime('new_order');
+        showToast(`📥 New Order #${payload.orderId} from ${payload.studentName || 'student'}!`, 'success');
+    });
+
+    // Another kitchen staff member changed an order status
+    kitchenSocket.on('order:status-updated', (payload) => {
+        console.log('[CampusPay Kitchen] order:status-updated', payload);
+        const order = state.orders.find(o => o._id === payload._id || o.id === String(payload.orderId));
+        if (order) {
+            const prevStatus = order.status;
+            order.status = payload.status;
+            // If terminal, remove from active queue after a delay
+            if (payload.status === 'Delivered' || payload.status === 'Cancelled') {
+                setTimeout(() => {
+                    state.orders = state.orders.filter(o => o._id !== payload._id && o.id !== String(payload.orderId));
+                    renderActiveTab();
+                    updateSidePanelStats();
+                }, 3000);
+            }
+            renderActiveTab();
+            updateSidePanelStats();
+        }
+    });
+
+    // Order cancelled
+    kitchenSocket.on('order:cancelled', (payload) => {
+        console.log('[CampusPay Kitchen] order:cancelled', payload);
+        state.orders = state.orders.filter(o => o._id !== payload._id && o.id !== String(payload.orderId));
+        renderActiveTab();
+        updateSidePanelStats();
+        showToast(`Order #${payload.orderId} was cancelled.`, 'error');
+    });
+
+    kitchenSocket.on('disconnect', (reason) => {
+        console.log('[CampusPay Kitchen] Socket disconnected:', reason);
+    });
+}
+
+function initBackendSync() {
+    initKitchenSocket();
+    loadOrderQueue();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -389,7 +474,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAudioMuteUI();
     switchTab(state.currentTab);
     startLiveTimerLoop();
+    // Connect to real backend
+    initBackendSync();
 });
+
 
 // Real-time Clock Initialization & Rush Hour Countdown
 function initClock() {
@@ -1473,42 +1561,60 @@ function getStatusBadgeClass(status) {
 }
 
 // Order Status Transitions with Undo Capability
-window.changeOrderStatus = function (orderId, newStatus) {
-    const order = state.orders.find(o => o.id === orderId);
+window.changeOrderStatus = async function (orderId, newStatus) {
+    // orderId here is the human-readable string (e.g. '3024')
+    const order = state.orders.find(o => o.id === orderId || o.id === String(orderId));
     if (!order) return;
 
     const previousStatus = order.status;
-    order.status = newStatus;
+    const mongoId = order._id;
 
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    order.statusHistory.push({ status: newStatus, time: timeStr });
+    if (!mongoId) {
+        console.warn('[CampusPay] Order missing _id, cannot call API');
+        return;
+    }
 
-    // Store state for UNDO action
-    state.lastStatusChange = { orderId, previousStatus };
-
-    // Play chime sound
-    playAudioChime("status_change");
-
-    // Push into timeline
-    state.activityTimeline.unshift({
-        title: `Order #${orderId} -> ${newStatus}`,
-        detail: `Updated by Kitchen Staff (${order.studentName})`,
-        time: timeStr,
-        icon: newStatus === "Ready for Pickup" ? "soup_kitchen" : (newStatus === "Delivered" ? "task_alt" : "sync"),
-        color: newStatus === "Ready for Pickup" ? "text-amber-500" : (newStatus === "Delivered" ? "text-emerald-500" : "text-blue-500")
-    });
-
-    // Sync student active order to local storage if matching
     try {
-        const activeStudentOrder = JSON.parse(localStorage.getItem('campuspay-active-order'));
-        if (activeStudentOrder && activeStudentOrder.orderId.toString() === orderId) {
-            activeStudentOrder.status = newStatus;
-            localStorage.setItem('campuspay-active-order', JSON.stringify(activeStudentOrder));
-        }
-    } catch (e) {}
+        const res = await fetch(`${API_BASE}/staff/orders/${mongoId}/status`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ status: newStatus }),
+        });
 
-    renderActiveTab();
-    showToast(`Order #${orderId} moved to "${newStatus}"`, "success", () => undoLastStatusChange());
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            // Update local state from API response
+            order.status = newStatus;
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            order.statusHistory = order.statusHistory || [];
+            order.statusHistory.push({ status: newStatus, time: timeStr });
+
+            // Store undo state
+            state.lastStatusChange = { orderId, previousStatus, mongoId };
+
+            // Play chime sound
+            playAudioChime('status_change');
+
+            // Update activity timeline
+            state.activityTimeline.unshift({
+                title: `Order #${orderId} → ${newStatus}`,
+                detail: `Updated by Kitchen Staff`,
+                time: timeStr,
+                icon: newStatus === 'Ready for Pickup' ? 'soup_kitchen' : (newStatus === 'Delivered' ? 'task_alt' : 'sync'),
+                color: newStatus === 'Ready for Pickup' ? 'text-amber-500' : (newStatus === 'Delivered' ? 'text-emerald-500' : 'text-blue-500')
+            });
+
+            renderActiveTab();
+            updateSidePanelStats();
+            showToast(`Order #${orderId} moved to "${newStatus}"`, 'success', () => undoLastStatusChange());
+        } else {
+            showToast(data.message || `Failed to update order #${orderId}.`, 'error');
+        }
+    } catch (err) {
+        console.error('[CampusPay] changeOrderStatus error:', err);
+        showToast('Network error: cannot reach backend.', 'error');
+    }
 };
 
 function undoLastStatusChange() {
@@ -1523,12 +1629,25 @@ function undoLastStatusChange() {
     }
 }
 
-window.togglePinOrder = function (orderId) {
-    const order = state.orders.find(o => o.id === orderId);
-    if (order) {
-        order.isPinned = !order.isPinned;
-        renderActiveTab();
-        showToast(order.isPinned ? `Order #${orderId} Pinned to Top 📌` : `Order #${orderId} Unpinned`, "info");
+window.togglePinOrder = async function (orderId) {
+    const order = state.orders.find(o => o.id === orderId || o.id === String(orderId));
+    if (!order) return;
+
+    // Optimistically toggle locally
+    order.isPinned = !order.isPinned;
+    renderActiveTab();
+    showToast(order.isPinned ? `Order #${orderId} Pinned to Top 📌` : `Order #${orderId} Unpinned`, 'info');
+
+    // Persist to backend
+    if (order._id) {
+        try {
+            await fetch(`${API_BASE}/staff/orders/${order._id}/pin`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+            });
+        } catch (e) {
+            console.warn('[CampusPay] togglePinOrder backend sync failed:', e.message);
+        }
     }
 };
 

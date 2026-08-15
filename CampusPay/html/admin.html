@@ -117,7 +117,9 @@
     </script>
 
     <link rel="stylesheet" href="../css/admin.css" />
-    <script src="../js/admin.js" defer></script>
+    <!-- Socket.IO Client (must load before admin.js) -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="../js/admin.js?v=3" defer></script>
 </head>
 
 <body
